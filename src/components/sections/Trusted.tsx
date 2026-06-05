@@ -1,3 +1,5 @@
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
+
 const NAMES = [
   "Lukas Group", "Crable Group", "Mountain Realty", "Angela Davis",
   "Hive Group", "Drew Wilson", "Listing & Friends",
@@ -6,11 +8,13 @@ const NAMES = [
 ];
 
 export function Trusted() {
+  const { translations: t } = useLanguage();
+
   return (
     <section className="bg-ink text-white py-24 px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-display text-2xl md:text-3xl text-center tracking-widest mb-12">
-          TRUSTED BY REALTORS <span className="text-gold">NATION-WIDE</span>
+          {t.trusted.title} <span className="text-gold">{t.trusted.titleHighlight}</span>
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
           {NAMES.map((n) => (

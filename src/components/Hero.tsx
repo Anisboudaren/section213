@@ -1,96 +1,266 @@
-import { useEffect, useRef, useState } from "react";
-import { ChevronRight, MapPin, Pencil, User, Phone, Camera } from "lucide-react";
+import { ViralBurstBackground } from "@/components/ViralBurstBackground";
+import { Link } from "@tanstack/react-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { handleSmoothScroll } from "@/lib/smooth-scroll";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import {
+  Bookmark,
+  ChevronDown,
+  ChevronRight,
+  Heart,
+  MapPin,
+  MessageCircle,
+  Music2,
+  Pencil,
+  Phone,
+  Share2,
+  User,
+  Camera,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 
-const BG_VIDEO =
-  "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4";
+const BG_VIDEO = "/vids/hero.mp4";
 
 const REELS = [
   {
-    src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    title: "Luxury Lakefront Estate",
-    location: "Lake Norman, NC",
+    src: "/vids/scroll-1.mp4",
+    title: "Luxury listing walk-through",
+    location: "Oran, Algeria",
+    likes: "48.2K",
+    comments: "1,204",
+    shares: "3.8K",
+    saves: "9.1K",
+    sound: "Original Sound — Section 213",
   },
   {
-    src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-    title: "Modern Downtown Loft",
-    location: "Charlotte, NC",
+    src: "/vids/scroll-2.mp4",
+    title: "Agent brand reel — day in the life",
+    location: "Algiers, Algeria",
+    likes: "112K",
+    comments: "2,891",
+    shares: "8.4K",
+    saves: "21K",
+    sound: "Trending Audio — Section 213",
   },
   {
-    src: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-    title: "Mountain Retreat",
-    location: "Asheville, NC",
+    src: "/vids/scroll-3.mp4",
+    title: "Cinematic drone + interior combo",
+    location: "Tlemcen, Algeria",
+    likes: "76.5K",
+    comments: "1,672",
+    shares: "5.2K",
+    saves: "14.3K",
+    sound: "Viral Mix — Section 213",
   },
 ];
 
-function Nav() {
+function Section213Logo({ className = "" }: { className?: string }) {
   return (
-    <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-8 py-5 text-white">
+    <div className={`flex items-center gap-2 ${className}`}>
+      <span className="text-gold font-display text-2xl tracking-wider">213</span>
+      <div className="leading-none">
+        <div className="font-display text-xl tracking-wider">SECTION</div>
+        <div className="text-[10px] tracking-[0.3em] text-gold">213</div>
+      </div>
+    </div>
+  );
+}
+
+function SoundToggle({
+  soundOn,
+  onToggle,
+  className = "",
+}: {
+  soundOn: boolean;
+  onToggle: () => void;
+  className?: string;
+}) {
+  const { translations: t } = useLanguage();
+
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={soundOn ? t.nav.muteVideos : t.nav.unmuteVideos}
+      className={`flex items-center gap-2 rounded-full bg-black/50 backdrop-blur-sm px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-black/70 ${className}`}
+    >
+      {soundOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+      {soundOn ? t.nav.soundOn : t.nav.tapForSound}
+    </button>
+  );
+}
+
+function Nav({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () => void }) {
+  const { translations: t } = useLanguage();
+
+  return (
+    <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-5 text-white md:px-8">
+      <div className="shrink-0 md:hidden">
+        <Section213Logo />
+      </div>
+
       <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-        <a href="#services" className="hover:text-gold transition-colors">Services</a>
-        <a href="#portfolio" className="hover:text-gold transition-colors">Portfolio</a>
-        <a href="#about" className="hover:text-gold transition-colors">About</a>
-        <a href="#listing" className="hover:text-gold transition-colors">Listing media</a>
-        <a href="#social" className="hover:text-gold transition-colors">Social media</a>
+        <a href="#services" onClick={(e) => handleSmoothScroll(e, "services")} className="hover:text-gold transition-colors">
+          {t.nav.services}
+        </a>
+        <a href="#portfolio" onClick={(e) => handleSmoothScroll(e, "portfolio")} className="hover:text-gold transition-colors">
+          {t.nav.portfolio}
+        </a>
+        <a href="#about" onClick={(e) => handleSmoothScroll(e, "about")} className="hover:text-gold transition-colors">
+          {t.nav.about}
+        </a>
+        <a href="#listing" onClick={(e) => handleSmoothScroll(e, "listing")} className="hover:text-gold transition-colors">
+          {t.nav.listingMedia}
+        </a>
+        <a href="#digital" onClick={(e) => handleSmoothScroll(e, "digital")} className="hover:text-gold transition-colors">
+          {t.nav.automations}
+        </a>
       </div>
-      <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-        <span className="text-gold font-display text-2xl tracking-wider">4</span>
-        <div className="leading-none">
-          <div className="font-display text-xl tracking-wider text-white">HORSEMEN</div>
-          <div className="text-[10px] tracking-[0.3em] text-gold">MEDIA</div>
-        </div>
+
+      <div className="absolute left-1/2 hidden -translate-x-1/2 md:block">
+        <Section213Logo />
       </div>
-      <div className="flex items-center gap-4">
-        <a href="tel:7048324498" className="hidden sm:flex items-center gap-2 text-sm font-semibold">
+
+      <div className="flex shrink-0 items-center gap-3">
+        <SoundToggle soundOn={soundOn} onToggle={onToggleSound} className="hidden sm:flex" />
+        <a
+          href="tel:7048324498"
+          className="hidden lg:flex items-center gap-2 text-sm font-semibold"
+        >
           (704) 832-4498 <Phone className="w-4 h-4 text-gold" />
         </a>
-        <button className="bg-gold text-gold-foreground px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 hover:brightness-110 transition">
-          <Camera className="w-4 h-4" /> Book a Shoot
-        </button>
+        <Link
+          to="/book"
+          className="bg-gold text-gold-foreground px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 hover:brightness-110 transition"
+        >
+          <Camera className="w-4 h-4" /> {t.nav.bookAShoot}
+        </Link>
       </div>
     </nav>
   );
 }
 
-function HeroTop() {
+function ScrollHint() {
+  const { translations: t } = useLanguage();
+
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-ink">
+    <a
+      href="#portfolio"
+      onClick={(e) => handleSmoothScroll(e, "portfolio")}
+      className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1 text-white/60 transition-colors hover:text-gold"
+      aria-label={t.hero.scrollToReels}
+    >
+      <span className="text-[10px] font-semibold uppercase tracking-[0.25em]">{t.hero.scroll}</span>
+      <ChevronDown className="h-6 w-6 animate-bounce" />
+    </a>
+  );
+}
+
+function HeroTop({
+  soundOn,
+  onToggleSound,
+  reelsInView,
+  heroInView,
+  videoRef,
+  onHeroInViewChange,
+}: {
+  soundOn: boolean;
+  onToggleSound: () => void;
+  reelsInView: boolean;
+  heroInView: boolean;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  onHeroInViewChange: (inView: boolean) => void;
+}) {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => onHeroInViewChange(entry.isIntersecting && entry.intersectionRatio > 0.35),
+      { threshold: [0, 0.35, 0.6] },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [onHeroInViewChange]);
+
+  const heroAudible = soundOn && heroInView && !reelsInView;
+  const { translations: t } = useLanguage();
+
+  return (
+    <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-ink">
       <video
+        ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src={BG_VIDEO}
         autoPlay
-        muted
+        muted={!heroAudible}
         loop
         playsInline
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black" />
-      <Nav />
+      <Nav soundOn={soundOn} onToggleSound={onToggleSound} />
+      <div className="absolute bottom-8 right-8 z-20 sm:hidden">
+        <SoundToggle soundOn={soundOn} onToggle={onToggleSound} />
+      </div>
       <div className="relative z-10 h-full flex flex-col justify-center max-w-7xl mx-auto px-8">
         <div className="flex items-center gap-2 text-white/90 text-sm mb-4">
           <MapPin className="w-4 h-4 text-gold" />
-          North Carolina Based Real Estate Media Company
+          {t.hero.location}
         </div>
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-[0.95] tracking-tight max-w-4xl">
-          <span className="text-gold">CINEMATIC CONTENT</span> THAT WINS LISTINGS AND GETS CLIENTS.
+          <span className="text-gold">{t.hero.headlineGold}</span> {t.hero.headlineRest}
         </h1>
         <div className="mt-8 space-y-3 text-white/90 max-w-2xl">
           <div className="flex gap-3">
             <Pencil className="w-5 h-5 text-gold shrink-0 mt-0.5" />
-            <p>Hooks + scripts included: we tell you exactly what to say.</p>
+            <p>{t.hero.bullet1}</p>
           </div>
           <div className="flex gap-3">
             <User className="w-5 h-5 text-gold shrink-0 mt-0.5" />
-            <p>
-              Made for agents: branding videos, short-form reels, photos, drone and more for
-              the agents that want to stand out.
-            </p>
+            <p>{t.hero.bullet2}</p>
           </div>
         </div>
-        <div className="mt-10">
-          <button className="bg-gold text-gold-foreground px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:brightness-110 transition">
-            Our Packages <ChevronRight className="w-4 h-4" />
-          </button>
+        <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="hidden lg:block lg:flex-1" />
+          <div className="hero-stair-buttons ml-auto flex w-full max-w-sm flex-col items-end gap-3 sm:max-w-md">
+            <a
+              href="#services"
+              onClick={(e) => handleSmoothScroll(e, "services")}
+              className="hero-stair-step hero-stair-step-1 bg-gold text-gold-foreground px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:brightness-110 transition shadow-lg"
+            >
+              {t.hero.ourPackages} <ChevronRight className="w-4 h-4" />
+            </a>
+            <a
+              href="#portfolio"
+              onClick={(e) => handleSmoothScroll(e, "portfolio")}
+              className="hero-stair-step hero-stair-step-2 rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-gold hover:text-gold"
+            >
+              {t.hero.seeViralReels}
+            </a>
+            {!soundOn ? (
+              <button
+                type="button"
+                onClick={onToggleSound}
+                className="hero-stair-step hero-stair-step-3 flex items-center gap-2 rounded-md border border-white/30 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-gold hover:text-gold"
+              >
+                <Volume2 className="h-4 w-4" /> {t.hero.enableSound}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={onToggleSound}
+                className="hero-stair-step hero-stair-step-3 flex items-center gap-2 rounded-md border border-gold/40 bg-black/20 px-5 py-2.5 text-sm font-semibold text-gold backdrop-blur-sm transition hover:bg-gold/10"
+              >
+                <Volume2 className="h-4 w-4" /> {t.nav.soundOn}
+              </button>
+            )}
+          </div>
         </div>
       </div>
+      <ScrollHint />
     </section>
   );
 }
@@ -98,11 +268,8 @@ function HeroTop() {
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative mx-auto w-[280px] h-[580px] md:w-[320px] md:h-[660px]">
-      {/* Frame */}
       <div className="absolute inset-0 rounded-[3rem] bg-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] ring-[10px] ring-ink" />
-      {/* Notch */}
       <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-6 bg-ink rounded-full z-20" />
-      {/* Screen */}
       <div className="absolute inset-[10px] rounded-[2.5rem] overflow-hidden bg-black">
         {children}
       </div>
@@ -110,111 +277,489 @@ function PhoneFrame({ children }: { children: React.ReactNode }) {
   );
 }
 
-function ReelsScroll() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [progress, setProgress] = useState(0); // 0..(REELS.length-1) fractional
+function TikTokOverlay({
+  reel,
+  isActive,
+  soundOn,
+  onToggleSound,
+}: {
+  reel: (typeof REELS)[0];
+  isActive: boolean;
+  soundOn: boolean;
+  onToggleSound: () => void;
+}) {
+  return (
+    <>
+      <div className="absolute top-3 inset-x-3 z-10 flex items-center justify-between text-white text-[10px] font-semibold">
+        <span className="bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full">Following</span>
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleSound();
+          }}
+          className="flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-1 rounded-full"
+        >
+          {soundOn ? <Volume2 className="h-3 w-3" /> : <VolumeX className="h-3 w-3" />}
+          {soundOn ? "On" : "Sound"}
+        </button>
+      </div>
 
-  useEffect(() => {
-    const onScroll = () => {
-      const el = sectionRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
-      const total = el.offsetHeight - window.innerHeight;
-      const scrolled = Math.min(Math.max(-rect.top, 0), total);
-      const p = (scrolled / total) * (REELS.length - 1);
-      setProgress(p);
-      const idx = Math.round(p);
-      setActiveIndex(idx);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+      <div className="absolute right-2 bottom-28 z-10 flex flex-col items-center gap-4">
+        <div className="relative mb-1">
+          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-gold to-ink border-2 border-white flex items-center justify-center">
+            <span className="font-display text-xs text-gold">213</span>
+          </div>
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-red-500 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold leading-none">
+            +
+          </div>
+        </div>
+
+        <ActionButton icon={Heart} count={reel.likes} filled pulse={isActive} />
+        <ActionButton icon={MessageCircle} count={reel.comments} />
+        <ActionButton icon={Share2} count={reel.shares} />
+        <ActionButton icon={Bookmark} count={reel.saves} />
+      </div>
+
+      <div className="absolute inset-x-0 bottom-0 z-10 p-4 pt-16 bg-gradient-to-t from-black/90 via-black/50 to-transparent text-white">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="font-semibold text-sm">@section213</span>
+          <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded">Follow</span>
+        </div>
+        <p className="text-sm leading-snug mb-2 pr-14">{reel.title}</p>
+        <div className="flex items-center gap-2 text-xs text-white/80">
+          <Music2 className="w-3.5 h-3.5 shrink-0 animate-pulse" />
+          <span className="truncate">{reel.sound}</span>
+        </div>
+        <div className="mt-2 text-[10px] text-gold uppercase tracking-wider">{reel.location}</div>
+      </div>
+    </>
+  );
+}
+
+function ActionButton({
+  icon: Icon,
+  count,
+  filled = false,
+  pulse = false,
+}: {
+  icon: typeof Heart;
+  count: string;
+  filled?: boolean;
+  pulse?: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      className={`flex flex-col items-center gap-0.5 text-white transition-transform ${pulse ? "animate-[bounce_0.6s_ease-in-out_1]" : ""}`}
+    >
+      <Icon
+        className={`w-7 h-7 drop-shadow-md ${filled ? "fill-red-500 text-red-500" : ""}`}
+      />
+      <span className="text-[10px] font-semibold drop-shadow-md">{count}</span>
+    </button>
+  );
+}
+
+const REEL_SNAP_MS = 420;
+const WHEEL_THRESHOLD = 28;
+const SWIPE_THRESHOLD = 48;
+
+function ReelsScroll({
+  soundOn,
+  onToggleSound,
+  onInViewChange,
+  onActiveIndexChange,
+  reelVideoRefs,
+}: {
+  soundOn: boolean;
+  onToggleSound: () => void;
+  onInViewChange: (inView: boolean) => void;
+  onActiveIndexChange: (index: number) => void;
+  reelVideoRefs: React.MutableRefObject<(HTMLVideoElement | null)[]>;
+}) {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const activeIndexRef = useRef(0);
+  const isSnappingRef = useRef(false);
+  const touchStartY = useRef(0);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const snapScrollToIndex = useCallback((index: number, behavior: ScrollBehavior = "smooth") => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const top = el.offsetTop + index * window.innerHeight;
+    window.scrollTo({ top, behavior });
+  }, []);
+
+  const goToIndex = useCallback(
+    (next: number, behavior: ScrollBehavior = "smooth") => {
+      const clamped = Math.max(0, Math.min(REELS.length - 1, next));
+      if (clamped === activeIndexRef.current || isSnappingRef.current) return;
+
+      isSnappingRef.current = true;
+      activeIndexRef.current = clamped;
+      setActiveIndex(clamped);
+      onActiveIndexChange(clamped);
+      snapScrollToIndex(clamped, behavior);
+
+      window.setTimeout(() => {
+        isSnappingRef.current = false;
+      }, REEL_SNAP_MS);
+    },
+    [onActiveIndexChange, snapScrollToIndex],
+  );
+
+  const getIndexFromScroll = useCallback(() => {
+    const el = sectionRef.current;
+    if (!el) return 0;
+    const scrolledInto = window.scrollY - el.offsetTop;
+    const index = Math.round(scrolledInto / window.innerHeight);
+    return Math.max(0, Math.min(REELS.length - 1, index));
+  }, []);
+
+  const isSectionPinned = useCallback(() => {
+    const el = sectionRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.top <= 2 && rect.bottom >= window.innerHeight - 2;
   }, []);
 
   useEffect(() => {
-    videoRefs.current.forEach((v, i) => {
-      if (!v) return;
-      if (i === activeIndex) {
-        v.play().catch(() => {});
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => onInViewChange(entry.isIntersecting && entry.intersectionRatio > 0.3),
+      { threshold: [0, 0.3, 0.6] },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [onInViewChange]);
+
+  useEffect(() => {
+    let snapTimeout: number;
+
+    const onScroll = () => {
+      if (isSnappingRef.current) return;
+
+      const nextIndex = getIndexFromScroll();
+      if (nextIndex !== activeIndexRef.current) {
+        activeIndexRef.current = nextIndex;
+        setActiveIndex(nextIndex);
+        onActiveIndexChange(nextIndex);
+      }
+
+      window.clearTimeout(snapTimeout);
+      snapTimeout = window.setTimeout(() => {
+        if (isSnappingRef.current || !isSectionPinned()) return;
+        const snapped = getIndexFromScroll();
+        const el = sectionRef.current;
+        if (!el) return;
+        const target = el.offsetTop + snapped * window.innerHeight;
+        if (Math.abs(window.scrollY - target) > 4) {
+          window.scrollTo({ top: target, behavior: "smooth" });
+        }
+      }, 90);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.clearTimeout(snapTimeout);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [getIndexFromScroll, isSectionPinned]);
+
+  useEffect(() => {
+    const onWheel = (event: WheelEvent) => {
+      if (!isSectionPinned() || isSnappingRef.current) return;
+
+      const delta = event.deltaY;
+      if (Math.abs(delta) < WHEEL_THRESHOLD) return;
+
+      const current = activeIndexRef.current;
+
+      if (delta > 0 && current < REELS.length - 1) {
+        event.preventDefault();
+        goToIndex(current + 1);
+      } else if (delta < 0 && current > 0) {
+        event.preventDefault();
+        goToIndex(current - 1);
+      }
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: false });
+    return () => window.removeEventListener("wheel", onWheel);
+  }, [goToIndex, isSectionPinned]);
+
+  useEffect(() => {
+    reelVideoRefs.current.forEach((video, i) => {
+      if (!video) return;
+      const isActive = i === activeIndex;
+      if (isActive) {
+        video.play().catch(() => {});
       } else {
-        v.pause();
+        video.pause();
+        video.currentTime = 0;
       }
     });
-  }, [activeIndex]);
+  }, [activeIndex, reelVideoRefs]);
+
+  const handleTouchStart = (event: React.TouchEvent) => {
+    touchStartY.current = event.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent) => {
+    if (isSnappingRef.current) return;
+
+    const delta = touchStartY.current - event.changedTouches[0].clientY;
+    if (Math.abs(delta) < SWIPE_THRESHOLD) return;
+
+    const current = activeIndexRef.current;
+    if (delta > 0 && current < REELS.length - 1) {
+      goToIndex(current + 1);
+    } else if (delta < 0 && current > 0) {
+      goToIndex(current - 1);
+    }
+  };
+
+  const { translations: t } = useLanguage();
+  const activeTheme = t.reels.themes[activeIndex] ?? t.reels.themes[0];
 
   return (
     <section
       ref={sectionRef}
+      id="portfolio"
       className="relative bg-secondary"
       style={{ height: `${REELS.length * 100}vh` }}
     >
       <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+        <ViralBurstBackground themeIndex={activeIndex} />
+
+        <div className="relative z-10 flex flex-col items-center w-full">
         <h2 className="font-display text-4xl md:text-6xl text-ink text-center mb-2">
-          WE MAKE LISTINGS <span className="text-gold">GO VIRAL</span>
+          {t.reels.title} <span className="text-gold">{t.reels.titleHighlight}</span>
         </h2>
-        <p className="text-muted-foreground mb-8">
-          Scroll-stopping content that drives engagement.
+        <p
+          key={activeIndex}
+          className="text-muted-foreground mb-1 text-center px-4 max-w-md viral-burst-set"
+        >
+          {activeTheme.subtitle}
+        </p>
+        <p className="text-[10px] uppercase tracking-[0.25em] text-gold/80 mb-6 font-semibold">
+          {activeTheme.label}
         </p>
 
         <PhoneFrame>
-          <div className="relative w-full h-full">
-            {REELS.map((reel, i) => {
-              const offset = (i - progress) * 100;
-              return (
-                <div
-                  key={reel.src}
-                  className="absolute inset-0 transition-transform duration-300 ease-out"
-                  style={{ transform: `translateY(${offset}%)` }}
-                >
-                  <video
-                    ref={(el) => {
-                      videoRefs.current[i] = el;
-                    }}
-                    src={reel.src}
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/80 to-transparent text-white">
-                    <div className="text-xs text-gold uppercase tracking-wider">
-                      {reel.location}
-                    </div>
-                    <div className="font-semibold">{reel.title}</div>
+          <div
+            className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
+            onClick={() => {
+              if (!soundOn) onToggleSound();
+            }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div
+              className="reel-track absolute left-0 top-0 w-full"
+              style={{
+                height: `${REELS.length * 100}%`,
+                transform: `translateY(-${(activeIndex / REELS.length) * 100}%)`,
+              }}
+            >
+              {REELS.map((reel, i) => {
+                const isActive = i === activeIndex;
+                return (
+                  <div
+                    key={reel.src}
+                    className="relative w-full"
+                    style={{ height: `${100 / REELS.length}%` }}
+                  >
+                    <video
+                      ref={(el) => {
+                        reelVideoRefs.current[i] = el;
+                      }}
+                      src={reel.src}
+                      autoPlay={i === 0}
+                      muted={!soundOn || i !== activeIndex}
+                      loop
+                      playsInline
+                      preload="auto"
+                      className="h-full w-full object-cover"
+                    />
+                    <TikTokOverlay
+                      reel={reel}
+                      isActive={isActive}
+                      soundOn={soundOn}
+                      onToggleSound={onToggleSound}
+                    />
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </PhoneFrame>
 
-        {/* Progress dots */}
         <div className="mt-6 flex gap-2">
           {REELS.map((_, i) => (
-            <div
+            <button
               key={i}
-              className={`h-1.5 rounded-full transition-all ${
-                i === activeIndex ? "w-8 bg-gold" : "w-1.5 bg-ink/20"
+              type="button"
+              aria-label={`Go to reel ${i + 1}`}
+              onClick={() => goToIndex(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex ? "w-8 bg-gold" : "w-1.5 bg-ink/20 hover:bg-ink/40"
               }`}
             />
           ))}
         </div>
         <p className="mt-3 text-xs text-muted-foreground uppercase tracking-widest">
-          Keep scrolling
+          {soundOn ? "Swipe up/down or scroll to snap" : "Tap the phone or enable sound above"}
         </p>
+        </div>
       </div>
     </section>
   );
 }
 
+function syncVideoAudio(
+  enabled: boolean,
+  heroRef: React.RefObject<HTMLVideoElement | null>,
+  reelRefs: React.MutableRefObject<(HTMLVideoElement | null)[]>,
+  activeReelIndex: number,
+  reelsVisible: boolean,
+  heroVisible: boolean,
+) {
+  const hero = heroRef.current;
+  if (hero) {
+    const heroAudible = enabled && heroVisible && !reelsVisible;
+    hero.muted = !heroAudible;
+    hero.volume = 1;
+
+    if (heroVisible) {
+      void hero.play();
+    } else {
+      hero.pause();
+    }
+  }
+
+  reelRefs.current.forEach((video, i) => {
+    if (!video) return;
+    const isActive = reelsVisible && i === activeReelIndex;
+    video.muted = !enabled || !isActive;
+    video.volume = 1;
+
+    if (isActive) {
+      void video.play();
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+}
+
 export function Hero() {
+  const [soundOn, setSoundOn] = useState(false);
+  const [reelsInView, setReelsInView] = useState(false);
+  const [heroInView, setHeroInView] = useState(true);
+  const [activeReelIndex, setActiveReelIndex] = useState(0);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const reelVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const soundOnRef = useRef(soundOn);
+  const reelsInViewRef = useRef(reelsInView);
+  const heroInViewRef = useRef(heroInView);
+  const activeReelIndexRef = useRef(activeReelIndex);
+
+  soundOnRef.current = soundOn;
+  reelsInViewRef.current = reelsInView;
+  heroInViewRef.current = heroInView;
+  activeReelIndexRef.current = activeReelIndex;
+
+  const toggleSound = useCallback(() => {
+    const next = !soundOnRef.current;
+    setSoundOn(next);
+    // Must unmute inside the click handler — browsers block audio otherwise.
+    syncVideoAudio(
+      next,
+      heroVideoRef,
+      reelVideoRefs,
+      activeReelIndexRef.current,
+      reelsInViewRef.current,
+      heroInViewRef.current,
+    );
+  }, []);
+
+  const handleHeroInView = useCallback((inView: boolean) => {
+    setHeroInView(inView);
+    heroInViewRef.current = inView;
+    syncVideoAudio(
+      soundOnRef.current,
+      heroVideoRef,
+      reelVideoRefs,
+      activeReelIndexRef.current,
+      reelsInViewRef.current,
+      inView,
+    );
+  }, []);
+
+  const handleReelsInView = useCallback((inView: boolean) => {
+    setReelsInView(inView);
+    reelsInViewRef.current = inView;
+    syncVideoAudio(
+      soundOnRef.current,
+      heroVideoRef,
+      reelVideoRefs,
+      activeReelIndexRef.current,
+      inView,
+      heroInViewRef.current,
+    );
+  }, []);
+
+  const handleActiveReelChange = useCallback((index: number) => {
+    setActiveReelIndex(index);
+    activeReelIndexRef.current = index;
+    if (soundOnRef.current) {
+      syncVideoAudio(
+        true,
+        heroVideoRef,
+        reelVideoRefs,
+        index,
+        reelsInViewRef.current,
+        heroInViewRef.current,
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    syncVideoAudio(
+      soundOn,
+      heroVideoRef,
+      reelVideoRefs,
+      activeReelIndex,
+      reelsInView,
+      heroInView,
+    );
+  }, [soundOn, activeReelIndex, reelsInView, heroInView]);
+
   return (
     <>
-      <HeroTop />
-      <ReelsScroll />
+      <HeroTop
+        soundOn={soundOn}
+        onToggleSound={toggleSound}
+        reelsInView={reelsInView}
+        heroInView={heroInView}
+        videoRef={heroVideoRef}
+        onHeroInViewChange={handleHeroInView}
+      />
+      <ReelsScroll
+        soundOn={soundOn}
+        onToggleSound={toggleSound}
+        onInViewChange={handleReelsInView}
+        onActiveIndexChange={handleActiveReelChange}
+        reelVideoRefs={reelVideoRefs}
+      />
     </>
   );
 }
+
+export { Section213Logo };

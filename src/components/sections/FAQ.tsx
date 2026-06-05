@@ -1,42 +1,33 @@
 import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 
-const CATEGORIES = [
-  "General Questions", "Booking & Scheduling", "Pricing & Packages",
-  "Content & Delivery", "Shoot Day Essentials", "Turnaround & Revisions",
-  "Travel & Locations",
-];
-
-const FAQS: Record<string, { q: string; a: string }[]> = {
-  "General Questions": [
-    { q: "What does 4 Horsemen Media specialize in?", a: "We're a real estate media company producing cinematic videos, photos, drone, and short-form social content for top-producing agents." },
-    { q: "Who do you work with?", a: "Realtors, brokerages, and real estate teams across the US who care about how their brand shows up." },
-    { q: "What areas do you serve?", a: "Headquartered in North Carolina, but we travel nationwide for multi-day shoots." },
-  ],
-};
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function FAQ() {
-  const [active, setActive] = useState("General Questions");
+  const { translations: t } = useLanguage();
+  const [active, setActive] = useState("general");
   const [open, setOpen] = useState<number | null>(0);
-  const list = FAQS[active] ?? FAQS["General Questions"];
+
+  const list = t.faq.items[active as keyof typeof t.faq.items] ?? t.faq.items.general;
+
   return (
     <section className="bg-secondary py-20 px-6">
       <div className="max-w-3xl mx-auto">
         <h2 className="font-display text-3xl md:text-5xl text-center text-ink mb-10">
-          FREQUENTLY ASKED <span className="text-gold">QUESTIONS</span>
+          {t.faq.title} <span className="text-gold">{t.faq.titleHighlight}</span>
         </h2>
         <div className="flex flex-wrap gap-2 justify-center mb-8">
-          {CATEGORIES.map((c) => (
+          {t.faq.categories.map((c) => (
             <button
-              key={c}
-              onClick={() => setActive(c)}
+              key={c.id}
+              onClick={() => setActive(c.id)}
               className={`text-xs px-3 py-1.5 rounded-full border transition ${
-                active === c
+                active === c.id
                   ? "bg-ink text-white border-ink"
                   : "border-ink/20 text-ink/70 hover:border-ink"
               }`}
             >
-              {c}
+              {c.label}
             </button>
           ))}
         </div>
@@ -58,11 +49,11 @@ export function FAQ() {
         </div>
         <div className="mt-8 bg-ink text-white rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-3">
           <div>
-            <div className="font-semibold text-sm">Still have questions?</div>
-            <div className="text-xs text-white/60">Our team will get back to you within 24 hours.</div>
+            <div className="font-semibold text-sm">{t.faq.stillHaveQuestions}</div>
+            <div className="text-xs text-white/60">{t.faq.teamReply}</div>
           </div>
           <button className="bg-gold text-gold-foreground px-4 py-2 rounded-md text-sm font-semibold">
-            Contact Us
+            {t.faq.contactUs}
           </button>
         </div>
       </div>

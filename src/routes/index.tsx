@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Hero } from "@/components/Hero";
 import { Process } from "@/components/sections/Process";
 import { Pricing } from "@/components/sections/Pricing";
+import { DigitalServices } from "@/components/sections/DigitalServices";
 import { CreatorProgram } from "@/components/sections/CreatorProgram";
 import { Travel } from "@/components/sections/Travel";
 import { Trusted } from "@/components/sections/Trusted";
@@ -14,11 +15,11 @@ import { Footer } from "@/components/sections/Footer";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "4 Horsemen Media — Cinematic Real Estate Content" },
+      { title: "Section 213 — Cinematic Content That Goes Viral" },
       {
         name: "description",
         content:
-          "North Carolina based real estate media company. Cinematic content that wins listings and gets clients.",
+          "Section 213 — based in Oran, Algeria. Photography, marketing, websites, apps, and business automations for modern brands.",
       },
     ],
   }),
@@ -31,6 +32,7 @@ function Index() {
       <Hero />
       <Process />
       <Pricing />
+      <DigitalServices />
       <CreatorProgram />
       <Travel />
       <Trusted />

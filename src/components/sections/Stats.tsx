@@ -1,15 +1,12 @@
-const STATS = [
-  { value: "$2 Billion", label: "Marketed in real estate" },
-  { value: "2000+", label: "Shoots completed" },
-  { value: "5,000,000+", label: "Views generated" },
-  { value: "24", label: "States served" },
-];
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Stats() {
+  const { translations: t } = useLanguage();
+
   return (
     <section className="bg-secondary py-20 px-6">
       <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-5">
-        {STATS.map((s) => (
+        {t.stats.items.map((s) => (
           <div
             key={s.label}
             className="bg-gradient-to-br from-gold/30 to-gold/5 border border-gold/40 rounded-xl p-6 text-center"

@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -62,6 +61,10 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -90,8 +93,8 @@
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.984 0.003 247.858);
   --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: oklch(0.82 0.14 85);
+  --sidebar-primary-foreground: oklch(0.16 0.01 80);
   --sidebar-accent: oklch(0.968 0.007 247.896);
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
@@ -151,5 +154,184 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
   }
+}
+
+@layer utilities {
+  .admin-accent:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px oklch(0.82 0.14 85 / 40%);
+  }
+
+  .reel-track {
+    transition: transform 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform;
+  }
+
+  .viral-particle {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(-50%);
+    will-change: transform, opacity;
+  }
+
+  .viral-icon-bubble {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.75rem;
+    height: 3.75rem;
+    border-radius: 9999px;
+    background-color: oklch(1 0 0 / 92%);
+    box-shadow:
+      0 4px 14px oklch(0.16 0.01 80 / 12%),
+      0 0 0 1px oklch(0.82 0.14 85 / 30%);
+  }
+
+  .viral-badge {
+    display: inline-block;
+    max-width: 11rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 9999px;
+    border-width: 1.5px;
+    border-style: solid;
+    background-color: oklch(1 0 0 / 92%);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 14px oklch(0.16 0.01 80 / 10%);
+    backdrop-filter: blur(6px);
+  }
+
+  .viral-float-pop {
+    animation: viral-float-pop linear infinite;
+  }
+
+  .viral-burst-set {
+    animation: viral-burst-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .hero-stair-buttons {
+    position: relative;
+  }
+
+  .hero-stair-step {
+    width: 100%;
+    max-width: 15rem;
+    justify-content: center;
+  }
+
+  .hero-stair-step-1 {
+    margin-right: 0;
+    max-width: 16.5rem;
+  }
+
+  .hero-stair-step-2 {
+    margin-right: 2.5rem;
+    max-width: 14.5rem;
+  }
+
+  .hero-stair-step-3 {
+    margin-right: 5rem;
+    max-width: 13.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .hero-stair-step-1 {
+      max-width: 18rem;
+    }
+
+    .hero-stair-step-2 {
+      margin-right: 3.5rem;
+      max-width: 16rem;
+    }
+
+    .hero-stair-step-3 {
+      margin-right: 7rem;
+      max-width: 15rem;
+    }
+  }
+}
+
+@keyframes viral-float-pop {
+  0% {
+    transform: translateX(-50%) translateY(0) scale(0.65);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+    transform: translateX(calc(-50% + var(--viral-drift, 0px) * 0.25)) translateY(-6vh) scale(1.05);
+  }
+  40% {
+    opacity: 1;
+    transform: translateX(calc(-50% + var(--viral-drift, 0px) * 0.7)) translateY(-42vh) scale(1);
+  }
+  75% {
+    opacity: 0.85;
+    transform: translateX(calc(-50% + var(--viral-drift, 0px))) translateY(-78vh) scale(0.98);
+  }
+  100% {
+    transform: translateX(calc(-50% + var(--viral-drift, 0px) * 0.6)) translateY(-108vh) scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes viral-burst-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.booking-leaflet-map {
+  height: 420px;
+  width: 100%;
+  background: oklch(0.968 0.007 247.896);
+}
+
+.booking-map-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.booking-map-marker__dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: oklch(0.16 0.01 80 / 0.75);
+  border: 2px solid white;
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.25);
+}
+
+.booking-map-marker__dot--city {
+  width: 12px;
+  height: 12px;
+}
+
+.booking-map-marker__dot--active {
+  width: 16px;
+  height: 16px;
+  background: oklch(0.82 0.14 85);
+  border-color: oklch(0.16 0.01 80);
+}
+
+.booking-map-marker__pin {
+  display: block;
+  width: 22px;
+  height: 30px;
+  background: oklch(0.82 0.14 85);
+  border: 2px solid oklch(0.16 0.01 80);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 3px 10px oklch(0 0 0 / 0.3);
 }
