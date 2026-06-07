@@ -1,3 +1,5 @@
+"use client";
+
 import { Bot, ChevronRight, Code2, Globe, Plug, Smartphone, Workflow } from "lucide-react";
 
 import { useLanguage } from "@/lib/i18n/LanguageProvider";

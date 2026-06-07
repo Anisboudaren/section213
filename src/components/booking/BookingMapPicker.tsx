@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState, type ComponentType } from "react";
 
 import type { BookingMapPickerProps } from "@/components/booking/BookingMapInner";

@@ -255,6 +255,6 @@ export const en = {
     follow: "Follow",
     rights: "© 2026 Section 213. All rights reserved.",
   },
-} as const;
+};
 
 export type Translations = typeof en;

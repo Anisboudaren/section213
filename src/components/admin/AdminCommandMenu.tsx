@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "next/navigation";
 
 import {
   CommandDialog,
@@ -18,7 +20,7 @@ type AdminCommandMenuProps = {
 };
 
 export function AdminCommandMenu({ open, onOpenChange }: AdminCommandMenuProps) {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
@@ -35,7 +37,7 @@ export function AdminCommandMenu({ open, onOpenChange }: AdminCommandMenuProps) 
                   value={`${section.label} ${item.title}`}
                   onSelect={() => {
                     onOpenChange(false);
-                    navigate({ to: item.url });
+                    router.push(item.url);
                   }}
                 >
                   <item.icon className="mr-2 h-4 w-4 text-muted-foreground" />

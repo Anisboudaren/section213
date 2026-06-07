@@ -1,5 +1,7 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -25,7 +27,7 @@ const loginSchema = z.object({
 type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -39,7 +41,7 @@ export function LoginForm() {
   const onSubmit = (values: LoginValues) => {
     setAdminAuthed();
     toast.success(`Welcome back${values.email ? `, ${values.email.split("@")[0]}` : ""}`);
-    navigate({ to: "/admin" });
+    router.push("/admin");
   };
 
   return (

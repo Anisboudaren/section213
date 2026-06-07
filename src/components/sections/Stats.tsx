@@ -1,3 +1,5 @@
+"use client";
+
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function Stats() {

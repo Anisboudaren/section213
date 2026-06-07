@@ -1,9 +1,11 @@
-import { useRouterState } from "@tanstack/react-router";
+"use client";
+
+import { usePathname } from "next/navigation";
 
 import { LanguagePickerDialog } from "@/components/LanguagePickerDialog";
 
 export function PublicLanguagePicker() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname();
   const isPrivateApp = pathname.startsWith("/admin");
 
   if (isPrivateApp) return null;

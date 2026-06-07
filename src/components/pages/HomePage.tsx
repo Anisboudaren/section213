@@ -1,0 +1,33 @@
+"use client";
+
+import { Hero } from "@/components/Hero";
+import { Process } from "@/components/sections/Process";
+import { Pricing } from "@/components/sections/Pricing";
+import { DigitalServices } from "@/components/sections/DigitalServices";
+import { CreatorProgram } from "@/components/sections/CreatorProgram";
+import { Travel } from "@/components/sections/Travel";
+import { Trusted } from "@/components/sections/Trusted";
+import { Stats } from "@/components/sections/Stats";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { FAQ } from "@/components/sections/FAQ";
+import { InstagramCTA } from "@/components/sections/InstagramCTA";
+import { Footer } from "@/components/sections/Footer";
+
+export function HomePage() {
+  return (
+    <main className="min-h-screen bg-background">
+      <Hero />
+      <Process />
+      <Pricing />
+      <DigitalServices />
+      <CreatorProgram />
+      <Travel />
+      <Trusted />
+      <Stats />
+      <Testimonials />
+      <FAQ />
+      <InstagramCTA />
+      <Footer />
+    </main>
+  );
+}

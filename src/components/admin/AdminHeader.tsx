@@ -1,4 +1,7 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Search } from "lucide-react";
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -36,7 +39,7 @@ function buildBreadcrumbs(pathname: string) {
 }
 
 export function AdminHeader({ onOpenCommand }: AdminHeaderProps) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname();
   const crumbs = buildBreadcrumbs(pathname);
 
   return (
@@ -56,7 +59,7 @@ export function AdminHeader({ onOpenCommand }: AdminHeaderProps) {
                     <BreadcrumbPage className="truncate">{crumb.label}</BreadcrumbPage>
                   ) : (
                     <BreadcrumbLink asChild>
-                      <Link to={crumb.href!}>{crumb.label}</Link>
+                      <Link href={crumb.href!}>{crumb.label}</Link>
                     </BreadcrumbLink>
                   )}
                 </BreadcrumbItem>

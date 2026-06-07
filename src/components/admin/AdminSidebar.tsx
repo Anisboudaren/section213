@@ -1,4 +1,7 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ChevronUp, HelpCircle, LogOut, Search } from "lucide-react";
 
 import {
@@ -31,7 +34,7 @@ type AdminSidebarProps = {
 };
 
 export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = usePathname();
 
   const handleSignOut = () => {
     clearAdminAuth();
@@ -44,7 +47,7 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild tooltip="Section 213">
-              <Link to="/admin">
+              <Link href="/admin">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-ink text-gold">
                   <span className="font-display text-sm">213</span>
                 </div>
@@ -78,7 +81,7 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
                             : undefined
                         }
                       >
-                        <Link to={item.url}>
+                        <Link href={item.url}>
                           <item.icon className={active ? "text-gold" : undefined} />
                           <span>{item.title}</span>
                         </Link>
@@ -140,7 +143,7 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
                 sideOffset={4}
               >
                 <DropdownMenuItem asChild>
-                  <Link to="/admin/settings/profile">My Profile</Link>
+                  <Link href="/admin/settings/profile">My Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
