@@ -14,7 +14,7 @@ export function Pricing() {
     <section id="services" className="bg-ink text-white py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-display text-4xl md:text-6xl text-center mb-2">
-          {t.pricing.title} <span className="text-gold">{t.pricing.titleHighlight}</span>
+          {t.pricing.title} <span className="text-ruby">{t.pricing.titleHighlight}</span>
         </h2>
         <p className="text-center text-white/60 mb-12 max-w-xl mx-auto">{t.pricing.subtitle}</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -30,12 +30,12 @@ export function Pricing() {
                 key={p.name}
                 className={`rounded-xl p-6 border transition relative ${
                   highlight
-                    ? "bg-gold/10 border-gold scale-[1.02]"
-                    : "bg-white/5 border-white/10 hover:border-gold/40"
+                    ? "bg-white/5 border-ruby/40 ring-1 ring-ruby/25 scale-[1.02]"
+                    : "bg-white/5 border-white/10 hover:border-white/30"
                 }`}
               >
                 {badge && (
-                  <span className="absolute -top-3 right-4 bg-gold text-gold-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="absolute -top-3 right-4 bg-brand-accent text-xs font-semibold px-3 py-1 rounded-full">
                     {badge}
                   </span>
                 )}
@@ -53,7 +53,7 @@ export function Pricing() {
                   href="/book"
                   className={`w-full py-2.5 rounded-md text-sm font-semibold flex items-center justify-center gap-1 transition ${
                     highlight
-                      ? "bg-gold text-gold-foreground hover:brightness-110"
+                      ? "bg-brand-accent hover:brightness-110"
                       : "bg-white/10 hover:bg-white/20"
                   }`}
                 >

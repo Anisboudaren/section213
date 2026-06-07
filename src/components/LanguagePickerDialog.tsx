@@ -74,14 +74,14 @@ export function LanguagePickerDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
-        className="max-h-[85dvh] w-[calc(100%-1.5rem)] max-w-sm gap-3 overflow-y-auto border-gold/20 p-4 sm:max-w-md sm:gap-4 sm:p-6 sm:rounded-2xl"
+        className="max-h-[85dvh] w-[calc(100%-1.5rem)] max-w-sm gap-3 overflow-y-auto border-ruby/25 p-4 sm:max-w-md sm:gap-4 sm:p-6 sm:rounded-2xl"
         onPointerDownOutside={(e) => requireChoice && !hasChosenLocale && e.preventDefault()}
         onEscapeKeyDown={(e) => requireChoice && !hasChosenLocale && e.preventDefault()}
         hideClose={requireChoice && !hasChosenLocale}
       >
         <DialogHeader className="items-center space-y-1 text-center sm:text-center">
-          <div className="mx-auto mb-1 flex h-9 w-9 items-center justify-center rounded-full bg-gold/15 sm:mb-2 sm:h-11 sm:w-11">
-            <Languages className="h-4 w-4 text-gold sm:h-5 sm:w-5" />
+          <div className="mx-auto mb-1 flex h-9 w-9 items-center justify-center rounded-full bg-ruby/15 sm:mb-2 sm:h-11 sm:w-11">
+            <Languages className="h-4 w-4 text-ruby sm:h-5 sm:w-5" />
           </div>
           <DialogTitle className="font-display text-xl tracking-wide text-ink sm:text-2xl">
             {t.pickerTitle}
@@ -100,8 +100,8 @@ export function LanguagePickerDialog({
               className={cn(
                 "rounded-lg border px-3 py-3 text-left transition sm:rounded-xl sm:px-4 sm:py-4",
                 pendingLocale === code
-                  ? "border-gold bg-gold/10 ring-1 ring-gold/40"
-                  : "border-border hover:border-gold/30",
+                  ? "border-ruby bg-ruby/10 ring-1 ring-ruby/40"
+                  : "border-border hover:border-ruby/30",
               )}
             >
               <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-xs">
@@ -114,7 +114,7 @@ export function LanguagePickerDialog({
           ))}
         </div>
 
-        <Button variant="gold" size="sm" className="mt-2 w-full sm:mt-4 sm:h-9" onClick={handleContinue}>
+        <Button variant="ruby" size="sm" className="mt-2 w-full sm:mt-4 sm:h-9" onClick={handleContinue}>
           {t.continue}
         </Button>
       </DialogContent>

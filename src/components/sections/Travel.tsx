@@ -17,7 +17,7 @@ export function Travel() {
     <section className="bg-ink text-white py-24 px-6 border-t border-white/5">
       <div className="max-w-5xl mx-auto">
         <h2 className="font-display text-4xl md:text-6xl text-center mb-2">
-          {t.travel.title} <span className="text-gold">{t.travel.titleHighlight}</span>
+          {t.travel.title} <span className="text-ruby">{t.travel.titleHighlight}</span>
         </h2>
         <h3 className="font-display text-3xl md:text-5xl text-center mb-3">{t.travel.subtitle2}</h3>
         <p className="text-center text-white/60 mb-12">{t.travel.subtitle}</p>
@@ -26,11 +26,13 @@ export function Travel() {
             <div
               key={p.name}
               className={`rounded-xl p-6 border relative ${
-                p.highlight ? "bg-gold/10 border-gold" : "bg-white/5 border-white/10"
+                p.highlight
+                  ? "bg-white/5 border-ruby/35 ring-1 ring-ruby/20"
+                  : "bg-white/5 border-white/10"
               }`}
             >
               {p.badge && (
-                <span className="absolute -top-3 right-4 bg-gold text-gold-foreground text-xs font-semibold px-3 py-1 rounded-full">
+                <span className="absolute -top-3 right-4 bg-brand-accent text-xs font-semibold px-3 py-1 rounded-full">
                   {t.travel.bestValue}
                 </span>
               )}

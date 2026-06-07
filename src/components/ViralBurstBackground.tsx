@@ -62,9 +62,9 @@ export const VIRAL_THEMES: ViralTheme[] = [
   {
     label: "Impressions",
     subtitle: "Views stacking up — your content is getting seen.",
-    gradient: "from-sky-500/15 via-violet-500/10 to-secondary",
-    accent: "text-sky-600",
-    badgeAccent: "border-sky-300/50 text-sky-800",
+    gradient: "from-ink/5 via-transparent to-mist",
+    accent: "text-ink/80",
+    badgeAccent: "border-ink/15 text-ink/80",
     icons: [Eye, Play, Users, TrendingUp, BarChart3, Megaphone, Share2, Heart],
     badges: [
       "12.4K views",
@@ -80,9 +80,9 @@ export const VIRAL_THEMES: ViralTheme[] = [
   {
     label: "Sales",
     subtitle: "Leads convert — every view pushes toward a sale.",
-    gradient: "from-emerald-500/15 via-gold/12 to-secondary",
-    accent: "text-emerald-700",
-    badgeAccent: "border-emerald-300/50 text-emerald-900",
+    gradient: "from-ink/8 via-ink/3 to-mist",
+    accent: "text-ink",
+    badgeAccent: "border-ink/20 text-ink",
     icons: [DollarSign, ShoppingCart, Percent, Zap, TrendingUp, BarChart3, Share2, Megaphone],
     badges: [
       "$12.4K revenue",
@@ -98,9 +98,9 @@ export const VIRAL_THEMES: ViralTheme[] = [
   {
     label: "Success",
     subtitle: "Deals closed — your brand wins the feed and the market.",
-    gradient: "from-gold/25 via-gold/15 to-secondary",
-    accent: "text-gold",
-    badgeAccent: "border-gold/50 text-ink",
+    gradient: "from-ink/10 via-ink/5 to-mist",
+    accent: "text-ink",
+    badgeAccent: "border-ink/25 text-ink font-semibold",
     icons: [Trophy, Star, Crown, Rocket, Sparkles, CheckCircle2, TrendingUp, Heart],
     badges: [
       "#1 in market",
@@ -157,7 +157,7 @@ export function ViralBurstBackground({ themeIndex }: ViralBurstBackgroundProps) 
       />
 
       {/* Light center fade — keeps phone readable without hiding side particles */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_38%_50%_at_50%_52%,transparent_45%,oklch(0.968_0.007_247.896/0.35)_88%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_38%_50%_at_50%_52%,transparent_45%,oklch(0.96_0_0/0.35)_88%)]" />
 
       <div key={themeIndex} className="absolute inset-0 viral-burst-set">
         {particles.map((particle) => (

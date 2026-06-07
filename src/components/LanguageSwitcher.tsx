@@ -16,7 +16,7 @@ export function LanguageSwitcher() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition hover:border-gold/40 hover:text-gold"
+        className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition hover:border-ruby/40 hover:text-ruby"
       >
         <Globe className="h-3.5 w-3.5" />
         <span>{translations.language.switcherLabel}:</span>

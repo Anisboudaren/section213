@@ -10,10 +10,10 @@ export function DigitalServices() {
   const { translations: t } = useLanguage();
 
   return (
-    <section id="digital" className="bg-secondary py-24 px-6 border-t border-ink/5">
+    <section id="digital" className="bg-mist bg-dot-grid py-24 px-6 border-t border-ink/5">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-display text-4xl md:text-6xl text-center text-ink mb-2">
-          {t.digital.title} <span className="text-gold">{t.digital.titleHighlight}</span>
+          {t.digital.title} <span className="text-ruby">{t.digital.titleHighlight}</span>
         </h2>
         <p className="text-center text-muted-foreground mb-12 max-w-2xl mx-auto">
           {t.digital.subtitle}
@@ -25,10 +25,10 @@ export function DigitalServices() {
             return (
               <div
                 key={service.title}
-                className="rounded-xl border border-ink/10 bg-white p-6 hover:border-gold/40 transition"
+                className="rounded-xl border border-ink/10 bg-paper p-6 hover:border-ink/40 transition"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-gold/15">
-                  <Icon className="h-5 w-5 text-gold" />
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-ink/8">
+                  <Icon className="h-5 w-5 text-ink" />
                 </div>
                 <h3 className="font-display text-xl tracking-wider text-ink mb-2">
                   {service.title.toUpperCase()}
@@ -40,7 +40,7 @@ export function DigitalServices() {
         </div>
 
         <div className="mt-12 text-center">
-          <button className="bg-gold text-gold-foreground px-6 py-3 rounded-md font-semibold inline-flex items-center gap-2 hover:brightness-110 transition">
+          <button className="bg-brand-accent px-6 py-3 rounded-md font-semibold inline-flex items-center gap-2 hover:brightness-110 transition">
             {t.digital.discussBuild} <ChevronRight className="w-4 h-4" />
           </button>
         </div>

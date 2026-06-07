@@ -255,6 +255,125 @@ export const en = {
     follow: "Follow",
     rights: "© 2026 Section 213. All rights reserved.",
   },
+  homeV2: {
+    method: {
+      index: "002",
+      title: "THE",
+      titleHighlight: "213 METHOD",
+      subtitle: "Four steps that turn scroll-stopping content into real business momentum.",
+      steps: [
+        {
+          title: "Attention",
+          desc: "Hook the feed in the first second — cinematic visuals built to stop the scroll.",
+        },
+        {
+          title: "Perception",
+          desc: "Shape how your audience sees your brand — polished, premium, unmistakably you.",
+        },
+        {
+          title: "Confidence",
+          desc: "Deliver proof and consistency so buyers trust you before they ever reach out.",
+        },
+        {
+          title: "Opportunity",
+          desc: "Convert attention into leads, listings, and revenue — content that closes.",
+        },
+      ],
+    },
+    trusted: {
+      index: "003",
+      title: "THEY ALREADY",
+      titleHighlight: "TRUST US",
+      subtitle: "Operators and brands who bet on content that performs — not just looks good.",
+      clients: [
+        { name: "Lukas Group", tag: "Real estate · US" },
+        { name: "Crable Group", tag: "Luxury listings" },
+        { name: "Mountain Realty", tag: "Regional brand" },
+        { name: "Hive Group", tag: "Multi-market" },
+        { name: "Riverstone Homes", tag: "New development" },
+        { name: "Thorne Media", tag: "Creator program" },
+        { name: "Wilson Realty", tag: "Agent personal brand" },
+        { name: "Cove Realty", tag: "Social-first growth" },
+      ],
+    },
+    solutions: {
+      index: "004",
+      title: "OUR",
+      titleHighlight: "SOLUTIONS",
+      subtitle: "Media, marketing, and full digital builds — one team from shoot to automation.",
+      items: [
+        {
+          title: "Listing media",
+          desc: "Photo, video, drone, and reels packages engineered for virality.",
+        },
+        {
+          title: "Brand content",
+          desc: "Monthly creator programs and campaigns that compound your reach.",
+        },
+        {
+          title: "Websites & apps",
+          desc: "Fast, modern digital products built to convert and scale.",
+        },
+        {
+          title: "Automations",
+          desc: "CRM, leads, and workflows wired so your business runs while you create.",
+        },
+      ],
+      cta: "Explore packages",
+    },
+    caseStudies: {
+      index: "005",
+      title: "CASE",
+      titleHighlight: "STUDIES",
+      subtitle: "Recent work — cinematic delivery, measurable reach.",
+      items: [
+        {
+          title: "Luxury listing walk-through",
+          category: "Real estate · Oran",
+          media: "/vids/scroll-1.mp4",
+        },
+        {
+          title: "Agent brand reel",
+          category: "Personal brand · Algiers",
+          media: "/vids/scroll-2.mp4",
+        },
+        {
+          title: "Drone + interior combo",
+          category: "Cinematic · Tlemcen",
+          media: "/vids/scroll-3.mp4",
+        },
+        {
+          title: "Brand launch film",
+          category: "Full production · Maghreb",
+          media: "/vids/hero.mp4",
+        },
+      ],
+    },
+    why: {
+      index: "006",
+      title: "WHY",
+      titleHighlight: "SECTION 213",
+      subtitle: "One studio for content, code, and growth — built for operators who move fast.",
+      points: [
+        {
+          title: "Full-stack creative",
+          desc: "Photo, video, social, web, and automations under one roof — no handoffs.",
+        },
+        {
+          title: "Built to go viral",
+          desc: "Every deliverable is structured for the algorithm and the buyer journey.",
+        },
+        {
+          title: "Maghreb roots, global reach",
+          desc: "Based in Oran, shooting locally and traveling worldwide for your brand.",
+        },
+        {
+          title: "Speed without compromise",
+          desc: "24–48h media turnaround and agile dev sprints when you need to ship.",
+        },
+      ],
+    },
+  },
 };
 
 export type Translations = typeof en;

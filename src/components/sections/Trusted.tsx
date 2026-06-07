@@ -16,13 +16,13 @@ export function Trusted() {
     <section className="bg-ink text-white py-24 px-6 border-t border-white/5">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-display text-2xl md:text-3xl text-center tracking-widest mb-12">
-          {t.trusted.title} <span className="text-gold">{t.trusted.titleHighlight}</span>
+          {t.trusted.title} <span className="text-ruby">{t.trusted.titleHighlight}</span>
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
           {NAMES.map((n) => (
             <div
               key={n}
-              className="border border-white/10 bg-white/5 rounded-lg aspect-[3/2] flex items-center justify-center text-center text-xs text-white/60 px-2 hover:border-gold/40 transition"
+              className="border border-white/10 bg-white/5 rounded-lg aspect-[3/2] flex items-center justify-center text-center text-xs text-white/60 px-2 hover:border-white/30 transition"
             >
               {n}
             </div>

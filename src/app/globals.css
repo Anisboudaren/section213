@@ -53,25 +53,25 @@ html {
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
+  --background: oklch(0.995 0 0);
+  --foreground: oklch(0.08 0 0);
+  --card: oklch(0.995 0 0);
+  --card-foreground: oklch(0.08 0 0);
+  --popover: oklch(0.995 0 0);
+  --popover-foreground: oklch(0.08 0 0);
+  --primary: oklch(0.08 0 0);
+  --primary-foreground: oklch(0.995 0 0);
+  --secondary: oklch(0.96 0 0);
+  --secondary-foreground: oklch(0.08 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.5 0 0);
+  --accent: oklch(0.96 0 0);
+  --accent-foreground: oklch(0.08 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --border: oklch(0.88 0 0);
+  --input: oklch(0.88 0 0);
+  --ring: oklch(0.62 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -85,17 +85,73 @@ html {
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
-  --ink: oklch(0.16 0.01 80);
-  /* Brand accent — dark red */
-  --gold: oklch(0.50 0.19 25);
-  --gold-foreground: oklch(0.98 0.01 25);
+  --ink: oklch(0.08 0 0);
+  --charcoal: oklch(0.13 0 0);
+  --paper: oklch(0.995 0 0);
+  --mist: oklch(0.96 0 0);
+  --fog: oklch(0.88 0 0);
+  --ash: oklch(0.5 0 0);
+  --smoke: oklch(0.62 0 0);
+  --pearl: oklch(1 0 0);
+  --pearl-foreground: oklch(0.08 0 0);
+  /* Brand accent — vivid red (admin / booking) */
+  --gold: oklch(0.58 0.26 27);
+  --gold-foreground: oklch(0.99 0.01 27);
+  /* Marketing ruby — selective accent on B&W site */
+  --ruby: oklch(0.58 0.26 27);
+  --ruby-foreground: oklch(0.99 0.01 27);
 }
 
 @theme inline {
   --color-ink: var(--ink);
+  --color-charcoal: var(--charcoal);
+  --color-paper: var(--paper);
+  --color-mist: var(--mist);
+  --color-fog: var(--fog);
+  --color-ash: var(--ash);
+  --color-smoke: var(--smoke);
+  --color-pearl: var(--pearl);
+  --color-pearl-foreground: var(--pearl-foreground);
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
+  --color-ruby: var(--ruby);
+  --color-ruby-foreground: var(--ruby-foreground);
   --font-display: "Anton", "Impact", sans-serif;
+}
+
+.theme-marketing {
+  --gold: var(--pearl);
+  --gold-foreground: var(--pearl-foreground);
+}
+
+.theme-marketing .viral-icon-bubble {
+  box-shadow:
+    0 4px 14px oklch(0.08 0 0 / 12%),
+    0 0 0 1px oklch(0.08 0 0 / 12%);
+}
+
+/* Monochrome preset — ink accents on light sections, white on dark */
+html[data-accent-preset="monochrome"] .theme-marketing .bg-mist .text-ruby,
+html[data-accent-preset="monochrome"] .theme-marketing section.bg-mist span.text-ruby {
+  color: var(--ink);
+}
+
+html[data-accent-preset="monochrome"] .theme-marketing .bg-mist .bg-brand-accent {
+  background-color: var(--ink);
+  background-image: none;
+  color: var(--paper);
+}
+
+html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="border-ruby"] {
+  border-color: oklch(0.08 0 0 / 0.2);
+}
+
+html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="ring-ruby"] {
+  --tw-ring-color: oklch(0.08 0 0 / 0.25);
+}
+
+html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby"] {
+  background-color: oklch(0.08 0 0 / 0.08);
 }
 
 .dark {
@@ -146,6 +202,21 @@ html {
 }
 
 @layer utilities {
+  .bg-dot-grid {
+    background-image: radial-gradient(circle, oklch(0.08 0 0 / 0.07) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  .bg-brand-accent {
+    background-color: var(--ruby);
+    background-image: var(--accent-gradient, none);
+    color: var(--ruby-foreground);
+  }
+
   .admin-accent:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px color-mix(in oklch, var(--gold) 40%, transparent);

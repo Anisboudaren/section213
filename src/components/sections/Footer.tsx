@@ -13,10 +13,10 @@ export function Footer() {
       <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-gold font-display text-2xl tracking-wider">213</span>
+            <span className="text-ruby font-display text-2xl tracking-wider">213</span>
             <div className="leading-none">
               <div className="font-display text-xl tracking-wider">SECTION</div>
-              <div className="text-[10px] tracking-[0.3em] text-gold">213</div>
+              <div className="text-[10px] tracking-[0.3em] text-ruby">213</div>
             </div>
           </div>
           <p className="text-xs text-white/50">{t.footer.tagline}</p>
@@ -40,9 +40,9 @@ export function Footer() {
         <div>
           <div className="text-xs uppercase tracking-widest text-gold mb-3">{t.footer.follow}</div>
           <div className="flex gap-3">
-            <InstagramIcon className="w-5 h-5 text-white/70 hover:text-gold transition" />
-            <FacebookIcon className="w-5 h-5 text-white/70 hover:text-gold transition" />
-            <YoutubeIcon className="w-5 h-5 text-white/70 hover:text-gold transition" />
+            <InstagramIcon className="w-5 h-5 text-white/70 hover:text-ruby transition" />
+            <FacebookIcon className="w-5 h-5 text-white/70 hover:text-ruby transition" />
+            <YoutubeIcon className="w-5 h-5 text-white/70 hover:text-ruby transition" />
           </div>
         </div>
       </div>

@@ -272,4 +272,127 @@ export const fr: Translations = {
     follow: "Suivez-nous",
     rights: "© 2026 Section 213. Tous droits réservés.",
   },
+  homeV2: {
+    method: {
+      index: "002",
+      title: "LA",
+      titleHighlight: "MÉTHODE 213",
+      subtitle:
+        "Quatre étapes qui transforment un contenu qui capte l'attention en momentum business réel.",
+      steps: [
+        {
+          title: "Attention",
+          desc: "Accrochez le fil en une seconde — des visuels cinématographiques faits pour stopper le scroll.",
+        },
+        {
+          title: "Perception",
+          desc: "Façonnez l'image de votre marque — premium, cohérente, impossible à confondre.",
+        },
+        {
+          title: "Confiance",
+          desc: "Apportez la preuve et la régularité pour que vos clients vous fassent confiance avant même de vous écrire.",
+        },
+        {
+          title: "Opportunité",
+          desc: "Convertissez l'attention en leads, annonces et revenus — du contenu qui conclut.",
+        },
+      ],
+    },
+    trusted: {
+      index: "003",
+      title: "ILS NOUS FONT",
+      titleHighlight: "DÉJÀ CONFIANCE",
+      subtitle:
+        "Des opérateurs et marques qui misent sur un contenu qui performe — pas seulement qui plaît.",
+      clients: [
+        { name: "Lukas Group", tag: "Immobilier · US" },
+        { name: "Crable Group", tag: "Annonces de luxe" },
+        { name: "Mountain Realty", tag: "Marque régionale" },
+        { name: "Hive Group", tag: "Multi-marchés" },
+        { name: "Riverstone Homes", tag: "Promotion neuve" },
+        { name: "Thorne Media", tag: "Programme créateurs" },
+        { name: "Wilson Realty", tag: "Marque agent" },
+        { name: "Cove Realty", tag: "Croissance social-first" },
+      ],
+    },
+    solutions: {
+      index: "004",
+      title: "NOS",
+      titleHighlight: "SOLUTIONS",
+      subtitle:
+        "Média, marketing et builds digitaux complets — une seule équipe du tournage à l'automatisation.",
+      items: [
+        {
+          title: "Médias immobiliers",
+          desc: "Photo, vidéo, drone et reels conçus pour la viralité.",
+        },
+        {
+          title: "Contenu de marque",
+          desc: "Programmes créateurs et campagnes mensuelles qui amplifient votre portée.",
+        },
+        {
+          title: "Sites & apps",
+          desc: "Produits digitaux modernes, rapides et pensés pour convertir.",
+        },
+        {
+          title: "Automatisations",
+          desc: "CRM, leads et workflows connectés pour que votre business tourne pendant que vous créez.",
+        },
+      ],
+      cta: "Voir les forfaits",
+    },
+    caseStudies: {
+      index: "005",
+      title: "ÉTUDES DE",
+      titleHighlight: "CAS",
+      subtitle: "Travaux récents — livraison cinématographique, portée mesurable.",
+      items: [
+        {
+          title: "Visite annonce de luxe",
+          category: "Immobilier · Oran",
+          media: "/vids/scroll-1.mp4",
+        },
+        {
+          title: "Reel marque agent",
+          category: "Marque personnelle · Alger",
+          media: "/vids/scroll-2.mp4",
+        },
+        {
+          title: "Combo drone + intérieur",
+          category: "Cinématographique · Tlemcen",
+          media: "/vids/scroll-3.mp4",
+        },
+        {
+          title: "Film de lancement",
+          category: "Production complète · Maghreb",
+          media: "/vids/hero.mp4",
+        },
+      ],
+    },
+    why: {
+      index: "006",
+      title: "POURQUOI",
+      titleHighlight: "SECTION 213",
+      subtitle:
+        "Un studio pour le contenu, le code et la croissance — conçu pour les opérateurs qui avancent vite.",
+      points: [
+        {
+          title: "Créatif full-stack",
+          desc: "Photo, vidéo, social, web et automatisations sous un même toit — zéro handoff.",
+        },
+        {
+          title: "Conçu pour devenir viral",
+          desc: "Chaque livrable est structuré pour l'algorithme et le parcours acheteur.",
+        },
+        {
+          title: "Racines Maghreb, portée mondiale",
+          desc: "Basés à Oran, tournages locaux et déplacements worldwide pour votre marque.",
+        },
+        {
+          title: "Rapidité sans compromis",
+          desc: "Livraison média 24–48h et sprints dev agiles quand il faut shipper.",
+        },
+      ],
+    },
+  },
 };

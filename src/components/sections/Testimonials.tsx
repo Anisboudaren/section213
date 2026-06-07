@@ -11,10 +11,10 @@ export function Testimonials() {
   const visible = 4;
 
   return (
-    <section className="bg-secondary py-20 px-6">
+    <section className="bg-mist bg-dot-grid py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-display text-3xl md:text-5xl text-center text-ink mb-12">
-          {t.testimonials.title} <span className="text-gold">{t.testimonials.titleHighlight}</span>
+          {t.testimonials.title} <span className="text-ruby">{t.testimonials.titleHighlight}</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {t.testimonials.items.slice(0, visible).map((item) => (

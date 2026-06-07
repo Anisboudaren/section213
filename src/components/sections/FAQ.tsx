@@ -13,10 +13,10 @@ export function FAQ() {
   const list = t.faq.items[active as keyof typeof t.faq.items] ?? t.faq.items.general;
 
   return (
-    <section className="bg-secondary py-20 px-6">
+    <section className="bg-mist bg-dot-grid py-20 px-6">
       <div className="max-w-3xl mx-auto">
         <h2 className="font-display text-3xl md:text-5xl text-center text-ink mb-10">
-          {t.faq.title} <span className="text-gold">{t.faq.titleHighlight}</span>
+          {t.faq.title} <span className="text-ruby">{t.faq.titleHighlight}</span>
         </h2>
         <div className="flex flex-wrap gap-2 justify-center mb-8">
           {t.faq.categories.map((c) => (
@@ -41,7 +41,7 @@ export function FAQ() {
                 className="w-full flex items-center justify-between p-4 text-left"
               >
                 <span className="font-medium text-ink text-sm">{item.q}</span>
-                {open === i ? <Minus className="w-4 h-4 text-gold" /> : <Plus className="w-4 h-4 text-gold" />}
+                {open === i ? <Minus className="w-4 h-4 text-ink" /> : <Plus className="w-4 h-4 text-ink" />}
               </button>
               {open === i && (
                 <div className="px-4 pb-4 text-sm text-ink/70">{item.a}</div>
@@ -54,7 +54,7 @@ export function FAQ() {
             <div className="font-semibold text-sm">{t.faq.stillHaveQuestions}</div>
             <div className="text-xs text-white/60">{t.faq.teamReply}</div>
           </div>
-          <button className="bg-gold text-gold-foreground px-4 py-2 rounded-md text-sm font-semibold">
+          <button className="bg-brand-accent px-4 py-2 rounded-md text-sm font-semibold hover:brightness-110 transition">
             {t.faq.contactUs}
           </button>
         </div>

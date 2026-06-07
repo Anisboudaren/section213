@@ -3,9 +3,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
+import { AccentColorTester } from "@/components/AccentColorTester";
 import { PublicLanguagePicker } from "@/components/PublicLanguagePicker";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AccentColorProvider } from "@/lib/accent-color/AccentColorProvider";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -14,11 +16,14 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <TooltipProvider>
-          {children}
-          <PublicLanguagePicker />
-          <Toaster richColors position="top-right" />
-        </TooltipProvider>
+        <AccentColorProvider>
+          <TooltipProvider>
+            {children}
+            <PublicLanguagePicker />
+            <AccentColorTester />
+            <Toaster richColors position="top-right" />
+          </TooltipProvider>
+        </AccentColorProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );

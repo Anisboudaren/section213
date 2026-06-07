@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { ViralBurstBackground } from "@/components/ViralBurstBackground";
+import { SectionIndex } from "@/components/home-v2/SectionIndex";
+import { useHeroMedia } from "@/hooks/use-hero-media";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { handleSmoothScroll } from "@/lib/smooth-scroll";
@@ -61,10 +63,10 @@ const REELS = [
 function Section213Logo({ className = "" }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <span className="text-gold font-display text-2xl tracking-wider">213</span>
+      <span className="text-ruby font-display text-2xl tracking-wider">213</span>
       <div className="leading-none">
         <div className="font-display text-xl tracking-wider">SECTION</div>
-        <div className="text-[10px] tracking-[0.3em] text-gold">213</div>
+        <div className="text-[10px] tracking-[0.3em] text-ruby">213</div>
       </div>
     </div>
   );
@@ -135,7 +137,7 @@ function Nav({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () =
         </a>
         <Link
           href="/book"
-          className="bg-gold text-gold-foreground px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 hover:brightness-110 transition"
+          className="bg-brand-accent px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 hover:brightness-110 transition"
         >
           <Camera className="w-4 h-4" /> {t.nav.bookAShoot}
         </Link>
@@ -196,7 +198,7 @@ function HeroTop({
     <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-ink">
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 h-full w-full object-cover grayscale"
         src={BG_VIDEO}
         autoPlay
         muted={!heroAudible}
@@ -214,7 +216,7 @@ function HeroTop({
           {t.hero.location}
         </div>
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-[0.95] tracking-tight max-w-4xl">
-          <span className="text-gold">{t.hero.headlineGold}</span> {t.hero.headlineRest}
+          <span className="text-ruby">{t.hero.headlineGold}</span> {t.hero.headlineRest}
         </h1>
         <div className="mt-8 space-y-3 text-white/90 max-w-2xl">
           <div className="flex gap-3">
@@ -232,14 +234,14 @@ function HeroTop({
             <a
               href="#services"
               onClick={(e) => handleSmoothScroll(e, "services")}
-              className="hero-stair-step hero-stair-step-1 bg-gold text-gold-foreground px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:brightness-110 transition shadow-lg"
+              className="hero-stair-step hero-stair-step-1 bg-brand-accent text-ruby-foreground px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:brightness-110 transition shadow-lg"
             >
               {t.hero.ourPackages} <ChevronRight className="w-4 h-4" />
             </a>
             <a
               href="#portfolio"
               onClick={(e) => handleSmoothScroll(e, "portfolio")}
-              className="hero-stair-step hero-stair-step-2 rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-gold hover:text-gold"
+              className="hero-stair-step hero-stair-step-2 rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/60 hover:text-white"
             >
               {t.hero.seeViralReels}
             </a>
@@ -247,7 +249,7 @@ function HeroTop({
               <button
                 type="button"
                 onClick={onToggleSound}
-                className="hero-stair-step hero-stair-step-3 flex items-center gap-2 rounded-md border border-white/30 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-gold hover:text-gold"
+                className="hero-stair-step hero-stair-step-3 flex items-center gap-2 rounded-md border border-white/30 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/60 hover:text-white"
               >
                 <Volume2 className="h-4 w-4" /> {t.hero.enableSound}
               </button>
@@ -255,7 +257,7 @@ function HeroTop({
               <button
                 type="button"
                 onClick={onToggleSound}
-                className="hero-stair-step hero-stair-step-3 flex items-center gap-2 rounded-md border border-gold/40 bg-black/20 px-5 py-2.5 text-sm font-semibold text-gold backdrop-blur-sm transition hover:bg-gold/10"
+                className="hero-stair-step hero-stair-step-3 flex items-center gap-2 rounded-md border border-white/40 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/10"
               >
                 <Volume2 className="h-4 w-4" /> {t.nav.soundOn}
               </button>
@@ -268,9 +270,22 @@ function HeroTop({
   );
 }
 
-function PhoneFrame({ children }: { children: React.ReactNode }) {
+function PhoneFrame({
+  children,
+  compact = false,
+}: {
+  children: React.ReactNode;
+  compact?: boolean;
+}) {
   return (
-    <div className="relative mx-auto aspect-[320/660] h-full max-h-[min(660px,calc(100svh-15rem))] w-auto max-w-[min(320px,85vw)]">
+    <div
+      className={cn(
+        "relative mx-auto aspect-[320/660] h-full w-auto",
+        compact
+          ? "max-h-[min(540px,calc(100svh-11rem))] max-w-[min(280px,78vw)]"
+          : "max-h-[min(660px,calc(100svh-15rem))] max-w-[min(320px,85vw)]",
+      )}
+    >
       <div className="absolute inset-0 rounded-[3rem] bg-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] ring-[10px] ring-ink" />
       <div className="absolute top-2 left-1/2 z-20 h-6 w-28 -translate-x-1/2 rounded-full bg-ink" />
       <div className="absolute inset-[10px] overflow-hidden rounded-[2.5rem] bg-black">
@@ -310,8 +325,8 @@ function TikTokOverlay({
 
       <div className="absolute right-2 bottom-28 z-10 flex flex-col items-center gap-4">
         <div className="relative mb-1">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-gold to-ink border-2 border-white flex items-center justify-center">
-            <span className="font-display text-xs text-gold">213</span>
+          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-white to-ink/80 border-2 border-white flex items-center justify-center">
+            <span className="font-display text-xs text-ink">213</span>
           </div>
           <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-red-500 border-2 border-white flex items-center justify-center text-white text-[10px] font-bold leading-none">
             +
@@ -368,18 +383,22 @@ const REEL_SNAP_MS = 420;
 const WHEEL_THRESHOLD = 28;
 const SWIPE_THRESHOLD = 48;
 
-function ReelsScroll({
+export function ReelsScroll({
   soundOn,
   onToggleSound,
   onInViewChange,
   onActiveIndexChange,
   reelVideoRefs,
+  sectionLabel,
+  compactPhone = false,
 }: {
   soundOn: boolean;
   onToggleSound: () => void;
   onInViewChange: (inView: boolean) => void;
   onActiveIndexChange: (index: number) => void;
   reelVideoRefs: React.MutableRefObject<(HTMLVideoElement | null)[]>;
+  sectionLabel?: string;
+  compactPhone?: boolean;
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const activeIndexRef = useRef(0);
@@ -534,16 +553,26 @@ function ReelsScroll({
     <section
       ref={sectionRef}
       id="portfolio"
-      className="relative bg-secondary"
+      className="relative bg-mist bg-dot-grid"
       style={{ height: `${REELS.length * 100}vh` }}
     >
       <div className="sticky top-0 h-svh w-full overflow-hidden">
         <ViralBurstBackground themeIndex={activeIndex} />
 
-        <div className="relative z-10 flex h-full min-h-0 flex-col items-center px-4 pb-4 pt-5 sm:pt-6 md:pt-8">
+        <div className="relative z-10 flex h-full min-h-0 flex-col items-center px-4 pb-4 pt-4 sm:pt-6 md:pt-8">
           <header className="w-full max-w-xl shrink-0 text-center">
-            <h2 className="mb-1 font-display text-[clamp(1.65rem,3.2vw+0.75rem,3.75rem)] leading-tight text-ink">
-              {t.reels.title} <span className="text-gold">{t.reels.titleHighlight}</span>
+            {sectionLabel ? (
+              <SectionIndex index={sectionLabel} className="mb-2 text-center sm:mb-3" />
+            ) : null}
+            <h2
+              className={cn(
+                "mb-1 font-display leading-tight text-ink",
+                compactPhone
+                  ? "text-[clamp(1.35rem,4vw+0.5rem,2.5rem)]"
+                  : "text-[clamp(1.65rem,3.2vw+0.75rem,3.75rem)]",
+              )}
+            >
+              {t.reels.title} <span className="text-ruby">{t.reels.titleHighlight}</span>
             </h2>
             <p
               key={activeIndex}
@@ -551,13 +580,13 @@ function ReelsScroll({
             >
               {activeTheme.subtitle}
             </p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold/80">
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-ink/60">
               {activeTheme.label}
             </p>
           </header>
 
           <div className="flex min-h-0 w-full flex-1 items-center justify-center py-2 sm:py-3">
-            <PhoneFrame>
+            <PhoneFrame compact={compactPhone}>
               <div
                 className="relative h-full w-full cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
                 onClick={() => {
@@ -617,7 +646,7 @@ function ReelsScroll({
                   onClick={() => goToIndex(i)}
                   className={cn(
                     "h-1.5 rounded-full transition-all duration-300",
-                    i === activeIndex ? "w-8 bg-gold" : "w-1.5 bg-ink/20 hover:bg-ink/40",
+                    i === activeIndex ? "w-8 bg-brand-accent" : "w-1.5 bg-ink/20 hover:bg-ink/40",
                   )}
                 />
               ))}
@@ -632,124 +661,18 @@ function ReelsScroll({
   );
 }
 
-function syncVideoAudio(
-  enabled: boolean,
-  heroRef: React.RefObject<HTMLVideoElement | null>,
-  reelRefs: React.MutableRefObject<(HTMLVideoElement | null)[]>,
-  activeReelIndex: number,
-  reelsVisible: boolean,
-  heroVisible: boolean,
-) {
-  const hero = heroRef.current;
-  if (hero) {
-    const heroAudible = enabled && heroVisible && !reelsVisible;
-    hero.muted = !heroAudible;
-    hero.volume = 1;
-
-    if (heroVisible) {
-      void hero.play();
-    } else {
-      hero.pause();
-    }
-  }
-
-  reelRefs.current.forEach((video, i) => {
-    if (!video) return;
-    const isActive = reelsVisible && i === activeReelIndex;
-    video.muted = !enabled || !isActive;
-    video.volume = 1;
-
-    if (isActive) {
-      void video.play();
-    } else {
-      video.pause();
-      video.currentTime = 0;
-    }
-  });
-}
-
 export function Hero() {
-  const [soundOn, setSoundOn] = useState(false);
-  const [reelsInView, setReelsInView] = useState(false);
-  const [heroInView, setHeroInView] = useState(true);
-  const [activeReelIndex, setActiveReelIndex] = useState(0);
-  const heroVideoRef = useRef<HTMLVideoElement>(null);
-  const reelVideoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const soundOnRef = useRef(soundOn);
-  const reelsInViewRef = useRef(reelsInView);
-  const heroInViewRef = useRef(heroInView);
-  const activeReelIndexRef = useRef(activeReelIndex);
-
-  soundOnRef.current = soundOn;
-  reelsInViewRef.current = reelsInView;
-  heroInViewRef.current = heroInView;
-  activeReelIndexRef.current = activeReelIndex;
-
-  const toggleSound = useCallback(() => {
-    const next = !soundOnRef.current;
-    setSoundOn(next);
-    // Must unmute inside the click handler — browsers block audio otherwise.
-    syncVideoAudio(
-      next,
-      heroVideoRef,
-      reelVideoRefs,
-      activeReelIndexRef.current,
-      reelsInViewRef.current,
-      heroInViewRef.current,
-    );
-  }, []);
-
-  const handleHeroInView = useCallback((inView: boolean) => {
-    setHeroInView(inView);
-    heroInViewRef.current = inView;
-    syncVideoAudio(
-      soundOnRef.current,
-      heroVideoRef,
-      reelVideoRefs,
-      activeReelIndexRef.current,
-      reelsInViewRef.current,
-      inView,
-    );
-  }, []);
-
-  const handleReelsInView = useCallback((inView: boolean) => {
-    setReelsInView(inView);
-    reelsInViewRef.current = inView;
-    syncVideoAudio(
-      soundOnRef.current,
-      heroVideoRef,
-      reelVideoRefs,
-      activeReelIndexRef.current,
-      inView,
-      heroInViewRef.current,
-    );
-  }, []);
-
-  const handleActiveReelChange = useCallback((index: number) => {
-    setActiveReelIndex(index);
-    activeReelIndexRef.current = index;
-    if (soundOnRef.current) {
-      syncVideoAudio(
-        true,
-        heroVideoRef,
-        reelVideoRefs,
-        index,
-        reelsInViewRef.current,
-        heroInViewRef.current,
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    syncVideoAudio(
-      soundOn,
-      heroVideoRef,
-      reelVideoRefs,
-      activeReelIndex,
-      reelsInView,
-      heroInView,
-    );
-  }, [soundOn, activeReelIndex, reelsInView, heroInView]);
+  const {
+    soundOn,
+    reelsInView,
+    heroInView,
+    toggleSound,
+    heroVideoRef,
+    reelVideoRefs,
+    handleHeroInView,
+    handleReelsInView,
+    handleActiveReelChange,
+  } = useHeroMedia();
 
   return (
     <>

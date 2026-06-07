@@ -40,7 +40,7 @@ export function CreatorProgram() {
     <section className="bg-ink text-white py-24 px-6 border-t border-white/5">
       <div className="max-w-5xl mx-auto">
         <h2 className="font-display text-4xl md:text-6xl text-center mb-2">
-          {t.creator.title} <span className="text-gold">{t.creator.titleHighlight}</span>
+          {t.creator.title} <span className="text-ruby">{t.creator.titleHighlight}</span>
         </h2>
         <p className="text-center text-white/60 mb-12 max-w-xl mx-auto">{t.creator.subtitle}</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -48,7 +48,9 @@ export function CreatorProgram() {
             <div
               key={tier.name}
               className={`rounded-xl p-6 border ${
-                tier.highlight ? "bg-gold/10 border-gold" : "bg-white/5 border-white/10"
+                tier.highlight
+                  ? "bg-white/5 border-ruby/35 ring-1 ring-ruby/20"
+                  : "bg-white/5 border-white/10"
               }`}
             >
               <h3 className="font-display text-xl tracking-wider mb-2">{tier.name}</h3>
