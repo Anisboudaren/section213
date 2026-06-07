@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ViralBurstBackground } from "@/components/ViralBurstBackground";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { handleSmoothScroll } from "@/lib/smooth-scroll";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import {
@@ -269,10 +270,10 @@ function HeroTop({
 
 function PhoneFrame({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative mx-auto w-[280px] h-[580px] md:w-[320px] md:h-[660px]">
+    <div className="relative mx-auto aspect-[320/660] h-full max-h-[min(660px,calc(100svh-15rem))] w-auto max-w-[min(320px,85vw)]">
       <div className="absolute inset-0 rounded-[3rem] bg-ink shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] ring-[10px] ring-ink" />
-      <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-6 bg-ink rounded-full z-20" />
-      <div className="absolute inset-[10px] rounded-[2.5rem] overflow-hidden bg-black">
+      <div className="absolute top-2 left-1/2 z-20 h-6 w-28 -translate-x-1/2 rounded-full bg-ink" />
+      <div className="absolute inset-[10px] overflow-hidden rounded-[2.5rem] bg-black">
         {children}
       </div>
     </div>
@@ -536,88 +537,95 @@ function ReelsScroll({
       className="relative bg-secondary"
       style={{ height: `${REELS.length * 100}vh` }}
     >
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-svh w-full overflow-hidden">
         <ViralBurstBackground themeIndex={activeIndex} />
 
-        <div className="relative z-10 flex flex-col items-center w-full">
-        <h2 className="font-display text-4xl md:text-6xl text-ink text-center mb-2">
-          {t.reels.title} <span className="text-gold">{t.reels.titleHighlight}</span>
-        </h2>
-        <p
-          key={activeIndex}
-          className="text-muted-foreground mb-1 text-center px-4 max-w-md viral-burst-set"
-        >
-          {activeTheme.subtitle}
-        </p>
-        <p className="text-[10px] uppercase tracking-[0.25em] text-gold/80 mb-6 font-semibold">
-          {activeTheme.label}
-        </p>
-
-        <PhoneFrame>
-          <div
-            className="relative w-full h-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
-            onClick={() => {
-              if (!soundOn) onToggleSound();
-            }}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <div
-              className="reel-track absolute left-0 top-0 w-full"
-              style={{
-                height: `${REELS.length * 100}%`,
-                transform: `translateY(-${(activeIndex / REELS.length) * 100}%)`,
-              }}
+        <div className="relative z-10 flex h-full min-h-0 flex-col items-center px-4 pb-4 pt-5 sm:pt-6 md:pt-8">
+          <header className="w-full max-w-xl shrink-0 text-center">
+            <h2 className="mb-1 font-display text-[clamp(1.65rem,3.2vw+0.75rem,3.75rem)] leading-tight text-ink">
+              {t.reels.title} <span className="text-gold">{t.reels.titleHighlight}</span>
+            </h2>
+            <p
+              key={activeIndex}
+              className="viral-burst-set mx-auto max-w-md px-2 text-sm text-muted-foreground sm:text-base"
             >
-              {REELS.map((reel, i) => {
-                const isActive = i === activeIndex;
-                return (
-                  <div
-                    key={reel.src}
-                    className="relative w-full"
-                    style={{ height: `${100 / REELS.length}%` }}
-                  >
-                    <video
-                      ref={(el) => {
-                        reelVideoRefs.current[i] = el;
-                      }}
-                      src={reel.src}
-                      autoPlay={i === 0}
-                      muted={!soundOn || i !== activeIndex}
-                      loop
-                      playsInline
-                      preload="auto"
-                      className="h-full w-full object-cover"
-                    />
-                    <TikTokOverlay
-                      reel={reel}
-                      isActive={isActive}
-                      soundOn={soundOn}
-                      onToggleSound={onToggleSound}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </PhoneFrame>
+              {activeTheme.subtitle}
+            </p>
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.25em] text-gold/80">
+              {activeTheme.label}
+            </p>
+          </header>
 
-        <div className="mt-6 flex gap-2">
-          {REELS.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Go to reel ${i + 1}`}
-              onClick={() => goToIndex(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === activeIndex ? "w-8 bg-gold" : "w-1.5 bg-ink/20 hover:bg-ink/40"
-              }`}
-            />
-          ))}
-        </div>
-        <p className="mt-3 text-xs text-muted-foreground uppercase tracking-widest">
-          {soundOn ? "Swipe up/down or scroll to snap" : "Tap the phone or enable sound above"}
-        </p>
+          <div className="flex min-h-0 w-full flex-1 items-center justify-center py-2 sm:py-3">
+            <PhoneFrame>
+              <div
+                className="relative h-full w-full cursor-grab touch-pan-y overflow-hidden active:cursor-grabbing"
+                onClick={() => {
+                  if (!soundOn) onToggleSound();
+                }}
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                <div
+                  className="reel-track absolute left-0 top-0 w-full"
+                  style={{
+                    height: `${REELS.length * 100}%`,
+                    transform: `translateY(-${(activeIndex / REELS.length) * 100}%)`,
+                  }}
+                >
+                  {REELS.map((reel, i) => {
+                    const isActive = i === activeIndex;
+                    return (
+                      <div
+                        key={reel.src}
+                        className="relative w-full"
+                        style={{ height: `${100 / REELS.length}%` }}
+                      >
+                        <video
+                          ref={(el) => {
+                            reelVideoRefs.current[i] = el;
+                          }}
+                          src={reel.src}
+                          autoPlay={i === 0}
+                          muted={!soundOn || i !== activeIndex}
+                          loop
+                          playsInline
+                          preload="auto"
+                          className="h-full w-full object-cover"
+                        />
+                        <TikTokOverlay
+                          reel={reel}
+                          isActive={isActive}
+                          soundOn={soundOn}
+                          onToggleSound={onToggleSound}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </PhoneFrame>
+          </div>
+
+          <footer className="w-full shrink-0 pt-1 text-center sm:pt-2">
+            <div className="flex justify-center gap-2">
+              {REELS.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Go to reel ${i + 1}`}
+                  onClick={() => goToIndex(i)}
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300",
+                    i === activeIndex ? "w-8 bg-gold" : "w-1.5 bg-ink/20 hover:bg-ink/40",
+                  )}
+                />
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] uppercase tracking-widest text-muted-foreground sm:mt-3 sm:text-xs">
+              {soundOn ? "Swipe up/down or scroll to snap" : "Tap the phone or enable sound above"}
+            </p>
+          </footer>
         </div>
       </div>
     </section>
