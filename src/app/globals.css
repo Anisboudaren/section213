@@ -79,15 +79,16 @@ html {
   --chart-5: oklch(0.769 0.188 70.08);
   --sidebar: oklch(0.984 0.003 247.858);
   --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.82 0.14 85);
-  --sidebar-primary-foreground: oklch(0.16 0.01 80);
+  --sidebar-primary: var(--gold);
+  --sidebar-primary-foreground: var(--gold-foreground);
   --sidebar-accent: oklch(0.968 0.007 247.896);
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
   --ink: oklch(0.16 0.01 80);
-  --gold: oklch(0.82 0.14 85);
-  --gold-foreground: oklch(0.16 0.01 80);
+  /* Brand accent — dark red */
+  --gold: oklch(0.50 0.19 25);
+  --gold-foreground: oklch(0.98 0.01 25);
 }
 
 @theme inline {
@@ -147,7 +148,7 @@ html {
 @layer utilities {
   .admin-accent:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px oklch(0.82 0.14 85 / 40%);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--gold) 40%, transparent);
   }
 
   .reel-track {
@@ -174,7 +175,7 @@ html {
     background-color: oklch(1 0 0 / 92%);
     box-shadow:
       0 4px 14px oklch(0.16 0.01 80 / 12%),
-      0 0 0 1px oklch(0.82 0.14 85 / 30%);
+      0 0 0 1px color-mix(in oklch, var(--gold) 30%, transparent);
   }
 
   .viral-badge {
@@ -307,7 +308,7 @@ html {
 .booking-map-marker__dot--active {
   width: 16px;
   height: 16px;
-  background: oklch(0.82 0.14 85);
+  background: var(--gold);
   border-color: oklch(0.16 0.01 80);
 }
 
@@ -315,7 +316,7 @@ html {
   display: block;
   width: 22px;
   height: 30px;
-  background: oklch(0.82 0.14 85);
+  background: var(--gold);
   border: 2px solid oklch(0.16 0.01 80);
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);

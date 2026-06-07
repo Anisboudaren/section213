@@ -98,8 +98,8 @@ export const VIRAL_THEMES: ViralTheme[] = [
   {
     label: "Success",
     subtitle: "Deals closed — your brand wins the feed and the market.",
-    gradient: "from-gold/25 via-amber-500/15 to-secondary",
-    accent: "text-amber-700",
+    gradient: "from-gold/25 via-gold/15 to-secondary",
+    accent: "text-gold",
     badgeAccent: "border-gold/50 text-ink",
     icons: [Trophy, Star, Crown, Rocket, Sparkles, CheckCircle2, TrendingUp, Heart],
     badges: [
