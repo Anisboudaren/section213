@@ -38,7 +38,7 @@ export function Step06Confirmation({ data }: StepProps) {
       source: "website",
       interestedIn: data.selectedOfferId ? [data.selectedOfferId] : [],
       stage: "new",
-      notes: `[Booking] ${data.projectType} | ${data.objective} | Budget: ${data.budgetRange}\n${data.projectDescription}\n\nClient notes: ${data.notes ?? ""}`,
+      notes: `[Booking] ${(data.projectTypes ?? []).join(", ")} | ${data.objective} | Budget: ${data.budgetRange}\n${data.projectDescription}\n\nClient notes: ${data.notes ?? ""}`,
       createdAt: new Date().toISOString(),
       pixelEventFired: "Lead",
     });
@@ -71,8 +71,10 @@ export function Step06Confirmation({ data }: StepProps) {
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">{t.booking.summary.project}</span>
-            <span className="font-medium">
-              {data.projectType ? t.booking.projectTypes[data.projectType] : "—"}
+            <span className="font-medium text-right">
+              {data.projectTypes?.length
+                ? data.projectTypes.map((type) => t.booking.projectTypes[type]).join(", ")
+                : "—"}
             </span>
           </div>
           <div className="flex justify-between gap-4">

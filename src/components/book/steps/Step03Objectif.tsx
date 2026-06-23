@@ -1,9 +1,9 @@
 "use client";
 
+import { bookingChoiceClass } from "@/components/book/selection-styles";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import type { BookingFormData } from "@/lib/booking-types";
-import { cn } from "@/lib/utils";
 
 type StepProps = {
   data: Partial<BookingFormData>;
@@ -37,11 +37,10 @@ export function Step03Objectif({ data, onChange, errors }: StepProps) {
           <button
             key={obj}
             type="button"
-            className={cn(
-              "rounded-lg border p-4 text-left min-h-11 transition-colors",
-              data.objective === obj
-                ? "border-brand-accent bg-brand-accent/5"
-                : "border-border hover:border-brand-accent/40",
+            aria-pressed={data.objective === obj}
+            className={bookingChoiceClass(
+              data.objective === obj,
+              "rounded-lg p-4 text-left min-h-11",
             )}
             onClick={() => onChange({ objective: obj })}
           >
@@ -60,11 +59,10 @@ export function Step03Objectif({ data, onChange, errors }: StepProps) {
             <button
               key={b}
               type="button"
-              className={cn(
-                "rounded-full border px-3 py-2 text-xs sm:text-sm min-h-11 transition-colors",
-                data.budgetRange === b
-                  ? "border-brand-accent bg-brand-accent/10"
-                  : "border-border hover:border-brand-accent/50",
+              aria-pressed={data.budgetRange === b}
+              className={bookingChoiceClass(
+                data.budgetRange === b,
+                "rounded-full px-3 py-2 text-xs sm:text-sm min-h-11",
               )}
               onClick={() => onChange({ budgetRange: b })}
             >

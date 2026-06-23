@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { BookingNav } from "@/components/book/BookingNav";
 import { BookingProgress } from "@/components/book/BookingProgress";
@@ -11,13 +11,14 @@ import { Step04Offre } from "@/components/book/steps/Step04Offre";
 import { Step05Reservation } from "@/components/book/steps/Step05Reservation";
 import { Step06Confirmation } from "@/components/book/steps/Step06Confirmation";
 import { Card, CardContent } from "@/components/ui/card";
-import { STEP_SCHEMAS } from "@/lib/booking-schema";
+import { validateBookingStep } from "@/lib/booking-schema";
 import type { BookingFormData } from "@/lib/booking-types";
 import { cn } from "@/lib/utils";
 
 const INITIAL_DATA: Partial<BookingFormData> = {
   isFlexible: false,
   preferredDate: "",
+  projectTypes: [],
   projectDescription: "",
 };
 
@@ -30,19 +31,13 @@ export function BookingWizard() {
 
   const updateData = useCallback((patch: Partial<BookingFormData>) => {
     setData((prev) => ({ ...prev, ...patch }));
+    setErrors({});
   }, []);
 
   const validateStep = useCallback(
     (stepNum: number): boolean => {
-      if (stepNum > 5) return true;
-      const schema = STEP_SCHEMAS[stepNum - 1];
-      const result = schema.safeParse(data);
-      if (!result.success) {
-        const fieldErrors: Record<string, string> = {};
-        for (const issue of result.error.issues) {
-          const path = issue.path[0]?.toString();
-          if (path) fieldErrors[path] = issue.message;
-        }
+      const { success, errors: fieldErrors } = validateBookingStep(stepNum, data);
+      if (!success) {
         setErrors(fieldErrors);
         return false;
       }
@@ -51,13 +46,6 @@ export function BookingWizard() {
     },
     [data],
   );
-
-  const canProceed = useMemo(() => {
-    if (step === 5) return step5Valid;
-    if (step === 6) return false;
-    const schema = STEP_SCHEMAS[step - 1];
-    return schema.safeParse(data).success;
-  }, [step, step5Valid, data]);
 
   const goNext = () => {
     if (step === 5 && !step5Valid) {
@@ -117,7 +105,6 @@ export function BookingWizard() {
           {step < 6 && (
             <BookingNav
               currentStep={step}
-              canProceed={canProceed}
               onNext={goNext}
               onPrevious={goPrevious}
             />

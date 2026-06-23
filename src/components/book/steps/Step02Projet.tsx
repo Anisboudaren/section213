@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
+import { bookingChoiceClass } from "@/components/book/selection-styles";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
@@ -47,25 +48,40 @@ type StepProps = {
 
 export function Step02Projet({ data, onChange, errors }: StepProps) {
   const { translations: t } = useLanguage();
-  const count = data.projectDescription?.length ?? 0;
+  const description = data.projectDescription ?? "";
+  const count = description.trim().length;
+  const selectedTypes = data.projectTypes ?? [];
+  const charsRemaining = Math.max(0, 10 - count);
+
+  const mapError = (key?: string) => {
+    if (!key) return null;
+    return t.booking.validation[key as keyof typeof t.booking.validation] ?? key;
+  };
+
+  const toggleProjectType = (type: ProjectType) => {
+    const next = selectedTypes.includes(type)
+      ? selectedTypes.filter((item) => item !== type)
+      : [...selectedTypes, type];
+    onChange({ projectTypes: next });
+  };
 
   return (
     <div className="space-y-6">
+      <p className="text-sm text-muted-foreground">{t.booking.projectMultiHint}</p>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {PROJECT_TYPES.map((type) => {
           const Icon = PROJECT_ICONS[type];
-          const selected = data.projectType === type;
+          const selected = selectedTypes.includes(type);
           return (
             <button
               key={type}
               type="button"
-              className={cn(
-                "flex flex-col items-center gap-2 rounded-lg border p-4 text-center min-h-11 transition-colors",
-                selected
-                  ? "border-brand-accent bg-brand-accent/5"
-                  : "border-border hover:border-brand-accent/40",
+              aria-pressed={selected}
+              className={bookingChoiceClass(
+                selected,
+                "flex flex-col items-center gap-2 rounded-lg p-4 text-center min-h-11",
               )}
-              onClick={() => onChange({ projectType: type })}
+              onClick={() => toggleProjectType(type)}
             >
               <Icon className="h-6 w-6" />
               <span className="text-xs font-medium">{t.booking.projectTypes[type]}</span>
@@ -73,27 +89,38 @@ export function Step02Projet({ data, onChange, errors }: StepProps) {
           );
         })}
       </div>
-      {errors?.projectType && (
-        <p className="text-sm text-destructive">{t.booking.validation.required}</p>
+      {errors?.projectTypes && (
+        <p className="text-sm text-destructive">{mapError(errors.projectTypes)}</p>
       )}
 
       <div className="space-y-2">
         <div className="flex justify-between">
           <Label>Description du projet</Label>
-          <span className="text-xs text-muted-foreground">
-            {t.booking.charCount.replace("{count}", String(count))}
+          <span
+            className={cn(
+              "text-xs",
+              count < 10 ? "text-muted-foreground" : "text-ruby",
+            )}
+          >
+            {t.booking.charCount.replace("{count}", String(description.length))}
           </span>
         </div>
         <Textarea
-          value={data.projectDescription ?? ""}
+          value={description}
           onChange={(e) => onChange({ projectDescription: e.target.value })}
           rows={5}
           maxLength={500}
           placeholder="Décrivez votre projet…"
+          aria-invalid={Boolean(errors?.projectDescription)}
         />
+        {charsRemaining > 0 && !errors?.projectDescription && (
+          <p className="text-xs text-muted-foreground">
+            {t.booking.descriptionRemaining.replace("{count}", String(charsRemaining))}
+          </p>
+        )}
         {errors?.projectDescription && (
           <p className="text-sm text-destructive">
-            {t.booking.validation[errors.projectDescription as keyof typeof t.booking.validation]}
+            {mapError(errors.projectDescription)}
           </p>
         )}
       </div>

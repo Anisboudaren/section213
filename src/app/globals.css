@@ -121,6 +121,7 @@ html {
   --color-gold-foreground: var(--gold-foreground);
   --color-ruby: var(--ruby);
   --color-ruby-foreground: var(--ruby-foreground);
+  --color-brand-accent: var(--ruby);
   --font-display: "Anton", "Impact", sans-serif;
 }
 

@@ -1,7 +1,20 @@
 import { z } from "zod";
 import { addHours, startOfDay } from "date-fns";
 
+import type { BookingFormData } from "@/lib/booking-types";
+
 const minBookingDate = addHours(new Date(), 48);
+
+const projectTypeEnum = z.enum([
+  "shooting_video",
+  "shooting_photo",
+  "reels_content",
+  "website",
+  "brand_identity",
+  "automation",
+  "full_package",
+  "other",
+]);
 
 export const step01Schema = z
   .object({
@@ -27,20 +40,8 @@ export const step01Schema = z
   });
 
 export const step02Schema = z.object({
-  projectType: z.enum([
-    "shooting_video",
-    "shooting_photo",
-    "reels_content",
-    "website",
-    "brand_identity",
-    "automation",
-    "full_package",
-    "other",
-  ]),
-  projectDescription: z
-    .string()
-    .min(10, "min10")
-    .max(500, "max500"),
+  projectTypes: z.array(projectTypeEnum).min(1, "required"),
+  projectDescription: z.string().trim().min(10, "min10").max(500, "max500"),
 });
 
 export const step03Schema = z.object({
@@ -80,3 +81,58 @@ export const STEP_SCHEMAS = [
   step04Schema,
   step05Schema,
 ] as const;
+
+/** Only pass fields relevant to the current step — avoids partial wizard state breaking validation */
+export function getStepInput(
+  step: number,
+  data: Partial<BookingFormData>,
+): Record<string, unknown> {
+  switch (step) {
+    case 1:
+      return {
+        preferredDate: data.preferredDate ?? "",
+        preferredTime: data.preferredTime,
+        isFlexible: data.isFlexible ?? false,
+      };
+    case 2:
+      return {
+        projectTypes: data.projectTypes ?? [],
+        projectDescription: data.projectDescription ?? "",
+      };
+    case 3:
+      return {
+        objective: data.objective,
+        budgetRange: data.budgetRange,
+      };
+    case 4:
+      return {
+        selectedOfferId: data.selectedOfferId ?? "",
+      };
+    case 5:
+      return {
+        firstName: data.firstName ?? "",
+        lastName: data.lastName ?? "",
+        phone: data.phone ?? "",
+        email: data.email ?? "",
+        company: data.company ?? "",
+        notes: data.notes ?? "",
+      };
+    default:
+      return {};
+  }
+}
+
+export function validateBookingStep(step: number, data: Partial<BookingFormData>) {
+  if (step > 5) return { success: true as const, errors: {} as Record<string, string> };
+  const schema = STEP_SCHEMAS[step - 1];
+  const result = schema.safeParse(getStepInput(step, data));
+  if (result.success) {
+    return { success: true as const, errors: {} as Record<string, string> };
+  }
+  const errors: Record<string, string> = {};
+  for (const issue of result.error.issues) {
+    const path = issue.path[0]?.toString();
+    if (path) errors[path] = issue.message;
+  }
+  return { success: false as const, errors };
+}

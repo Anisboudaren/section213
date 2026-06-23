@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BookOfferCard } from "@/components/book/OfferCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAdminStore } from "@/lib/admin-store";
-import { PROJECT_TYPE_CATEGORY_MAP } from "@/lib/booking-types";
+import { getDefaultOfferCategory } from "@/lib/booking-types";
 import type { BookingFormData } from "@/lib/booking-types";
 import { adminT } from "@/lib/i18n/admin-en";
 import type { OfferCategory } from "@/lib/types/admin";
@@ -28,9 +28,7 @@ export function Step04Offre({ data, onChange, errors }: StepProps) {
   const activeOffers = offers.filter((o) => o.active);
   const [category, setCategory] = useState<OfferCategory>("media");
 
-  const defaultCategory = data.projectType
-    ? PROJECT_TYPE_CATEGORY_MAP[data.projectType]
-    : undefined;
+  const defaultCategory = getDefaultOfferCategory(data.projectTypes);
 
   useEffect(() => {
     if (defaultCategory) setCategory(defaultCategory);
@@ -43,9 +41,15 @@ export function Step04Offre({ data, onChange, errors }: StepProps) {
     }
   }, [defaultCategory, activeOffers, data.selectedOfferId, onChange]);
 
-  const filtered = useMemo(
-    () => activeOffers.filter((o) => o.category === category),
-    [activeOffers, category],
+  const offersByCategory = useMemo(
+    () =>
+      Object.fromEntries(
+        CATEGORIES.map((cat) => [
+          cat,
+          activeOffers.filter((o) => o.category === cat),
+        ]),
+      ) as Record<OfferCategory, typeof activeOffers>,
+    [activeOffers],
   );
 
   return (
@@ -58,14 +62,16 @@ export function Step04Offre({ data, onChange, errors }: StepProps) {
             </TabsTrigger>
           ))}
         </TabsList>
-        {CATEGORIES.map((cat) => (
+        {CATEGORIES.map((cat) => {
+          const categoryOffers = offersByCategory[cat];
+          return (
           <TabsContent key={cat} value={cat} className="mt-4 space-y-4">
-            {filtered.length === 0 ? (
+            {categoryOffers.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-8">
                 {adminT("offers.emptyTitle")}
               </p>
             ) : (
-              filtered.map((offer) => (
+              categoryOffers.map((offer) => (
                 <BookOfferCard
                   key={offer.id}
                   offer={offer}
@@ -75,7 +81,8 @@ export function Step04Offre({ data, onChange, errors }: StepProps) {
               ))
             )}
           </TabsContent>
-        ))}
+          );
+        })}
       </Tabs>
       {errors?.selectedOfferId && (
         <p className="text-sm text-destructive text-center">Required</p>

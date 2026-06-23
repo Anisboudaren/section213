@@ -2,13 +2,14 @@
 
 import { addDays } from "date-fns";
 import { fr } from "date-fns/locale";
+import { useEffect, useMemo, useState } from "react";
 
+import { bookingChoiceClass } from "@/components/book/selection-styles";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import type { BookingFormData } from "@/lib/booking-types";
-import { cn } from "@/lib/utils";
 
 type StepProps = {
   data: Partial<BookingFormData>;
@@ -18,7 +19,13 @@ type StepProps = {
 
 export function Step01Date({ data, onChange, errors }: StepProps) {
   const { translations: t, locale } = useLanguage();
-  const minDate = addDays(new Date(), 2);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const minDate = useMemo(() => (mounted ? addDays(new Date(), 2) : null), [mounted]);
 
   return (
     <div className="space-y-6">
@@ -33,16 +40,23 @@ export function Step01Date({ data, onChange, errors }: StepProps) {
 
       {!data.isFlexible && (
         <div>
-          <Calendar
-            mode="single"
-            selected={data.preferredDate ? new Date(data.preferredDate) : undefined}
-            onSelect={(date) =>
-              onChange({ preferredDate: date ? date.toISOString() : "" })
-            }
-            disabled={(date) => date < minDate}
-            locale={locale === "fr" ? fr : undefined}
-            className="mx-auto rounded-lg border"
-          />
+          {mounted && minDate ? (
+            <Calendar
+              mode="single"
+              selected={data.preferredDate ? new Date(data.preferredDate) : undefined}
+              onSelect={(date) =>
+                onChange({ preferredDate: date ? date.toISOString() : "" })
+              }
+              disabled={(date) => date < minDate}
+              locale={locale === "fr" ? fr : undefined}
+              className="mx-auto rounded-lg border"
+            />
+          ) : (
+            <div
+              className="mx-auto h-[320px] max-w-sm animate-pulse rounded-lg border bg-muted/40"
+              aria-hidden
+            />
+          )}
           {errors?.preferredDate && (
             <p className="mt-2 text-sm text-destructive">
               {t.booking.validation[errors.preferredDate as keyof typeof t.booking.validation] ??
@@ -59,11 +73,10 @@ export function Step01Date({ data, onChange, errors }: StepProps) {
             <button
               key={slot}
               type="button"
-              className={cn(
-                "rounded-full border px-4 py-2 text-sm min-h-11 transition-colors",
-                data.preferredTime === slot
-                  ? "border-brand-accent bg-brand-accent/10 text-ink"
-                  : "border-border hover:border-brand-accent/50",
+              aria-pressed={data.preferredTime === slot}
+              className={bookingChoiceClass(
+                data.preferredTime === slot,
+                "rounded-full px-4 py-2 text-sm min-h-11",
               )}
               onClick={() => onChange({ preferredTime: slot })}
             >

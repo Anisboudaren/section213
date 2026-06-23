@@ -28,7 +28,7 @@ export type BookingFormData = {
   preferredDate: string;
   preferredTime?: PreferredTime;
   isFlexible: boolean;
-  projectType: ProjectType;
+  projectTypes: ProjectType[];
   projectDescription: string;
   objective: ObjectiveType;
   budgetRange: BudgetRange;
@@ -63,3 +63,23 @@ export const PROJECT_TYPE_CATEGORY_MAP: Partial<
   automation: "automations",
   full_package: "media",
 };
+
+const OFFER_CATEGORY_PRIORITY: import("@/lib/types/admin").OfferCategory[] = [
+  "media",
+  "brand_content",
+  "websites_apps",
+  "automations",
+];
+
+/** Pick the best offer tab from one or more selected project types */
+export function getDefaultOfferCategory(
+  projectTypes?: ProjectType[],
+): import("@/lib/types/admin").OfferCategory | undefined {
+  if (!projectTypes?.length) return undefined;
+  for (const category of OFFER_CATEGORY_PRIORITY) {
+    if (projectTypes.some((type) => PROJECT_TYPE_CATEGORY_MAP[type] === category)) {
+      return category;
+    }
+  }
+  return PROJECT_TYPE_CATEGORY_MAP[projectTypes[0]];
+}

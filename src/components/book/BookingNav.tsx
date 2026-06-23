@@ -7,7 +7,6 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 type BookingNavProps = {
   currentStep: number;
-  canProceed: boolean;
   onNext: () => void;
   onPrevious: () => void;
   isLastStep?: boolean;
@@ -15,7 +14,6 @@ type BookingNavProps = {
 
 export function BookingNav({
   currentStep,
-  canProceed,
   onNext,
   onPrevious,
   isLastStep,
@@ -45,7 +43,6 @@ export function BookingNav({
           type="button"
           variant="ruby"
           className="min-h-11 px-8"
-          disabled={!canProceed}
           onClick={onNext}
         >
           {t.booking.next}

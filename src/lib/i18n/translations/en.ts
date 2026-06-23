@@ -371,6 +371,8 @@ export const en = {
     select: "Select",
     recommended: "Recommended",
     flexibleDate: "I'm flexible on the date",
+    projectMultiHint: "Select all services that apply to your project.",
+    descriptionRemaining: "{count} more characters needed in your description.",
     timeSlots: {
       matin: "Morning",
       apres_midi: "Afternoon",

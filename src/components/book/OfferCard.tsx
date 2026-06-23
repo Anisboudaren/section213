@@ -24,7 +24,7 @@ export function BookOfferCard({ offer, selected, onSelect }: BookOfferCardProps)
     <Card
       className={cn(
         "cursor-pointer border-2 transition-all",
-        selected ? "border-brand-accent bg-brand-accent/5" : "border-border hover:border-brand-accent/40",
+        selected ? "border-ruby bg-ruby/5 ring-1 ring-ruby/35" : "border-border hover:border-ruby/40",
       )}
       onClick={onSelect}
     >
@@ -43,7 +43,7 @@ export function BookOfferCard({ offer, selected, onSelect }: BookOfferCardProps)
         <ul className="mt-3 space-y-1">
           {(offer.featuresFr ?? offer.features).slice(0, 4).map((f) => (
             <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
-              <Check className="mt-0.5 h-3 w-3 shrink-0 text-brand-accent" />
+              <Check className="mt-0.5 h-3 w-3 shrink-0 text-ruby" />
               {f}
             </li>
           ))}

@@ -392,6 +392,8 @@ export const fr: Translations = {
     select: "Sélectionner",
     recommended: "Recommandé",
     flexibleDate: "Je suis flexible sur la date",
+    projectMultiHint: "Sélectionnez tous les services concernés par votre projet.",
+    descriptionRemaining: "Encore {count} caractères requis dans la description.",
     timeSlots: {
       matin: "Matin",
       apres_midi: "Après-midi",
