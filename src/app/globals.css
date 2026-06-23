@@ -94,12 +94,17 @@ html {
   --smoke: oklch(0.62 0 0);
   --pearl: oklch(1 0 0);
   --pearl-foreground: oklch(0.08 0 0);
-  /* Brand accent — vivid red (admin / booking) */
-  --gold: oklch(0.58 0.26 27);
+  /* Brand accent — midnight ruby (default) */
+  --gold: oklch(0.56 0.25 27);
   --gold-foreground: oklch(0.99 0.01 27);
-  /* Marketing ruby — selective accent on B&W site */
-  --ruby: oklch(0.58 0.26 27);
+  --ruby: oklch(0.56 0.25 27);
   --ruby-foreground: oklch(0.99 0.01 27);
+  --accent-gradient: linear-gradient(
+    160deg,
+    oklch(0.28 0.1 27),
+    oklch(0.58 0.26 27) 55%,
+    oklch(0.48 0.22 18)
+  );
 }
 
 @theme inline {

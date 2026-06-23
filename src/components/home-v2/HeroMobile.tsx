@@ -1,7 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Camera,
   ChevronDown,
@@ -14,12 +15,20 @@ import {
   VolumeX,
 } from "lucide-react";
 
-import { Section213Logo } from "@/components/Hero";
+import { Section213Logo } from "@/components/Section213Logo";
+import {
+  HERO_FALLBACK_DESKTOP,
+  HERO_FALLBACK_MOBILE,
+  HERO_VIDEO_DESKTOP,
+  HERO_VIDEO_MOBILE,
+} from "@/lib/hero-video-sources";
+import { safePlay } from "@/lib/safe-video-play";
 import { handleSmoothScroll } from "@/lib/smooth-scroll";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { cn } from "@/lib/utils";
 
-const BG_VIDEO = "/vids/hero.mp4";
+const heroVideoClassName =
+  "absolute inset-0 h-full w-full object-cover grayscale";
 
 type HeroMobileProps = {
   soundOn: boolean;
@@ -68,8 +77,42 @@ export function HeroMobile({
   scrollTargetId = "portfolio",
 }: HeroMobileProps) {
   const sectionRef = useRef<HTMLElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
+  const [mobileVideoFailed, setMobileVideoFailed] = useState(false);
+  const [desktopVideoFailed, setDesktopVideoFailed] = useState(false);
   const { translations: t } = useLanguage();
   const heroAudible = soundOn && heroInView && !reelsInView;
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+
+    const syncActiveHeroVideo = () => {
+      const mobile = mobileVideoRef.current;
+      const desktop = desktopVideoRef.current;
+      const active = mq.matches ? mobile : desktop;
+      const inactive = mq.matches ? desktop : mobile;
+
+      inactive?.pause();
+
+      if (videoRef) {
+        videoRef.current = active;
+      }
+
+      if (active) {
+        active.muted = !heroAudible;
+        if (heroInView) {
+          safePlay(active);
+        } else {
+          active.pause();
+        }
+      }
+    };
+
+    syncActiveHeroVideo();
+    mq.addEventListener("change", syncActiveHeroVideo);
+    return () => mq.removeEventListener("change", syncActiveHeroVideo);
+  }, [heroAudible, heroInView, videoRef]);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -88,20 +131,59 @@ export function HeroMobile({
       ref={sectionRef}
       className="relative h-svh min-h-[580px] w-full overflow-hidden bg-ink text-white"
     >
+      <Image
+        src={HERO_FALLBACK_MOBILE}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover grayscale md:hidden"
+      />
+      <Image
+        src={HERO_FALLBACK_DESKTOP}
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="hidden object-cover grayscale md:block"
+      />
       <video
-        ref={videoRef}
-        className="absolute inset-0 h-full w-full object-cover grayscale"
-        src={BG_VIDEO}
-        autoPlay
+        ref={mobileVideoRef}
+        className={cn(heroVideoClassName, "md:hidden", mobileVideoFailed && "hidden")}
+        src={HERO_VIDEO_MOBILE}
+        poster={HERO_FALLBACK_MOBILE}
         muted={!heroAudible}
         loop
         playsInline
+        preload="auto"
+        onError={() => setMobileVideoFailed(true)}
+        onCanPlay={(event) => {
+          if (window.matchMedia("(max-width: 767px)").matches) {
+            safePlay(event.currentTarget);
+          }
+        }}
+      />
+      <video
+        ref={desktopVideoRef}
+        className={cn(heroVideoClassName, "hidden md:block", desktopVideoFailed && "hidden")}
+        src={HERO_VIDEO_DESKTOP}
+        poster={HERO_FALLBACK_DESKTOP}
+        muted={!heroAudible}
+        loop
+        playsInline
+        preload="auto"
+        onError={() => setDesktopVideoFailed(true)}
+        onCanPlay={(event) => {
+          if (!window.matchMedia("(max-width: 767px)").matches) {
+            safePlay(event.currentTarget);
+          }
+        }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/85" />
 
       <nav className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 py-4 sm:px-6 md:px-8 md:py-5">
         <div className="md:hidden">
-          <Section213Logo />
+          <Section213Logo priority size="sm" />
         </div>
 
         <div className="hidden md:flex md:flex-1 md:items-center md:gap-6 lg:gap-8 text-sm font-medium">
@@ -117,7 +199,7 @@ export function HeroMobile({
         </div>
 
         <div className="absolute left-1/2 hidden -translate-x-1/2 md:block">
-          <Section213Logo />
+          <Section213Logo priority />
         </div>
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">

@@ -18,6 +18,8 @@ import {
   ListTodo,
   Calendar,
   Image,
+  FolderOpen,
+  Briefcase,
   Target,
   Crosshair,
   Zap,
@@ -84,6 +86,12 @@ export const adminNavSections: NavSection[] = [
         description: "Pre-sale prospects and inbound opportunities.",
       },
       {
+        title: "Case Studies",
+        url: "/admin/case-studies",
+        icon: FolderOpen,
+        description: "Portfolio case studies for the public website.",
+      },
+      {
         title: "Contacts",
         url: "/admin/contacts",
         icon: Contact,
@@ -134,6 +142,12 @@ export const adminNavSections: NavSection[] = [
         url: "/admin/services",
         icon: LayoutDashboard,
         description: "All offerings, packages, and service definitions.",
+      },
+      {
+        title: "Offers",
+        url: "/admin/offers",
+        icon: Briefcase,
+        description: "Public-facing offers for Solutions and booking flow.",
       },
       {
         title: "Photography & Media",
@@ -340,6 +354,12 @@ export const adminNavSections: NavSection[] = [
   {
     label: "Team & Access",
     items: [
+      {
+        title: "Organization",
+        url: "/admin/team",
+        icon: Users,
+        description: "Team org chart, roles, and responsibilities.",
+      },
       {
         title: "Users",
         url: "/admin/team/users",

@@ -26,8 +26,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { useAdminStore } from "@/lib/admin-store";
 import { adminNavSections, isNavItemActive } from "@/lib/admin/navigation";
 import { clearAdminAuth } from "@/lib/admin/auth";
+import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
+import { adminT } from "@/lib/i18n/admin-en";
 
 type AdminSidebarProps = {
   onOpenCommand: () => void;
@@ -35,6 +39,16 @@ type AdminSidebarProps = {
 
 export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
   const pathname = usePathname();
+  const { leads } = useAdminStore();
+  const user = useCurrentUser();
+  const newLeadsCount = leads.filter((l) => l.stage === "new").length;
+
+  const initials = user.name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const handleSignOut = () => {
     clearAdminAuth();
@@ -42,7 +56,7 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-sidebar-border">
+    <Sidebar collapsible="icon" className="hidden border-sidebar-border md:flex">
       <SidebarHeader className="border-b border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -84,6 +98,11 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
                         <Link href={item.url}>
                           <item.icon className={active ? "text-gold" : undefined} />
                           <span>{item.title}</span>
+                          {item.url === "/admin/leads" && newLeadsCount > 0 && (
+                            <Badge className="ml-auto h-5 min-w-5 bg-gold px-1 text-[10px] text-gold-foreground">
+                              {newLeadsCount}
+                            </Badge>
+                          )}
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -127,11 +146,11 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarFallback className="rounded-lg bg-ink text-gold">SA</AvatarFallback>
+                    <AvatarFallback className="rounded-lg bg-ink text-gold">{initials}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Admin User</span>
-                    <span className="truncate text-xs text-muted-foreground">admin@section213.com</span>
+                    <span className="truncate font-semibold">{user.name}</span>
+                    <span className="truncate text-xs text-muted-foreground">{user.displayRole}</span>
                   </div>
                   <ChevronUp className="ml-auto size-4" />
                 </SidebarMenuButton>
@@ -148,7 +167,7 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
-                  Sign out
+                  {adminT("nav.signOut")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

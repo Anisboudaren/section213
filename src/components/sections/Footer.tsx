@@ -2,6 +2,7 @@
 
 import { FacebookIcon, InstagramIcon, YoutubeIcon } from "@/components/icons/social-icons";
 
+import { Section213Logo } from "@/components/Section213Logo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
@@ -12,12 +13,8 @@ export function Footer() {
     <footer className="bg-ink text-white py-12 px-6 border-t border-white/10">
       <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
         <div className="col-span-2 md:col-span-1">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-ruby font-display text-2xl tracking-wider">213</span>
-            <div className="leading-none">
-              <div className="font-display text-xl tracking-wider">SECTION</div>
-              <div className="text-[10px] tracking-[0.3em] text-ruby">213</div>
-            </div>
+          <div className="mb-4">
+            <Section213Logo size="lg" />
           </div>
           <p className="text-xs text-white/50">{t.footer.tagline}</p>
         </div>

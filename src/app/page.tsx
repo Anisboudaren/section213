@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { HomePage } from "@/components/pages/HomePage";
+import { HomePageV2 } from "@/components/pages/HomePageV2";
 
 export const metadata: Metadata = {
   title: "Section 213 — Cinematic Content That Goes Viral",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
-  return <HomePage />;
+  return <HomePageV2 />;
 }

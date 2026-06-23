@@ -51,8 +51,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // TODO: read activePixels from DB/API and inject in layout.tsx <head>
   return (
-    <html lang="en" className={`${inter.variable} ${anton.variable}`}>
+    <html lang="en" data-accent-preset="midnight-ruby" className={`${inter.variable} ${anton.variable}`}>
       <body>
         <Providers>{children}</Providers>
       </body>

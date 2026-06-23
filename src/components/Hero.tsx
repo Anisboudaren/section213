@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { ViralBurstBackground } from "@/components/ViralBurstBackground";
+import { Section213Logo } from "@/components/Section213Logo";
 import { SectionIndex } from "@/components/home-v2/SectionIndex";
 import { useHeroMedia } from "@/hooks/use-hero-media";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { safePlay } from "@/lib/safe-video-play";
 import { handleSmoothScroll } from "@/lib/smooth-scroll";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import {
@@ -25,7 +27,7 @@ import {
   VolumeX,
 } from "lucide-react";
 
-const BG_VIDEO = "/vids/hero.mp4";
+import { HERO_VIDEO_DESKTOP } from "@/lib/hero-video-sources";
 
 const REELS = [
   {
@@ -60,18 +62,6 @@ const REELS = [
   },
 ];
 
-function Section213Logo({ className = "" }: { className?: string }) {
-  return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <span className="text-ruby font-display text-2xl tracking-wider">213</span>
-      <div className="leading-none">
-        <div className="font-display text-xl tracking-wider">SECTION</div>
-        <div className="text-[10px] tracking-[0.3em] text-ruby">213</div>
-      </div>
-    </div>
-  );
-}
-
 function SoundToggle({
   soundOn,
   onToggle,
@@ -102,7 +92,7 @@ function Nav({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () =
   return (
     <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-5 text-white md:px-8">
       <div className="shrink-0 md:hidden">
-        <Section213Logo />
+        <Section213Logo priority size="sm" />
       </div>
 
       <div className="hidden md:flex items-center gap-8 text-sm font-medium">
@@ -124,7 +114,7 @@ function Nav({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () =
       </div>
 
       <div className="absolute left-1/2 hidden -translate-x-1/2 md:block">
-        <Section213Logo />
+        <Section213Logo priority />
       </div>
 
       <div className="flex shrink-0 items-center gap-3">
@@ -199,11 +189,11 @@ function HeroTop({
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover grayscale"
-        src={BG_VIDEO}
-        autoPlay
+        src={HERO_VIDEO_DESKTOP}
         muted={!heroAudible}
         loop
         playsInline
+        onCanPlay={(event) => safePlay(event.currentTarget)}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black" />
       <Nav soundOn={soundOn} onToggleSound={onToggleSound} />
@@ -515,19 +505,6 @@ export function ReelsScroll({
     return () => window.removeEventListener("wheel", onWheel);
   }, [goToIndex, isSectionPinned]);
 
-  useEffect(() => {
-    reelVideoRefs.current.forEach((video, i) => {
-      if (!video) return;
-      const isActive = i === activeIndex;
-      if (isActive) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-        video.currentTime = 0;
-      }
-    });
-  }, [activeIndex, reelVideoRefs]);
-
   const handleTouchStart = (event: React.TouchEvent) => {
     touchStartY.current = event.touches[0].clientY;
   };
@@ -615,12 +592,14 @@ export function ReelsScroll({
                             reelVideoRefs.current[i] = el;
                           }}
                           src={reel.src}
-                          autoPlay={i === 0}
                           muted={!soundOn || i !== activeIndex}
                           loop
                           playsInline
                           preload="auto"
                           className="h-full w-full object-cover"
+                          onCanPlay={(event) => {
+                            if (i === activeIndex) safePlay(event.currentTarget);
+                          }}
                         />
                         <TikTokOverlay
                           reel={reel}
@@ -695,4 +674,4 @@ export function Hero() {
   );
 }
 
-export { Section213Logo };
+export { Section213Logo } from "@/components/Section213Logo";

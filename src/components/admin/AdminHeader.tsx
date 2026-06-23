@@ -44,7 +44,7 @@ export function AdminHeader({ onOpenCommand }: AdminHeaderProps) {
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-background px-4">
-      <SidebarTrigger className="-ml-1" />
+      <SidebarTrigger className="-ml-1 hidden md:flex" />
       <Separator orientation="vertical" className="mr-2 h-4" />
 
       <Breadcrumb className="hidden min-w-0 flex-1 sm:block">

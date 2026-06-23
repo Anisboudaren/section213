@@ -12,7 +12,7 @@ export type AccentPreset = {
 
 export const ACCENT_STORAGE_KEY = "section213-accent-preset";
 
-export const DEFAULT_ACCENT_PRESET_ID = "vivid-red";
+export const DEFAULT_ACCENT_PRESET_ID = "midnight-ruby";
 
 export const ACCENT_PRESETS: AccentPreset[] = [
   // — Solid —

@@ -70,7 +70,7 @@ export function LoginForm() {
                 <FormLabel>Password</FormLabel>
                 <button
                   type="button"
-                  className="text-xs text-muted-foreground hover:text-gold transition-colors"
+                  className="text-xs text-muted-foreground transition-colors hover:text-ruby"
                   onClick={() => toast.message("Password reset will be available with Supabase Auth.")}
                 >
                   Forgot password?
@@ -89,7 +89,7 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit" variant="gold" className="w-full" size="lg">
+        <Button type="submit" variant="ruby" className="w-full" size="lg">
           Sign in to Admin
         </Button>
       </form>

@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { safePlay } from "@/lib/safe-video-play";
+
 function syncVideoAudio(
   enabled: boolean,
   heroRef: React.RefObject<HTMLVideoElement | null>,
@@ -17,7 +19,7 @@ function syncVideoAudio(
     hero.volume = 1;
 
     if (heroVisible) {
-      void hero.play();
+      safePlay(hero);
     } else {
       hero.pause();
     }
@@ -30,7 +32,7 @@ function syncVideoAudio(
     video.volume = 1;
 
     if (isActive) {
-      void video.play();
+      safePlay(video);
     } else {
       video.pause();
       video.currentTime = 0;
@@ -97,16 +99,6 @@ export function useHeroMedia() {
   const handleActiveReelChange = useCallback((index: number) => {
     setActiveReelIndex(index);
     activeReelIndexRef.current = index;
-    if (soundOnRef.current) {
-      syncVideoAudio(
-        true,
-        heroVideoRef,
-        reelVideoRefs,
-        index,
-        reelsInViewRef.current,
-        heroInViewRef.current,
-      );
-    }
   }, []);
 
   useEffect(() => {
