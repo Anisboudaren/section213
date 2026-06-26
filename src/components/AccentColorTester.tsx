@@ -2,7 +2,7 @@
 
 import { Palette } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -65,17 +65,14 @@ function PresetGrid({
 
 export function AccentColorTester() {
   const pathname = usePathname();
-  const { presetId, setPresetId } = useAccentColor();
+  const { presetId, setPresetId, enabledPresetIds } = useAccentColor();
   const [open, setOpen] = useState(false);
 
-  const solidPresets = useMemo(
-    () => ACCENT_PRESETS.filter((p) => p.kind === "solid"),
-    [],
+  const allowed = ACCENT_PRESETS.filter((p) =>
+    enabledPresetIds.length ? enabledPresetIds.includes(p.id) : true,
   );
-  const gradientPresets = useMemo(
-    () => ACCENT_PRESETS.filter((p) => p.kind === "gradient"),
-    [],
-  );
+  const solidPresets = allowed.filter((p) => p.kind === "solid");
+  const gradientPresets = allowed.filter((p) => p.kind === "gradient");
 
   if (pathname.startsWith("/admin")) return null;
 
@@ -98,8 +95,8 @@ export function AccentColorTester() {
               Accent tester
             </DialogTitle>
             <DialogDescription className="text-sm">
-              Solids for text highlights; gradients apply to buttons and CTAs. Saved locally in
-              this browser.
+              Preview accent options enabled for your site. Changes here are temporary in this
+              browser — set the live accent in Admin → Settings.
             </DialogDescription>
           </DialogHeader>
 

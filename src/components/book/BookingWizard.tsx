@@ -8,11 +8,12 @@ import { Step01Date } from "@/components/book/steps/Step01Date";
 import { Step02Projet } from "@/components/book/steps/Step02Projet";
 import { Step03Objectif } from "@/components/book/steps/Step03Objectif";
 import { Step04Offre } from "@/components/book/steps/Step04Offre";
-import { Step05Reservation } from "@/components/book/steps/Step05Reservation";
+import { Step05Recap } from "@/components/book/steps/Step05Recap";
 import { Step06Confirmation } from "@/components/book/steps/Step06Confirmation";
 import { Card, CardContent } from "@/components/ui/card";
 import { validateBookingStep } from "@/lib/booking-schema";
 import type { BookingFormData } from "@/lib/booking-types";
+import type { Offer } from "@/lib/types/admin";
 import { cn } from "@/lib/utils";
 
 const INITIAL_DATA: Partial<BookingFormData> = {
@@ -20,14 +21,16 @@ const INITIAL_DATA: Partial<BookingFormData> = {
   preferredDate: "",
   projectTypes: [],
   projectDescription: "",
+  bookingOptions: [],
+  depositChoice: "no_deposit",
 };
 
-export function BookingWizard() {
+export function BookingWizard({ offers }: { offers: Offer[] }) {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<Partial<BookingFormData>>(INITIAL_DATA);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [step5Valid, setStep5Valid] = useState(false);
   const [fade, setFade] = useState(true);
+  const [confirmed, setConfirmed] = useState(false);
 
   const updateData = useCallback((patch: Partial<BookingFormData>) => {
     setData((prev) => ({ ...prev, ...patch }));
@@ -48,14 +51,11 @@ export function BookingWizard() {
   );
 
   const goNext = () => {
-    if (step === 5 && !step5Valid) {
-      validateStep(5);
-      return;
-    }
-    if (step < 6 && !validateStep(step)) return;
+    if (step >= 5) return;
+    if (!validateStep(step)) return;
     setFade(false);
     setTimeout(() => {
-      setStep((s) => Math.min(s + 1, 6));
+      setStep((s) => s + 1);
       setFade(true);
     }, 150);
   };
@@ -68,9 +68,21 @@ export function BookingWizard() {
     }, 150);
   };
 
+  if (confirmed) {
+    return (
+      <div className="flex min-h-[calc(100svh-4rem)] flex-col md:min-h-0">
+        <Card className="mt-6 flex flex-1 flex-col border-border/60 shadow-sm md:mx-auto md:max-w-[560px] md:w-full">
+          <CardContent className="flex flex-1 flex-col p-6 md:p-8">
+            <Step06Confirmation data={data} offers={offers} />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-[calc(100svh-4rem)] flex-col md:min-h-0">
-      <BookingProgress currentStep={step} />
+      <BookingProgress currentStep={step} totalSteps={5} />
 
       <Card className="mt-6 flex flex-1 flex-col border-border/60 shadow-sm md:mx-auto md:max-w-[560px] md:w-full">
         <CardContent
@@ -90,19 +102,20 @@ export function BookingWizard() {
               <Step03Objectif data={data} onChange={updateData} errors={errors} />
             )}
             {step === 4 && (
-              <Step04Offre data={data} onChange={updateData} errors={errors} />
+              <Step04Offre data={data} onChange={updateData} errors={errors} offers={offers} />
             )}
             {step === 5 && (
-              <Step05Reservation
+              <Step05Recap
                 data={data}
                 onChange={updateData}
-                onValidityChange={setStep5Valid}
+                errors={errors}
+                offers={offers}
+                onSubmitSuccess={() => setConfirmed(true)}
               />
             )}
-            {step === 6 && <Step06Confirmation data={data} />}
           </div>
 
-          {step < 6 && (
+          {step < 5 && (
             <BookingNav
               currentStep={step}
               onNext={goNext}

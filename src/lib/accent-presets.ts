@@ -189,6 +189,20 @@ export function getAccentPreset(id: string): AccentPreset {
   return ACCENT_PRESETS.find((p) => p.id === id) ?? ACCENT_PRESETS[0];
 }
 
+/** Inline CSS variables for SSR + first paint (mirrors applyAccentPreset). */
+export function getAccentPresetStyleProperties(preset: AccentPreset): Record<string, string> {
+  const props: Record<string, string> = {
+    "--ruby": preset.ruby,
+    "--ruby-foreground": preset.rubyForeground,
+    "--gold": preset.ruby,
+    "--gold-foreground": preset.rubyForeground,
+  };
+  if (preset.gradient) {
+    props["--accent-gradient"] = preset.gradient;
+  }
+  return props;
+}
+
 export function applyAccentPreset(preset: AccentPreset) {
   const root = document.documentElement;
   root.dataset.accentPreset = preset.id;

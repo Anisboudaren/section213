@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -8,44 +7,22 @@ import { CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAdminStore } from "@/lib/admin-store";
 import type { BookingFormData } from "@/lib/booking-types";
+import { getWilayaName } from "@/lib/algeria-wilayas";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
-import { trackMetaLead, trackTikTokSubmit } from "@/lib/pixel-events";
+import type { Offer } from "@/lib/types/admin";
 
 type StepProps = {
   data: Partial<BookingFormData>;
+  offers: Offer[];
 };
 
-export function Step06Confirmation({ data }: StepProps) {
+export function Step06Confirmation({ data, offers }: StepProps) {
   const { translations: t, locale } = useLanguage();
-  const { addLead, getOfferById } = useAdminStore();
-  const submitted = useRef(false);
 
-  const offer = data.selectedOfferId ? getOfferById(data.selectedOfferId) : undefined;
-
-  useEffect(() => {
-    if (submitted.current) return;
-    if (!data.firstName || !data.lastName || !data.email || !data.phone) return;
-
-    submitted.current = true;
-
-    addLead({
-      name: `${data.firstName} ${data.lastName}`,
-      phone: data.phone,
-      email: data.email,
-      company: data.company,
-      source: "website",
-      interestedIn: data.selectedOfferId ? [data.selectedOfferId] : [],
-      stage: "new",
-      notes: `[Booking] ${(data.projectTypes ?? []).join(", ")} | ${data.objective} | Budget: ${data.budgetRange}\n${data.projectDescription}\n\nClient notes: ${data.notes ?? ""}`,
-      createdAt: new Date().toISOString(),
-      pixelEventFired: "Lead",
-    });
-
-    trackMetaLead();
-    trackTikTokSubmit();
-  }, [data, addLead]);
+  const offer = data.selectedOfferId
+    ? offers.find((o) => o.id === data.selectedOfferId)
+    : undefined;
 
   const dateLabel = data.isFlexible
     ? t.booking.flexibleDate
@@ -69,6 +46,12 @@ export function Step06Confirmation({ data }: StepProps) {
             <span className="text-muted-foreground">{t.booking.summary.date}</span>
             <span className="font-medium">{dateLabel}</span>
           </div>
+          {data.wilaya && (
+            <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">{t.booking.summary.wilaya}</span>
+              <span className="font-medium">{getWilayaName(data.wilaya)}</span>
+            </div>
+          )}
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">{t.booking.summary.project}</span>
             <span className="font-medium text-right">
@@ -83,8 +66,10 @@ export function Step06Confirmation({ data }: StepProps) {
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">{t.booking.summary.contact}</span>
-            <span className="font-medium">
-              {data.firstName} {data.lastName} · {data.email}
+            <span className="font-medium text-right">
+              {data.fullName}
+              {data.phone ? ` · ${data.phone}` : ""}
+              {data.email ? ` · ${data.email}` : ""}
             </span>
           </div>
         </CardContent>

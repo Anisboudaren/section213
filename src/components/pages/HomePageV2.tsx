@@ -16,8 +16,13 @@ import { Stats } from "@/components/sections/Stats";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Travel } from "@/components/sections/Travel";
 import { useHeroMedia } from "@/hooks/use-hero-media";
+import type { WebsiteClientLogo } from "@/lib/queries/website-clients";
 
-export function HomePageV2() {
+type HomePageV2Props = {
+  websiteClients?: WebsiteClientLogo[];
+};
+
+export function HomePageV2({ websiteClients = [] }: HomePageV2Props) {
   const {
     soundOn,
     reelsInView,
@@ -53,7 +58,7 @@ export function HomePageV2() {
       />
 
       <Method213 />
-      <TrustedClients />
+      <TrustedClients websiteClients={websiteClients} />
       <Solutions />
       <CaseStudies />
       <WhySection213 />

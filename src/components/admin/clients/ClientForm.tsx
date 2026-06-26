@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,8 +23,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { MediaUploadField } from "@/components/ui/media-upload-field";
 import { adminT } from "@/lib/i18n/admin-en";
 import type { Client, ClientStatus } from "@/lib/types/admin";
+import { getAvatarColorClass, getInitials } from "@/lib/utils/client-helpers";
+import { cn } from "@/lib/utils";
 
 const clientFormSchema = z.object({
   name: z.string().min(1, adminT("form.validation.required")),
@@ -35,11 +39,27 @@ const clientFormSchema = z.object({
   notes: z.string(),
   totalRevenue: z.number().optional(),
   showOnWebsite: z.boolean(),
+  logoUrl: z.string().optional(),
 });
 
 export type ClientFormValues = z.infer<typeof clientFormSchema>;
 
 const STATUSES: ClientStatus[] = ["active", "inactive", "vip"];
+
+function getDefaultValues(client?: Client): ClientFormValues {
+  return {
+    name: client?.name ?? "",
+    company: client?.company ?? "",
+    phone: client?.phone ?? "",
+    email: client?.email ?? "",
+    industry: client?.industry ?? "",
+    status: client?.status ?? "active",
+    notes: client?.notes ?? "",
+    totalRevenue: client?.totalRevenue,
+    showOnWebsite: client?.showOnWebsite ?? false,
+    logoUrl: client?.logoUrl ?? "",
+  };
+}
 
 type ClientFormProps = {
   client?: Client;
@@ -51,155 +71,240 @@ export function ClientForm({ client, onSubmit, formId = "client-form" }: ClientF
   const form = useForm<ClientFormValues>({
     resolver: zodResolver(clientFormSchema),
     mode: "onChange",
-    defaultValues: {
-      name: client?.name ?? "",
-      company: client?.company ?? "",
-      phone: client?.phone ?? "",
-      email: client?.email ?? "",
-      industry: client?.industry ?? "",
-      status: client?.status ?? "active",
-      notes: client?.notes ?? "",
-      totalRevenue: client?.totalRevenue,
-      showOnWebsite: client?.showOnWebsite ?? false,
-    },
+    defaultValues: getDefaultValues(client),
   });
+
+  useEffect(() => {
+    form.reset(getDefaultValues(client));
+  }, [client?.id, form]);
+
+  const company = form.watch("company");
+  const name = form.watch("name");
+  const logoUrl = form.watch("logoUrl");
+  const displayName = company || name || "?";
+  const initials = getInitials(displayName);
+  const avatarColor = getAvatarColorClass(displayName);
 
   return (
     <Form {...form}>
-      <form id={formId} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-2">
+      <form
+        id={formId}
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 px-0.5 pb-1"
+      >
+        <div className="flex flex-col items-center gap-3 border-b border-border/60 pb-6 pt-1">
           <FormField
             control={form.control}
-            name="name"
+            name="logoUrl"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>{adminT("common.name")}</FormLabel>
+              <FormItem className="flex flex-col items-center space-y-0">
                 <FormControl>
-                  <Input {...field} className="min-h-11" />
+                  <MediaUploadField
+                    key={logoUrl || "no-logo"}
+                    folder="clients/logos"
+                    variant="image"
+                    shape="circle"
+                    value={logoUrl || undefined}
+                    onChange={(url) => {
+                      const next = url ?? "";
+                      field.onChange(next);
+                      form.setValue("logoUrl", next, { shouldDirty: true, shouldValidate: true });
+                    }}
+                    label={adminT("clients.logoHint")}
+                    fallback={
+                      <span
+                        className={cn(
+                          "flex size-full items-center justify-center font-display text-xl tracking-wide",
+                          avatarColor,
+                        )}
+                      >
+                        {initials}
+                      </span>
+                    }
+                  />
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-center" />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="company"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{adminT("common.company")}</FormLabel>
-                <FormControl>
-                  <Input {...field} className="min-h-11" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="text-center">
+            <p className="font-display text-lg tracking-wide text-ink">
+              {company || adminT("clients.newClientPlaceholder")}
+            </p>
+            {name && <p className="text-sm text-muted-foreground">{name}</p>}
+          </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{adminT("common.email")}</FormLabel>
-                <FormControl>
-                  <Input type="email" {...field} className="min-h-11" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{adminT("common.phone")}</FormLabel>
-                <FormControl>
-                  <Input {...field} className="min-h-11" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormField
-            control={form.control}
-            name="industry"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{adminT("common.industry")}</FormLabel>
-                <FormControl>
-                  <Input {...field} className="min-h-11" />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{adminT("common.status")}</FormLabel>
-                <Select onValueChange={field.onChange} value={field.value}>
+        <section className="space-y-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {adminT("clients.sections.identity")}
+          </h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="company"
+              render={({ field }) => (
+                <FormItem className="sm:col-span-2">
+                  <FormLabel>{adminT("common.company")}</FormLabel>
                   <FormControl>
-                    <SelectTrigger className="min-h-11">
-                      <SelectValue />
-                    </SelectTrigger>
+                    <Input {...field} className="min-h-11" />
                   </FormControl>
-                  <SelectContent>
-                    {STATUSES.map((s) => (
-                      <SelectItem key={s} value={s}>
-                        {adminT(`clients.statuses.${s}` as Parameters<typeof adminT>[0])}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{adminT("common.name")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} className="min-h-11" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="industry"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{adminT("common.industry")}</FormLabel>
+                  <FormControl>
+                    <Input {...field} className="min-h-11" />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {adminT("clients.sections.contact")}
+          </h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{adminT("common.email")}</FormLabel>
+                  <FormControl>
+                    <Input type="email" inputMode="email" {...field} className="min-h-11" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{adminT("common.phone")}</FormLabel>
+                  <FormControl>
+                    <Input type="tel" inputMode="tel" {...field} className="min-h-11" />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {adminT("clients.sections.business")}
+          </h3>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{adminT("common.status")}</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="min-h-11 w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {STATUSES.map((s) => (
+                        <SelectItem key={s} value={s}>
+                          {adminT(`clients.statuses.${s}` as Parameters<typeof adminT>[0])}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="totalRevenue"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{adminT("clients.totalRevenue")} (DZD)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      inputMode="numeric"
+                      className="min-h-11"
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(e.target.value ? Number(e.target.value) : undefined)
+                      }
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="showOnWebsite"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between gap-4 rounded-xl border border-border/80 bg-muted/20 p-4">
+                <div className="space-y-0.5 pr-2">
+                  <FormLabel className="text-base">{adminT("common.showOnWebsite")}</FormLabel>
+                  <p className="text-xs text-muted-foreground">
+                    {adminT("clients.showOnWebsiteHint")}
+                  </p>
+                </div>
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
               </FormItem>
             )}
           />
-        </div>
+        </section>
 
-        <FormField
-          control={form.control}
-          name="totalRevenue"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{adminT("clients.totalRevenue")} (DZD)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} className="min-h-11" />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="showOnWebsite"
-          render={({ field }) => (
-            <FormItem className="flex items-center justify-between rounded-lg border p-3">
-              <FormLabel>{adminT("common.showOnWebsite")}</FormLabel>
-              <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{adminT("common.notes")}</FormLabel>
-              <FormControl>
-                <Textarea {...field} rows={3} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
+        <section className="space-y-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {adminT("clients.sections.notes")}
+          </h3>
+          <FormField
+            control={form.control}
+            name="notes"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="sr-only">{adminT("common.notes")}</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    rows={4}
+                    placeholder={adminT("clients.notesPlaceholder")}
+                    className="min-h-[6rem] resize-y"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </section>
       </form>
     </Form>
   );

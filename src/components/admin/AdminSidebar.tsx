@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronUp, HelpCircle, LogOut, Search } from "lucide-react";
+import { LogOut, Plus, Search } from "lucide-react";
 
 import {
   Sidebar,
@@ -18,30 +19,49 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { useAdminStore } from "@/lib/admin-store";
-import { adminNavSections, isNavItemActive } from "@/lib/admin/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { clearAdminAuth } from "@/lib/admin/auth";
+import {
+  HIDDEN_NAV_ITEMS,
+  isNavActive,
+  NAV_GROUPS,
+  type SidebarBadge,
+} from "@/lib/admin/sidebar-nav";
 import { useCurrentUser } from "@/lib/hooks/useCurrentUser";
 import { adminT } from "@/lib/i18n/admin-en";
+import { cn } from "@/lib/utils";
 
 type AdminSidebarProps = {
+  newLeadCount: number;
+  overdueProjectCount: number;
   onOpenCommand: () => void;
 };
 
-export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
+function getBadgeCount(
+  badge: SidebarBadge | undefined,
+  newLeadCount: number,
+  overdueProjectCount: number,
+) {
+  if (badge === "newLeads") return newLeadCount;
+  if (badge === "overdueProjects") return overdueProjectCount;
+  return 0;
+}
+
+export function AdminSidebar({
+  newLeadCount,
+  overdueProjectCount,
+  onOpenCommand,
+}: AdminSidebarProps) {
   const pathname = usePathname();
-  const { leads } = useAdminStore();
   const user = useCurrentUser();
-  const newLeadsCount = leads.filter((l) => l.stage === "new").length;
+  const [hiddenOpen, setHiddenOpen] = useState(false);
 
   const initials = user.name
     .split(" ")
@@ -56,7 +76,7 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
   };
 
   return (
-    <Sidebar collapsible="icon" className="hidden border-sidebar-border md:flex">
+    <Sidebar collapsible="icon" className="hidden border-sidebar-border md:flex md:w-60 lg:w-60">
       <SidebarHeader className="border-b border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -65,7 +85,7 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-ink text-gold">
                   <span className="font-display text-sm">213</span>
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                   <span className="truncate font-display tracking-wide text-ink">SECTION 213</span>
                   <span className="truncate text-xs text-muted-foreground">Admin CRM</span>
                 </div>
@@ -76,32 +96,58 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent>
-        {adminNavSections.map((section) => (
-          <SidebarGroup key={section.label}>
-            <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+        {NAV_GROUPS.map((group) => (
+          <SidebarGroup key={group.label ?? "dashboard"}>
+            {group.label && (
+              <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">
+                {group.label}
+              </SidebarGroupLabel>
+            )}
             <SidebarGroupContent>
               <SidebarMenu>
-                {section.items.map((item) => {
-                  const active = isNavItemActive(item.url, pathname);
+                {group.items.map((item) => {
+                  const active = isNavActive(item.href, pathname);
+                  const count = getBadgeCount(
+                    item.badge,
+                    newLeadCount,
+                    overdueProjectCount,
+                  );
+                  const Icon = item.icon;
+
                   return (
-                    <SidebarMenuItem key={item.url}>
+                    <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton
                         asChild
                         isActive={active}
-                        tooltip={item.title}
-                        className={
-                          active
-                            ? "border-l-2 border-gold bg-gold/10 text-ink hover:bg-gold/15 hover:text-ink"
-                            : undefined
-                        }
+                        tooltip={item.label}
+                        className={cn(
+                          active &&
+                            "border-l-2 border-gold bg-gold/10 text-ink hover:bg-gold/15 hover:text-ink",
+                        )}
                       >
-                        <Link href={item.url}>
-                          <item.icon className={active ? "text-gold" : undefined} />
-                          <span>{item.title}</span>
-                          {item.url === "/admin/leads" && newLeadsCount > 0 && (
-                            <Badge className="ml-auto h-5 min-w-5 bg-gold px-1 text-[10px] text-gold-foreground">
-                              {newLeadsCount}
-                            </Badge>
+                        <Link href={item.href}>
+                          <Icon className={cn(active && "text-gold")} />
+                          <span>{item.label}</span>
+                          {count > 0 && item.badge && (
+                            <>
+                              <Badge
+                                className={cn(
+                                  "ml-auto h-5 min-w-5 px-1 text-[10px] group-data-[collapsible=icon]:hidden",
+                                  item.badgeColor === "red"
+                                    ? "bg-red-600 text-white"
+                                    : "bg-gold text-gold-foreground",
+                                )}
+                              >
+                                {count}
+                              </Badge>
+                              <span
+                                className={cn(
+                                  "ml-auto hidden size-2 rounded-full group-data-[collapsible=icon]:inline",
+                                  item.badgeColor === "red" ? "bg-red-600" : "bg-gold",
+                                )}
+                                aria-label={`${count} notifications`}
+                              />
+                            </>
                           )}
                         </Link>
                       </SidebarMenuButton>
@@ -112,67 +158,68 @@ export function AdminSidebar({ onOpenCommand }: AdminSidebarProps) {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
+
+        <SidebarGroup className="mt-auto">
+          <Collapsible open={hiddenOpen} onOpenChange={setHiddenOpen}>
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="min-h-9 w-full justify-start gap-2 px-2 text-muted-foreground group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+              >
+                <Plus className="h-4 w-4" />
+                <span className="group-data-[collapsible=icon]:hidden">Plus de modules</span>
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-1 px-2 py-1 group-data-[collapsible=icon]:hidden">
+              {HIDDEN_NAV_ITEMS.map((item) => (
+                <div
+                  key={item.href}
+                  className="flex items-center justify-between rounded-md px-2 py-1.5 text-xs text-muted-foreground"
+                >
+                  <span>{item.label}</span>
+                  <Badge variant="outline" className="text-[10px]">
+                    Bientôt
+                  </Badge>
+                </div>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="border-t border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Command menu (Ctrl+K)" onClick={onOpenCommand}>
+            <SidebarMenuButton tooltip="Recherche (Ctrl+K)" onClick={onOpenCommand}>
               <Search />
-              <span>Search</span>
-              <kbd className="pointer-events-none ml-auto hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-                <span className="text-xs">⌘</span>K
-              </kbd>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton tooltip="Help & Support" asChild>
-              <a href="mailto:support@section213.com">
-                <HelpCircle />
-                <span>Help & Support</span>
-              </a>
+              <span className="group-data-[collapsible=icon]:hidden">Recherche</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
 
         <SidebarSeparator />
 
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarFallback className="rounded-lg bg-ink text-gold">{initials}</AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{user.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">{user.displayRole}</span>
-                  </div>
-                  <ChevronUp className="ml-auto size-4" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="top"
-                align="end"
-                sideOffset={4}
-              >
-                <DropdownMenuItem asChild>
-                  <Link href="/admin/settings/profile">My Profile</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  {adminT("nav.signOut")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <div className="flex items-center gap-2 p-2">
+          <Avatar className="h-8 w-8 shrink-0 rounded-lg">
+            <AvatarFallback className="rounded-lg bg-gold text-gold-foreground">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1 group-data-[collapsible=icon]:hidden">
+            <p className="truncate text-sm font-semibold">{user.name}</p>
+            <p className="truncate text-xs text-muted-foreground">{user.displayRole}</p>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="min-h-9 min-w-9 shrink-0"
+            aria-label={adminT("nav.signOut")}
+            onClick={handleSignOut}
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
+        </div>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

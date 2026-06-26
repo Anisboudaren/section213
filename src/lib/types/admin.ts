@@ -2,6 +2,7 @@ export type LeadSource =
   | "instagram"
   | "tiktok"
   | "facebook"
+  | "whatsapp"
   | "google"
   | "referral"
   | "website"
@@ -25,13 +26,30 @@ export type Lead = {
   source: LeadSource;
   utmCampaign?: string;
   utmMedium?: string;
+  referredBy?: string;
   pixelEventFired?: string;
   interestedIn: string[];
   stage: LeadStage;
   notes: string;
   createdAt: string;
+  updatedAt?: string;
   lastContactedAt?: string;
   assignedTo?: string;
+  trackedLinkId?: string;
+  trackedLinkSrc?: LeadSource;
+  submissionType?: "booking" | "contact";
+  wilaya?: string;
+  preferredDate?: string;
+  preferredTime?: string;
+  isFlexible?: boolean;
+  projectTypes?: string[];
+  projectDescription?: string;
+  objective?: string;
+  budgetRange?: string;
+  bookingOptions?: string[];
+  depositChoice?: string;
+  depositMethod?: string;
+  transferProofUrl?: string;
 };
 
 export type ClientStatus = "active" | "inactive" | "vip";

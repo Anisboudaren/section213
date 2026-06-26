@@ -4,14 +4,20 @@ import Image from "next/image";
 
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { PORTFOLIO_CLIENTS } from "@/lib/portfolio-clients";
+import type { WebsiteClientLogo } from "@/lib/queries/website-clients";
 import { cn } from "@/lib/utils";
 
 import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
 
-export function TrustedClients() {
+type TrustedClientsProps = {
+  websiteClients?: WebsiteClientLogo[];
+};
+
+export function TrustedClients({ websiteClients = [] }: TrustedClientsProps) {
   const { translations: t } = useLanguage();
   const c = t.homeV2.trusted;
+  const clients = websiteClients.length > 0 ? websiteClients : PORTFOLIO_CLIENTS;
 
   return (
     <section className="border-t border-white/5 bg-ink px-4 py-16 text-white sm:px-6 sm:py-24">
@@ -25,7 +31,7 @@ export function TrustedClients() {
         </RevealInView>
 
         <div className="mt-10 grid grid-cols-2 gap-3 sm:mt-12 sm:grid-cols-3 lg:grid-cols-4">
-          {PORTFOLIO_CLIENTS.map((client, i) => (
+          {clients.map((client, i) => (
             <RevealInView
               key={client.image}
               className={i % 2 === 1 ? "sm:delay-100" : undefined}
@@ -37,6 +43,7 @@ export function TrustedClients() {
                     alt={client.name}
                     width={160}
                     height={64}
+                    unoptimized={client.image.includes("blob.vercel-storage.com")}
                     className={cn(
                       "max-h-14 w-auto object-contain sm:max-h-16",
                       client.whiteFilter && "brightness-0 invert",

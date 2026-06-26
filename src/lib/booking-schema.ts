@@ -57,15 +57,19 @@ export const step03Schema = z.object({
 
 export const step04Schema = z.object({
   selectedOfferId: z.string().min(1, "required"),
+  bookingOptions: z.array(z.string()).default([]),
 });
 
 export const step05Schema = z.object({
-  firstName: z.string().min(2, "min2"),
-  lastName: z.string().min(2, "min2"),
-  phone: z.string().min(8, "phone"),
-  email: z.string().email("email"),
-  company: z.string().optional(),
-  notes: z.string().optional(),
+  wilaya: z.string().min(1, "required"),
+  fullName: z.string().trim().min(2, "min2"),
+  phone: z.string().trim().min(8, "phone"),
+  email: z
+    .string()
+    .trim()
+    .optional()
+    .refine((v) => !v || z.string().email().safeParse(v).success, { message: "email" }),
+  company: z.string().trim().optional(),
 });
 
 export const fullBookingSchema = step01Schema
@@ -107,15 +111,15 @@ export function getStepInput(
     case 4:
       return {
         selectedOfferId: data.selectedOfferId ?? "",
+        bookingOptions: data.bookingOptions ?? [],
       };
     case 5:
       return {
-        firstName: data.firstName ?? "",
-        lastName: data.lastName ?? "",
+        wilaya: data.wilaya ?? "",
+        fullName: data.fullName ?? "",
         phone: data.phone ?? "",
         email: data.email ?? "",
         company: data.company ?? "",
-        notes: data.notes ?? "",
       };
     default:
       return {};

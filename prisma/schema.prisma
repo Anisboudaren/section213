@@ -1,0 +1,260 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LeadSource {
+  website
+  instagram
+  facebook
+  whatsapp
+  google
+  tiktok
+  referral
+  cold
+  other
+}
+
+enum LeadStage {
+  new
+  contacted
+  qualified
+  proposal_sent
+  won
+  lost
+}
+
+model Lead {
+  id              String     @id @default(cuid())
+  name            String
+  company         String?
+  phone           String?
+  email           String?
+
+  source          LeadSource @default(website)
+  utmCampaign     String?
+  utmMedium       String?
+  referredBy      String?
+
+  pixelEventFired   String?
+
+  interestedIn    String[]
+  stage           LeadStage  @default(new)
+  notes           String     @default("")
+
+  assignedTo      String?
+
+  trackedLinkId   String?
+  trackedLinkSrc  LeadSource?
+
+  // Structured booking fields
+  submissionType      String   @default("contact")
+  wilaya              String?
+  preferredDate       DateTime?
+  preferredTime       String?
+  isFlexible          Boolean  @default(false)
+  projectTypes        String[] @default([])
+  projectDescription  String?
+  objective           String?
+  budgetRange         String?
+  bookingOptions      String[] @default([])
+  depositChoice       String?
+  depositMethod       String?
+  transferProofUrl    String?
+
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  lastContactedAt DateTime?
+
+  @@index([stage])
+  @@index([source])
+  @@index([createdAt])
+  @@index([submissionType])
+}
+
+model TrackedLink {
+  id         String     @id @default(cuid())
+  source     LeadSource
+  campaign   String?
+  medium     String?
+  slug       String     @unique
+  url        String
+  clickCount Int        @default(0)
+  leadCount  Int        @default(0)
+  createdBy  String?
+  createdAt  DateTime   @default(now())
+
+  @@index([source])
+}
+
+enum ClientStatus {
+  active
+  inactive
+  vip
+}
+
+enum ProjectStatus {
+  briefing
+  in_progress
+  review
+  delivered
+  completed
+  on_hold
+  cancelled
+}
+
+enum ServiceType {
+  photo_video
+  reels_content
+  brand_identity
+  website
+  app
+  automation
+  marketing_strategy
+  full_package
+  other
+}
+
+enum OfferCategory {
+  media
+  brand_content
+  websites_apps
+  automations
+}
+
+model Offer {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  name          String
+  nameAr        String?
+  nameFr        String?
+  category      OfferCategory
+  description   String
+  descriptionFr String?
+  features      String[]      @default([])
+  featuresFr    String[]      @default([])
+  price         Int?
+  priceLabel    String?
+  active        Boolean       @default(true)
+  featured      Boolean       @default(false)
+  sortOrder     Int           @default(0)
+  cta           String?
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([category])
+  @@index([active])
+  @@index([sortOrder])
+}
+
+model Client {
+  id            String       @id @default(cuid())
+  name          String
+  company       String
+  phone         String?
+  email         String?
+  industry      String?
+  status        ClientStatus @default(active)
+  notes         String       @default("")
+
+  originLeadId  String?
+  origin        String       @default("direct")
+
+  showOnWebsite Boolean      @default(false)
+  logoUrl       String?
+
+  totalRevenue  Int?
+
+  projects      Project[]
+
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String        @default("")
+
+  clientId    String
+  client      Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  serviceType ServiceType
+  status      ProjectStatus @default(briefing)
+
+  leadId      String?
+  teamIds     String[]
+
+  offerSlug   String?
+
+  startDate   DateTime?
+  deadline    DateTime?
+  deliveredAt DateTime?
+
+  budgetDZD   Int?
+  paidDZD     Int?          @default(0)
+
+  notes       String        @default("")
+
+  tasks       Task[]
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([clientId])
+  @@index([status])
+  @@index([deadline])
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @default("")
+
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  assignedTo  String?
+  done        Boolean   @default(false)
+  dueDate     DateTime?
+  priority    Int       @default(1)
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([projectId])
+  @@index([done])
+}
+
+model SiteSettings {
+  id                     String   @id @default("default")
+  siteName               String   @default("Section 213")
+  siteTitle              String   @default("Section 213")
+  siteDescription        String   @default("")
+  accentPresetId         String   @default("midnight-ruby")
+  enabledAccentPresetIds String[] @default([])
+  defaultLocale          String   @default("fr")
+  contactEmail           String?
+  contactPhone           String?
+  whatsappNumber         String?
+  instagramHandle        String?
+  ogImageUrl             String?
+  logoUrl                String?
+  faviconUrl             String?
+  bookingEnabled         Boolean  @default(true)
+  maintenanceMode        Boolean  @default(false)
+  updatedAt              DateTime @updatedAt
+}

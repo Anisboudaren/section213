@@ -125,10 +125,7 @@ html {
   --font-display: "Anton", "Impact", sans-serif;
 }
 
-.theme-marketing {
-  --gold: var(--pearl);
-  --gold-foreground: var(--pearl-foreground);
-}
+/* Marketing pages inherit accent from :root — no override here. */
 
 .theme-marketing .viral-icon-bubble {
   box-shadow:
@@ -221,6 +218,14 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
     background-color: var(--ruby);
     background-image: var(--accent-gradient, none);
     color: var(--ruby-foreground);
+  }
+
+  .text-brand-accent {
+    color: var(--ruby);
+  }
+
+  .border-brand-accent {
+    border-color: color-mix(in oklch, var(--ruby) 35%, transparent);
   }
 
   .admin-accent:focus-visible {

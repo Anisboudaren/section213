@@ -1,0 +1,2 @@
+ALTER TABLE "SiteSettings" ADD COLUMN IF NOT EXISTS "logoUrl" TEXT;
+ALTER TABLE "SiteSettings" ADD COLUMN IF NOT EXISTS "faviconUrl" TEXT;

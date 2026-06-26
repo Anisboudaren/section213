@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { MediaUploadField } from "@/components/ui/media-upload-field";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -164,11 +165,14 @@ export function CaseStudyForm({
             <FormItem>
               <FormLabel>{adminT("caseStudies.videoUrl")}</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="/vids/example.mp4" className="min-h-11" />
+                <MediaUploadField
+                  folder="case-studies/videos"
+                  variant="video"
+                  value={field.value || undefined}
+                  onChange={(url) => field.onChange(url ?? "")}
+                />
               </FormControl>
-              <Button type="button" variant="outline" size="sm" disabled className="mt-2">
-                {adminT("common.uploadComingSoon")}
-              </Button>
+              <Input {...field} placeholder="/vids/example.mp4" className="min-h-11 mt-2" />
               <FormMessage />
             </FormItem>
           )}
@@ -181,8 +185,14 @@ export function CaseStudyForm({
             <FormItem>
               <FormLabel>{adminT("caseStudies.thumbnailUrl")}</FormLabel>
               <FormControl>
-                <Input {...field} className="min-h-11" />
+                <MediaUploadField
+                  folder="case-studies/thumbnails"
+                  variant="image"
+                  value={field.value || undefined}
+                  onChange={(url) => field.onChange(url ?? "")}
+                />
               </FormControl>
+              <Input {...field} className="min-h-11 mt-2" />
             </FormItem>
           )}
         />

@@ -4,8 +4,13 @@ import Link from "next/link";
 
 import { BookingWizard } from "@/components/book/BookingWizard";
 import { Section213Logo } from "@/components/Section213Logo";
+import type { Offer } from "@/lib/types/admin";
 
-export function BookPageContent() {
+type BookPageContentProps = {
+  offers: Offer[];
+};
+
+export function BookPageContent({ offers }: BookPageContentProps) {
   return (
     <div className="theme-marketing min-h-svh bg-gradient-to-b from-secondary/40 via-background to-background">
       <header className="border-b border-border/60 bg-background/80 backdrop-blur-sm">
@@ -17,7 +22,7 @@ export function BookPageContent() {
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
-        <BookingWizard />
+        <BookingWizard offers={offers} />
       </main>
     </div>
   );

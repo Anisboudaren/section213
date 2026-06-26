@@ -13,12 +13,10 @@ import {
 import { MOCK_CASE_STUDIES } from "@/lib/mock-data/case-studies";
 import { MOCK_CLIENTS } from "@/lib/mock-data/clients";
 import { MOCK_LEADS } from "@/lib/mock-data/leads";
-import { MOCK_OFFERS } from "@/lib/mock-data/offers";
 import type {
   CaseStudy,
   Client,
   Lead,
-  Offer,
   PixelConfig,
 } from "@/lib/types/admin";
 
@@ -60,7 +58,6 @@ type AdminStoreContextValue = {
   leads: Lead[];
   clients: Client[];
   caseStudies: CaseStudy[];
-  offers: Offer[];
   pixelConfig: PixelConfig;
   addLead: (lead: Omit<Lead, "id">) => Lead;
   updateLead: (id: string, data: Partial<Lead>) => void;
@@ -72,13 +69,9 @@ type AdminStoreContextValue = {
   addCaseStudy: (cs: Omit<CaseStudy, "id">) => CaseStudy;
   updateCaseStudy: (id: string, data: Partial<CaseStudy>) => void;
   deleteCaseStudy: (id: string) => void;
-  addOffer: (offer: Omit<Offer, "id">) => Offer;
-  updateOffer: (id: string, data: Partial<Offer>) => void;
-  deleteOffer: (id: string) => void;
   setPixelConfig: (config: PixelConfig) => void;
   getLeadById: (id: string) => Lead | undefined;
   getClientById: (id: string) => Client | undefined;
-  getOfferById: (id: string) => Offer | undefined;
 };
 
 const AdminStoreContext = createContext<AdminStoreContextValue | null>(null);
@@ -87,7 +80,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
   const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>(MOCK_CASE_STUDIES);
-  const [offers, setOffers] = useState<Offer[]>(MOCK_OFFERS);
   const [pixelConfig, setPixelConfigState] = useState<PixelConfig>(DEFAULT_PIXEL_CONFIG);
   const [hydrated, setHydrated] = useState(false);
 
@@ -174,34 +166,18 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     setCaseStudies((prev) => prev.filter((c) => c.id !== id));
   }, []);
 
-  const addOffer = useCallback((offer: Omit<Offer, "id">): Offer => {
-    const newOffer: Offer = { ...offer, id: generateId("offer") };
-    setOffers((prev) => [...prev, newOffer]);
-    return newOffer;
-  }, []);
-
-  const updateOffer = useCallback((id: string, data: Partial<Offer>) => {
-    setOffers((prev) => prev.map((o) => (o.id === id ? { ...o, ...data } : o)));
-  }, []);
-
-  const deleteOffer = useCallback((id: string) => {
-    setOffers((prev) => prev.filter((o) => o.id !== id));
-  }, []);
-
   const setPixelConfig = useCallback((config: PixelConfig) => {
     setPixelConfigState(config);
   }, []);
 
   const getLeadById = useCallback((id: string) => leads.find((l) => l.id === id), [leads]);
   const getClientById = useCallback((id: string) => clients.find((c) => c.id === id), [clients]);
-  const getOfferById = useCallback((id: string) => offers.find((o) => o.id === id), [offers]);
 
   const value = useMemo(
     () => ({
       leads,
       clients,
       caseStudies,
-      offers,
       pixelConfig,
       addLead,
       updateLead,
@@ -213,19 +189,14 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
       addCaseStudy,
       updateCaseStudy,
       deleteCaseStudy,
-      addOffer,
-      updateOffer,
-      deleteOffer,
       setPixelConfig,
       getLeadById,
       getClientById,
-      getOfferById,
     }),
     [
       leads,
       clients,
       caseStudies,
-      offers,
       pixelConfig,
       addLead,
       updateLead,
@@ -237,13 +208,9 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
       addCaseStudy,
       updateCaseStudy,
       deleteCaseStudy,
-      addOffer,
-      updateOffer,
-      deleteOffer,
       setPixelConfig,
       getLeadById,
       getClientById,
-      getOfferById,
     ],
   );
 

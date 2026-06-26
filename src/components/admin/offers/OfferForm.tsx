@@ -169,7 +169,7 @@ export function OfferForm({
         />
 
         <div className="space-y-2">
-          <FormLabel>{adminT("common.features")}</FormLabel>
+          <Label>{adminT("common.features")}</Label>
           {fields.map((field, index) => (
             <div key={field.id} className="flex gap-2">
               <FormField

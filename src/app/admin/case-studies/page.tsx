@@ -95,7 +95,7 @@ export default function CaseStudiesPage() {
           if (!open) setEditing(null);
         }}
       >
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogContent className="max-h-[95dvh] w-[calc(100%-1.5rem)] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
               {editing

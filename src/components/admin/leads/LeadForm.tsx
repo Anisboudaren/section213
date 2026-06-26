@@ -23,8 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { adminT } from "@/lib/i18n/admin-en";
+import { useOffers } from "@/lib/queries/offers";
 import type { Lead, LeadSource, LeadStage } from "@/lib/types/admin";
-import { useAdminStore } from "@/lib/admin-store";
 
 const leadFormSchema = z.object({
   name: z.string().min(1, adminT("form.validation.required")),
@@ -35,6 +35,7 @@ const leadFormSchema = z.object({
     "instagram",
     "tiktok",
     "facebook",
+    "whatsapp",
     "google",
     "referral",
     "website",
@@ -56,6 +57,7 @@ const SOURCES: LeadSource[] = [
   "instagram",
   "tiktok",
   "facebook",
+  "whatsapp",
   "google",
   "referral",
   "website",
@@ -79,7 +81,7 @@ type LeadFormProps = {
 };
 
 export function LeadForm({ lead, onSubmit, formId = "lead-form" }: LeadFormProps) {
-  const { offers } = useAdminStore();
+  const { data: offers = [] } = useOffers({ activeOnly: true });
 
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadFormSchema),

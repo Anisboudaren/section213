@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Anton, Inter } from "next/font/google";
 
 import { Providers } from "@/components/providers";
+import { getSiteSettings } from "@/lib/actions/site-settings";
+import { getAccentPreset, getAccentPresetStyleProperties } from "@/lib/accent-presets";
 
 import "./globals.css";
 
@@ -18,44 +20,55 @@ const anton = Anton({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Section 213",
-    template: "%s — Section 213",
-  },
-  description:
-    "Section 213 — based in Oran, Algeria. Photography, marketing, websites, apps, and business automations for modern brands.",
-  authors: [{ name: "Section 213" }],
-  openGraph: {
-    title: "Section 213",
-    description:
-      "Section 213 — based in Oran, Algeria. Photography, marketing, websites, apps, and business automations for modern brands.",
-    type: "website",
-    images: [
-      "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/817cc14b-4e07-44b9-82a2-b16d0b653ff9/id-preview-db619953--5900c77a-8423-4386-8c1b-4a6ef34f94c1.lovable.app-1780515916701.png",
-    ],
-  },
-  twitter: {
-    card: "summary",
-    title: "Section 213",
-    description:
-      "Section 213 — based in Oran, Algeria. Photography, marketing, websites, apps, and business automations for modern brands.",
-    images: [
-      "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/817cc14b-4e07-44b9-82a2-b16d0b653ff9/id-preview-db619953--5900c77a-8423-4386-8c1b-4a6ef34f94c1.lovable.app-1780515916701.png",
-    ],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const iconVersion = settings.updatedAt.replace(/[:.]/g, "");
 
-export default function RootLayout({
+  return {
+    title: {
+      default: settings.siteTitle,
+      template: `%s — ${settings.siteName}`,
+    },
+    description: settings.siteDescription,
+    authors: [{ name: settings.siteName }],
+    icons: {
+      icon: [{ url: `/icon?v=${iconVersion}` }],
+      apple: [{ url: `/apple-icon?v=${iconVersion}` }],
+      shortcut: [{ url: `/icon?v=${iconVersion}` }],
+    },
+    openGraph: {
+      title: settings.siteTitle,
+      description: settings.siteDescription,
+      type: "website",
+      ...(settings.ogImageUrl ? { images: [settings.ogImageUrl] } : {}),
+    },
+    twitter: {
+      card: "summary",
+      title: settings.siteTitle,
+      description: settings.siteDescription,
+      ...(settings.ogImageUrl ? { images: [settings.ogImageUrl] } : {}),
+    },
+  };
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // TODO: read activePixels from DB/API and inject in layout.tsx <head>
+  const settings = await getSiteSettings();
+  const accentPreset = getAccentPreset(settings.accentPresetId);
+  const accentStyles = getAccentPresetStyleProperties(accentPreset);
+
   return (
-    <html lang="en" data-accent-preset="midnight-ruby" className={`${inter.variable} ${anton.variable}`}>
+    <html
+      lang={settings.defaultLocale}
+      data-accent-preset={settings.accentPresetId}
+      className={`${inter.variable} ${anton.variable}`}
+      style={accentStyles}
+    >
       <body>
-        <Providers>{children}</Providers>
+        <Providers siteSettings={settings}>{children}</Providers>
       </body>
     </html>
   );

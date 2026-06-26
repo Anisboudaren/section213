@@ -24,6 +24,10 @@ export type BudgetRange =
 
 export type PreferredTime = "matin" | "apres_midi" | "flexible";
 
+export type DepositChoice = "no_deposit" | "deposit_50";
+
+export type DepositMethod = "manual_transfer" | "chargilly";
+
 export type BookingFormData = {
   preferredDate: string;
   preferredTime?: PreferredTime;
@@ -33,12 +37,15 @@ export type BookingFormData = {
   objective: ObjectiveType;
   budgetRange: BudgetRange;
   selectedOfferId: string;
-  firstName: string;
-  lastName: string;
+  bookingOptions: string[];
+  wilaya: string;
+  fullName: string;
   phone: string;
-  email: string;
+  email?: string;
   company?: string;
-  notes?: string;
+  depositChoice: DepositChoice;
+  depositMethod?: DepositMethod;
+  transferProofUrl?: string;
 };
 
 export const BOOKING_STEPS = [
@@ -46,8 +53,7 @@ export const BOOKING_STEPS = [
   "projet",
   "objectif",
   "offre",
-  "reservation",
-  "confirmation",
+  "recap",
 ] as const;
 
 export type BookingStep = (typeof BOOKING_STEPS)[number];
