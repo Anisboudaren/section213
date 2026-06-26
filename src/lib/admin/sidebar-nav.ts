@@ -4,6 +4,7 @@ import {
   Building2,
   Crosshair,
   Film,
+  Handshake,
   Home,
   MoreHorizontal,
   Package,
@@ -49,6 +50,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     label: "Contenu",
     items: [
       { label: "Études de cas", href: "/admin/case-studies", icon: Film },
+      { label: "Ils nous font confiance", href: "/admin/trusted", icon: Handshake },
       { label: "Offres", href: "/admin/offers", icon: Package },
     ],
   },

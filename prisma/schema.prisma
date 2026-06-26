@@ -256,5 +256,26 @@ model SiteSettings {
   faviconUrl             String?
   bookingEnabled         Boolean  @default(true)
   maintenanceMode        Boolean  @default(false)
+  trustedSectionIndex    String   @default("003")
+  trustedTitleEn         String?
+  trustedTitleHighlightEn String?
+  trustedSubtitleEn      String?
+  trustedTitleFr         String?
+  trustedTitleHighlightFr String?
+  trustedSubtitleFr      String?
   updatedAt              DateTime @updatedAt
+}
+
+model TrustedPartner {
+  id          String   @id @default(cuid())
+  name        String
+  imageUrl    String
+  linkUrl     String?
+  whiteFilter Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active, sortOrder])
 }

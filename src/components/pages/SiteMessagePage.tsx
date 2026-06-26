@@ -85,6 +85,7 @@ export function SiteMessagePage({ variant }: SiteMessagePageProps) {
           fill
           priority
           sizes="100vw"
+          unoptimized
           className="object-cover md:hidden"
         />
         <Image
@@ -93,6 +94,7 @@ export function SiteMessagePage({ variant }: SiteMessagePageProps) {
           fill
           priority
           sizes="100vw"
+          unoptimized
           className="hidden object-cover md:block"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/85" />

@@ -1,4 +1,10 @@
 import type { Translations } from "@/lib/i18n/translations/en";
+import {
+  HERO_VIDEO_DESKTOP,
+  SCROLL_VIDEO_1,
+  SCROLL_VIDEO_2,
+  SCROLL_VIDEO_3,
+} from "@/lib/hero-video-sources";
 
 export const fr: Translations = {
   language: {
@@ -340,22 +346,22 @@ export const fr: Translations = {
         {
           title: "Visite annonce de luxe",
           category: "Immobilier · Oran",
-          media: "/vids/scroll-1.mp4",
+          media: SCROLL_VIDEO_1,
         },
         {
           title: "Reel marque agent",
           category: "Marque personnelle · Alger",
-          media: "/vids/scroll-2.mp4",
+          media: SCROLL_VIDEO_2,
         },
         {
           title: "Combo drone + intérieur",
           category: "Cinématographique · Tlemcen",
-          media: "/vids/scroll-3.mp4",
+          media: SCROLL_VIDEO_3,
         },
         {
           title: "Film de lancement",
           category: "Production complète · Maghreb",
-          media: "/vids/hero.mov",
+          media: HERO_VIDEO_DESKTOP,
         },
       ],
     },

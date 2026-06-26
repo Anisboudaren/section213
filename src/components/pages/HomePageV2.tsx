@@ -16,13 +16,13 @@ import { Stats } from "@/components/sections/Stats";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { Travel } from "@/components/sections/Travel";
 import { useHeroMedia } from "@/hooks/use-hero-media";
-import type { WebsiteClientLogo } from "@/lib/queries/website-clients";
+import type { TrustedSectionData } from "@/lib/queries/trusted-section";
 
 type HomePageV2Props = {
-  websiteClients?: WebsiteClientLogo[];
+  trustedSection: TrustedSectionData;
 };
 
-export function HomePageV2({ websiteClients = [] }: HomePageV2Props) {
+export function HomePageV2({ trustedSection }: HomePageV2Props) {
   const {
     soundOn,
     reelsInView,
@@ -58,7 +58,10 @@ export function HomePageV2({ websiteClients = [] }: HomePageV2Props) {
       />
 
       <Method213 />
-      <TrustedClients websiteClients={websiteClients} />
+      <TrustedClients
+        partners={trustedSection.partners}
+        copy={trustedSection.copy}
+      />
       <Solutions />
       <CaseStudies />
       <WhySection213 />

@@ -1,3 +1,10 @@
+import {
+  HERO_VIDEO_DESKTOP,
+  SCROLL_VIDEO_1,
+  SCROLL_VIDEO_2,
+  SCROLL_VIDEO_3,
+} from "@/lib/hero-video-sources";
+
 export const en = {
   language: {
     pickerTitle: "Choose your language",
@@ -320,22 +327,22 @@ export const en = {
         {
           title: "Luxury listing walk-through",
           category: "Real estate · Oran",
-          media: "/vids/scroll-1.mp4",
+          media: SCROLL_VIDEO_1,
         },
         {
           title: "Agent brand reel",
           category: "Personal brand · Algiers",
-          media: "/vids/scroll-2.mp4",
+          media: SCROLL_VIDEO_2,
         },
         {
           title: "Drone + interior combo",
           category: "Cinematic · Tlemcen",
-          media: "/vids/scroll-3.mp4",
+          media: SCROLL_VIDEO_3,
         },
         {
           title: "Brand launch film",
           category: "Full production · Maghreb",
-          media: "/vids/hero.mov",
+          media: HERO_VIDEO_DESKTOP,
         },
       ],
     },

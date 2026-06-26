@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { Section213Logo } from "@/components/Section213Logo";
+import { useIsMobileViewport } from "@/hooks/use-is-mobile-viewport";
 import {
   HERO_FALLBACK_DESKTOP,
   HERO_FALLBACK_MOBILE,
@@ -77,42 +78,38 @@ export function HeroMobile({
   scrollTargetId = "portfolio",
 }: HeroMobileProps) {
   const sectionRef = useRef<HTMLElement>(null);
-  const mobileVideoRef = useRef<HTMLVideoElement>(null);
-  const desktopVideoRef = useRef<HTMLVideoElement>(null);
-  const [mobileVideoFailed, setMobileVideoFailed] = useState(false);
-  const [desktopVideoFailed, setDesktopVideoFailed] = useState(false);
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const isMobile = useIsMobileViewport();
   const { translations: t } = useLanguage();
   const heroAudible = soundOn && heroInView && !reelsInView;
 
+  const heroPoster =
+    isMobile === false ? HERO_FALLBACK_DESKTOP : HERO_FALLBACK_MOBILE;
+  const heroSrc =
+    isMobile === null
+      ? undefined
+      : isMobile
+        ? HERO_VIDEO_MOBILE
+        : HERO_VIDEO_DESKTOP;
+
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 767px)");
+    if (videoRef) {
+      videoRef.current = heroVideoRef.current;
+    }
+  }, [videoRef, heroSrc]);
 
-    const syncActiveHeroVideo = () => {
-      const mobile = mobileVideoRef.current;
-      const desktop = desktopVideoRef.current;
-      const active = mq.matches ? mobile : desktop;
-      const inactive = mq.matches ? desktop : mobile;
+  useEffect(() => {
+    const video = heroVideoRef.current;
+    if (!video || !heroSrc) return;
 
-      inactive?.pause();
-
-      if (videoRef) {
-        videoRef.current = active;
-      }
-
-      if (active) {
-        active.muted = !heroAudible;
-        if (heroInView) {
-          safePlay(active);
-        } else {
-          active.pause();
-        }
-      }
-    };
-
-    syncActiveHeroVideo();
-    mq.addEventListener("change", syncActiveHeroVideo);
-    return () => mq.removeEventListener("change", syncActiveHeroVideo);
-  }, [heroAudible, heroInView, videoRef]);
+    video.muted = !heroAudible;
+    if (heroInView) {
+      safePlay(video);
+    } else {
+      video.pause();
+    }
+  }, [heroAudible, heroInView, heroSrc]);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -137,6 +134,7 @@ export function HeroMobile({
         fill
         priority
         sizes="100vw"
+        unoptimized
         className="object-cover grayscale md:hidden"
       />
       <Image
@@ -145,40 +143,26 @@ export function HeroMobile({
         fill
         priority
         sizes="100vw"
+        unoptimized
         className="hidden object-cover grayscale md:block"
       />
-      <video
-        ref={mobileVideoRef}
-        className={cn(heroVideoClassName, "md:hidden", mobileVideoFailed && "hidden")}
-        src={HERO_VIDEO_MOBILE}
-        poster={HERO_FALLBACK_MOBILE}
-        muted={!heroAudible}
-        loop
-        playsInline
-        preload="auto"
-        onError={() => setMobileVideoFailed(true)}
-        onCanPlay={(event) => {
-          if (window.matchMedia("(max-width: 767px)").matches) {
-            safePlay(event.currentTarget);
-          }
-        }}
-      />
-      <video
-        ref={desktopVideoRef}
-        className={cn(heroVideoClassName, "hidden md:block", desktopVideoFailed && "hidden")}
-        src={HERO_VIDEO_DESKTOP}
-        poster={HERO_FALLBACK_DESKTOP}
-        muted={!heroAudible}
-        loop
-        playsInline
-        preload="auto"
-        onError={() => setDesktopVideoFailed(true)}
-        onCanPlay={(event) => {
-          if (!window.matchMedia("(max-width: 767px)").matches) {
-            safePlay(event.currentTarget);
-          }
-        }}
-      />
+      {heroSrc ? (
+        <video
+          key={heroSrc}
+          ref={heroVideoRef}
+          className={cn(heroVideoClassName, videoFailed && "hidden")}
+          src={heroSrc}
+          poster={heroPoster}
+          muted={!heroAudible}
+          loop
+          playsInline
+          preload="metadata"
+          onError={() => setVideoFailed(true)}
+          onCanPlay={(event) => {
+            if (heroInView) safePlay(event.currentTarget);
+          }}
+        />
+      ) : null}
       <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/25 to-black/85" />
 
       <nav className="absolute inset-x-0 top-0 z-20 flex items-center justify-between px-4 py-4 sm:px-6 md:px-8 md:py-5">

@@ -67,6 +67,10 @@ export default async function RootLayout({
       className={`${inter.variable} ${anton.variable}`}
       style={accentStyles}
     >
+      <head>
+        <link rel="preconnect" href="https://bbrpqquawbvqnrpw.public.blob.vercel-storage.com" />
+        <link rel="dns-prefetch" href="https://bbrpqquawbvqnrpw.public.blob.vercel-storage.com" />
+      </head>
       <body>
         <Providers siteSettings={settings}>{children}</Providers>
       </body>

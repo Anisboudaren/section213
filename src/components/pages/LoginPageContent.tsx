@@ -19,6 +19,7 @@ export function LoginPageContent() {
           fill
           priority
           sizes="50vw"
+          unoptimized
           className="object-cover grayscale"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-black/90" />

@@ -6,6 +6,7 @@ import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
+import { CaseStudyVideo } from "./CaseStudyVideo";
 
 export function CaseStudies() {
   const { translations: t } = useLanguage();
@@ -26,13 +27,9 @@ export function CaseStudies() {
           {cs.items.map((item, i) => (
             <RevealInView key={item.title} className={i % 2 === 1 ? "sm:delay-100" : undefined}>
               <article className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-white/10 sm:aspect-[16/11]">
-                <video
-                  className="absolute inset-0 h-full w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0"
+                <CaseStudyVideo
                   src={item.media}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
+                  className="absolute inset-0 h-full w-full object-cover grayscale transition duration-700 group-hover:scale-105 group-hover:grayscale-0"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10" />
                 <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">

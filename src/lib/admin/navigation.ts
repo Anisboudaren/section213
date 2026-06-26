@@ -92,6 +92,12 @@ export const adminNavSections: NavSection[] = [
         description: "Portfolio case studies for the public website.",
       },
       {
+        title: "Trusted Section",
+        url: "/admin/trusted",
+        icon: Handshake,
+        description: "Homepage “They already trust us” logos, links, and copy.",
+      },
+      {
         title: "Contacts",
         url: "/admin/contacts",
         icon: Contact,

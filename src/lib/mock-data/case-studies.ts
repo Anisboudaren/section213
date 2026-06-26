@@ -1,4 +1,10 @@
 import type { CaseStudy } from "@/lib/types/admin";
+import {
+  HERO_VIDEO_DESKTOP,
+  SCROLL_VIDEO_1,
+  SCROLL_VIDEO_2,
+  SCROLL_VIDEO_3,
+} from "@/lib/hero-video-sources";
 
 export const MOCK_CASE_STUDIES: CaseStudy[] = [
   {
@@ -7,8 +13,8 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     clientId: "client-1",
     clientName: "Oran Fresh Foods",
     industry: "Food & Beverage",
-    videoUrl: "/vids/scroll-1.mp4",
-    thumbnailUrl: "/vids/scroll-1.mp4",
+    videoUrl: SCROLL_VIDEO_1,
+    thumbnailUrl: SCROLL_VIDEO_1,
     services: ["Reels Production", "Social Strategy"],
     results: [
       { label: "Follower growth", value: "+340%" },
@@ -25,7 +31,7 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     clientId: "client-2",
     clientName: "Maison Cherifi",
     industry: "Fashion",
-    videoUrl: "/vids/scroll-2.mp4",
+    videoUrl: SCROLL_VIDEO_2,
     services: ["Brand Identity", "Social Content"],
     results: [
       { label: "Brand recognition", value: "+180%" },
@@ -41,7 +47,7 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     clientId: "client-3",
     clientName: "TechOran Solutions",
     industry: "Technology",
-    videoUrl: "/vids/hero.mov",
+    videoUrl: HERO_VIDEO_DESKTOP,
     services: ["Video Production", "Website"],
     results: [
       { label: "Launch day signups", value: "320" },
@@ -57,7 +63,7 @@ export const MOCK_CASE_STUDIES: CaseStudy[] = [
     clientId: "client-4",
     clientName: "Khelifi Cosmetics",
     industry: "Beauty",
-    videoUrl: "/vids/scroll-3.mp4",
+    videoUrl: SCROLL_VIDEO_3,
     services: ["Reels Production", "Carousels"],
     results: [
       { label: "Engagement rate", value: "+220%" },

@@ -27,11 +27,17 @@ import {
   VolumeX,
 } from "lucide-react";
 
-import { HERO_VIDEO_DESKTOP } from "@/lib/hero-video-sources";
+import {
+  pickHeroFallbackSrc,
+  pickHeroVideoSrc,
+  SCROLL_VIDEO_1,
+  SCROLL_VIDEO_2,
+  SCROLL_VIDEO_3,
+} from "@/lib/hero-video-sources";
 
 const REELS = [
   {
-    src: "/vids/scroll-1.mp4",
+    src: SCROLL_VIDEO_1,
     title: "Luxury listing walk-through",
     location: "Oran, Algeria",
     likes: "48.2K",
@@ -41,7 +47,7 @@ const REELS = [
     sound: "Original Sound — Section 213",
   },
   {
-    src: "/vids/scroll-2.mp4",
+    src: SCROLL_VIDEO_2,
     title: "Agent brand reel — day in the life",
     location: "Algiers, Algeria",
     likes: "112K",
@@ -51,7 +57,7 @@ const REELS = [
     sound: "Trending Audio — Section 213",
   },
   {
-    src: "/vids/scroll-3.mp4",
+    src: SCROLL_VIDEO_3,
     title: "Cinematic drone + interior combo",
     location: "Tlemcen, Algeria",
     likes: "76.5K",
@@ -183,17 +189,23 @@ function HeroTop({
 
   const heroAudible = soundOn && heroInView && !reelsInView;
   const { translations: t } = useLanguage();
+  const heroSrc = pickHeroVideoSrc();
+  const heroPoster = pickHeroFallbackSrc();
 
   return (
     <section ref={sectionRef} className="relative h-screen w-full overflow-hidden bg-ink">
       <video
         ref={videoRef}
         className="absolute inset-0 h-full w-full object-cover grayscale"
-        src={HERO_VIDEO_DESKTOP}
+        src={heroSrc}
+        poster={heroPoster}
         muted={!heroAudible}
         loop
         playsInline
-        onCanPlay={(event) => safePlay(event.currentTarget)}
+        preload="metadata"
+        onCanPlay={(event) => {
+          if (heroInView) safePlay(event.currentTarget);
+        }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black" />
       <Nav soundOn={soundOn} onToggleSound={onToggleSound} />
@@ -396,6 +408,7 @@ export function ReelsScroll({
   const touchStartY = useRef(0);
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [sectionInView, setSectionInView] = useState(false);
 
   const snapScrollToIndex = useCallback((index: number, behavior: ScrollBehavior = "smooth") => {
     const el = sectionRef.current;
@@ -442,7 +455,11 @@ export function ReelsScroll({
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => onInViewChange(entry.isIntersecting && entry.intersectionRatio > 0.3),
+      ([entry]) => {
+        const inView = entry.isIntersecting && entry.intersectionRatio > 0.3;
+        setSectionInView(inView);
+        onInViewChange(inView);
+      },
       { threshold: [0, 0.3, 0.6] },
     );
     observer.observe(el);
@@ -581,6 +598,8 @@ export function ReelsScroll({
                 >
                   {REELS.map((reel, i) => {
                     const isActive = i === activeIndex;
+                    const shouldLoad =
+                      sectionInView && Math.abs(i - activeIndex) <= 1;
                     return (
                       <div
                         key={reel.src}
@@ -591,11 +610,11 @@ export function ReelsScroll({
                           ref={(el) => {
                             reelVideoRefs.current[i] = el;
                           }}
-                          src={reel.src}
+                          src={shouldLoad ? reel.src : undefined}
                           muted={!soundOn || i !== activeIndex}
                           loop
                           playsInline
-                          preload="auto"
+                          preload={isActive && shouldLoad ? "auto" : "none"}
                           className="h-full w-full object-cover"
                           onCanPlay={(event) => {
                             if (i === activeIndex) safePlay(event.currentTarget);
