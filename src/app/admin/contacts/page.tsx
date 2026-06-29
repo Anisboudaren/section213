@@ -1,5 +1,5 @@
-import { AdminRoutePage } from "@/components/admin/AdminRoutePage";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <AdminRoutePage url="/admin/contacts" />;
+  redirect("/admin/settings/platform");
 }

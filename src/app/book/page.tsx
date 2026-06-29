@@ -4,16 +4,20 @@ import Link from "next/link";
 import { BookPageContent } from "@/components/pages/BookPageContent";
 import { getOffers } from "@/lib/actions/offers";
 import { getSiteSettings } from "@/lib/actions/site-settings";
+import { partitionOffers } from "@/lib/offers/offer-types";
 
 export const metadata: Metadata = {
-  title: "Book a Shoot",
+  title: "Réserver un projet — Section 213",
+  description: "Planifiez votre lancement — date, projet, objectif et accompagnement.",
 };
 
 export default async function Page() {
-  const [offersResult, settings] = await Promise.all([
-    getOffers({ activeOnly: true }),
+  const [settings, offersResult] = await Promise.all([
     getSiteSettings(),
+    getOffers({ activeOnly: true }),
   ]);
+  const offers = offersResult.success ? offersResult.data : [];
+  const { packs, alaCarte } = partitionOffers(offers);
 
   if (!settings.bookingEnabled) {
     return (
@@ -29,7 +33,5 @@ export default async function Page() {
     );
   }
 
-  const offers = offersResult.success ? offersResult.data : [];
-
-  return <BookPageContent offers={offers} />;
+  return <BookPageContent packs={packs} alaCarte={alaCarte} />;
 }

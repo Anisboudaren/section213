@@ -1,135 +1,135 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect } from "react";
+import { Check } from "lucide-react";
 
-import { BookOfferCard } from "@/components/book/OfferCard";
+import { bookingChoiceClass } from "@/components/book/selection-styles";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { BookingFormData } from "@/lib/booking-types";
-import { getDefaultOfferCategory } from "@/lib/booking-types";
-import { adminT } from "@/lib/i18n/admin-en";
+import {
+  formatPriceFrom,
+  type OfferAlaCarteView,
+  type OfferPackView,
+} from "@/lib/offers/offer-types";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
-import type { Offer, OfferCategory } from "@/lib/types/admin";
+import { cn } from "@/lib/utils";
 
 type StepProps = {
   data: Partial<BookingFormData>;
   onChange: (patch: Partial<BookingFormData>) => void;
   errors?: Record<string, string>;
-  offers: Offer[];
+  initialPackId?: string;
+  packs: OfferPackView[];
+  alaCarte: OfferAlaCarteView[];
 };
 
-const CATEGORIES: OfferCategory[] = [
-  "media",
-  "brand_content",
-  "websites_apps",
-  "automations",
-];
-
-export function Step04Offre({ data, onChange, errors, offers }: StepProps) {
-  const { locale } = useLanguage();
-  const activeOffers = offers.filter((o) => o.active);
-  const [category, setCategory] = useState<OfferCategory>("media");
-
-  const defaultCategory = getDefaultOfferCategory(data.projectTypes);
-
-  const selectedOffer = useMemo(
-    () => activeOffers.find((o) => o.id === data.selectedOfferId),
-    [activeOffers, data.selectedOfferId],
-  );
-
-  const optionFeatures = useMemo(() => {
-    if (!selectedOffer) return [];
-    return locale === "fr" && selectedOffer.featuresFr?.length
-      ? selectedOffer.featuresFr
-      : selectedOffer.features;
-  }, [selectedOffer, locale]);
-
-  const toggleOption = (feature: string) => {
-    const current = data.bookingOptions ?? [];
-    const next = current.includes(feature)
-      ? current.filter((f) => f !== feature)
-      : [...current, feature];
-    onChange({ bookingOptions: next });
-  };
+export function Step04Offre({
+  data,
+  onChange,
+  errors,
+  initialPackId,
+  packs,
+  alaCarte,
+}: StepProps) {
+  const { locale, translations: t } = useLanguage();
+  const isFr = locale === "fr";
+  const selected = data.selectedPackId;
+  const alaCarteSelected = data.alaCarteOptions ?? [];
 
   useEffect(() => {
-    if (defaultCategory) setCategory(defaultCategory);
-  }, [defaultCategory]);
-
-  useEffect(() => {
-    if (!data.selectedOfferId && defaultCategory) {
-      const match = activeOffers.find((o) => o.category === defaultCategory);
-      if (match) onChange({ selectedOfferId: match.id });
+    if (!selected && initialPackId) {
+      const pack = packs.find((p) => p.slug === initialPackId || p.id === initialPackId);
+      if (pack) onChange({ selectedPackId: pack.slug });
     }
-  }, [defaultCategory, activeOffers, data.selectedOfferId, onChange]);
+  }, [initialPackId, selected, onChange, packs]);
 
-  const offersByCategory = useMemo(
-    () =>
-      Object.fromEntries(
-        CATEGORIES.map((cat) => [
-          cat,
-          activeOffers.filter((o) => o.category === cat),
-        ]),
-      ) as Record<OfferCategory, typeof activeOffers>,
-    [activeOffers],
-  );
+  const toggleAlaCarte = (slug: string) => {
+    const next = alaCarteSelected.includes(slug)
+      ? alaCarteSelected.filter((item) => item !== slug)
+      : [...alaCarteSelected, slug];
+    onChange({ alaCarteOptions: next });
+  };
 
   return (
     <div className="space-y-5">
-      <Tabs value={category} onValueChange={(v) => setCategory(v as OfferCategory)}>
-        <TabsList className="flex h-auto w-full flex-wrap gap-1.5 bg-transparent p-0">
-          {CATEGORIES.map((cat) => (
-            <TabsTrigger
-              key={cat}
-              value={cat}
-              className="min-h-10 flex-1 rounded-full border border-ink/10 bg-background px-3 text-xs data-[state=active]:border-ruby/40 data-[state=active]:bg-ink data-[state=active]:text-white sm:text-sm"
-            >
-              {adminT(`offers.categories.${cat}` as Parameters<typeof adminT>[0])}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-        {CATEGORIES.map((cat) => {
-          const categoryOffers = offersByCategory[cat];
+      <div className="space-y-3">
+        {packs.map((pack) => {
+          const isSelected = selected === pack.slug;
+          const name = isFr ? pack.nameFr : pack.nameEn;
+          const tagline = isFr ? pack.taglineFr : pack.taglineEn;
+          const priceLine = pack.studyOnly
+            ? isFr
+              ? pack.priceLabelFr
+              : pack.priceLabelEn
+            : pack.priceFrom
+              ? `${isFr ? "À partir de" : "From"} ${formatPriceFrom(pack.priceFrom, locale)}`
+              : null;
+
           return (
-            <TabsContent key={cat} value={cat} className="mt-5 space-y-4">
-              {categoryOffers.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">
-                  {adminT("offers.emptyTitle")}
-                </p>
-              ) : (
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {categoryOffers.map((offer) => (
-                    <BookOfferCard
-                      key={offer.id}
-                      offer={offer}
-                      selected={data.selectedOfferId === offer.id}
-                      onSelect={() => onChange({ selectedOfferId: offer.id })}
-                    />
-                  ))}
-                </div>
+            <button
+              key={pack.id}
+              type="button"
+              aria-pressed={isSelected}
+              onClick={() => onChange({ selectedPackId: pack.slug })}
+              className={cn(
+                bookingChoiceClass(isSelected, "w-full rounded-xl p-4 text-left"),
+                pack.recommended && "ring-1 ring-ruby/30",
               )}
-            </TabsContent>
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-display text-lg tracking-wider">{name}</span>
+                    {pack.recommended && (
+                      <span className="rounded-full bg-brand-accent px-2 py-0.5 text-[10px] font-semibold text-ruby-foreground">
+                        {t.booking.recommended}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">{tagline}</p>
+                </div>
+                <span className="shrink-0 text-sm font-bold">{priceLine}</span>
+              </div>
+              {isSelected && (
+                <ul className="mt-3 space-y-1 border-t border-ink/10 pt-3">
+                  {(isFr ? pack.featuresFr : pack.featuresEn).map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ruby" />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </button>
           );
         })}
-      </Tabs>
-      {errors?.selectedOfferId && (
-        <p className="text-sm text-destructive text-center">Required</p>
+      </div>
+      {errors?.selectedPackId && (
+        <p className="text-sm text-destructive text-center">{t.booking.validation.required}</p>
       )}
 
-      {selectedOffer && optionFeatures.length > 0 && (
+      {alaCarte.length > 0 && (
         <div className="space-y-3 rounded-xl border border-ink/10 bg-ink/[0.02] p-4">
-          <p className="text-sm font-medium">{adminT("common.features")}</p>
+          <p className="text-sm font-medium">
+            {isFr ? "Services à la carte" : "À la carte services"}
+          </p>
           <div className="space-y-2">
-            {optionFeatures.map((feature) => (
-              <div key={feature} className="flex items-center gap-2">
+            {alaCarte.map((item) => (
+              <div key={item.id} className="flex items-center gap-2">
                 <Checkbox
-                  id={`opt-${feature}`}
-                  checked={(data.bookingOptions ?? []).includes(feature)}
-                  onCheckedChange={() => toggleOption(feature)}
+                  id={`ala-${item.slug}`}
+                  checked={alaCarteSelected.includes(item.slug)}
+                  onCheckedChange={() => toggleAlaCarte(item.slug)}
                 />
-                <Label htmlFor={`opt-${feature}`} className="text-sm font-normal cursor-pointer">
-                  {feature}
+                <Label
+                  htmlFor={`ala-${item.slug}`}
+                  className="flex flex-1 cursor-pointer justify-between text-sm font-normal"
+                >
+                  <span>{isFr ? item.nameFr : item.nameEn}</span>
+                  <span className="text-muted-foreground">
+                    {isFr ? item.priceFr : item.priceEn}
+                  </span>
                 </Label>
               </div>
             ))}

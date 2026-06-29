@@ -2,9 +2,11 @@
 
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { FileText, Loader2, Upload, X } from "lucide-react";
+import { FileText, FolderOpen, Loader2, Upload, X } from "lucide-react";
 
+import { MediaPickerDialog } from "@/components/admin/media/MediaPickerDialog";
 import { Button } from "@/components/ui/button";
+import { adminT } from "@/lib/i18n/admin-en";
 import { cn } from "@/lib/utils";
 import type { BlobFolder } from "@/lib/blob";
 
@@ -21,6 +23,7 @@ type MediaUploadFieldProps = {
   label?: string;
   className?: string;
   disabled?: boolean;
+  allowLibraryPick?: boolean;
 };
 
 const VARIANT_ACCEPT: Record<MediaUploadVariant, string> = {
@@ -40,11 +43,16 @@ export function MediaUploadField({
   label,
   className,
   disabled,
+  allowLibraryPick = true,
 }: MediaUploadFieldProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+
+  const libraryFilter =
+    variant === "video" ? "video" : variant === "image" ? "image" : "all";
 
   const uploadFile = useCallback(
     async (file: File) => {
@@ -92,6 +100,20 @@ export function MediaUploadField({
     (variant === "document" && value && !value.endsWith(".pdf"));
 
   const isCircle = shape === "circle";
+
+  const libraryButton = allowLibraryPick ? (
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      className="min-h-9"
+      disabled={disabled || uploading}
+      onClick={() => setLibraryOpen(true)}
+    >
+      <FolderOpen className="mr-2 h-4 w-4" />
+      {adminT("media.pickFromLibrary")}
+    </Button>
+  ) : null;
 
   if (isCircle) {
     return (
@@ -148,6 +170,7 @@ export function MediaUploadField({
           )}
         </div>
         {label && <p className="text-center text-xs text-muted-foreground">{label}</p>}
+        {libraryButton}
         <input
           ref={inputRef}
           type="file"
@@ -157,6 +180,12 @@ export function MediaUploadField({
           onChange={(e) => handleFiles(e.target.files)}
         />
         {error && <p className="text-center text-xs text-destructive">{error}</p>}
+        <MediaPickerDialog
+          open={libraryOpen}
+          onOpenChange={setLibraryOpen}
+          filter={libraryFilter}
+          onSelect={onChange}
+        />
       </div>
     );
   }
@@ -244,20 +273,30 @@ export function MediaUploadField({
         onChange={(e) => handleFiles(e.target.files)}
       />
 
-      {value && !disabled && (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={uploading}
-          onClick={() => inputRef.current?.click()}
-        >
-          {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          Remplacer
-        </Button>
-      )}
+      <div className="flex flex-wrap gap-2">
+        {value && !disabled && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={uploading}
+            onClick={() => inputRef.current?.click()}
+          >
+            {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            Remplacer
+          </Button>
+        )}
+        {libraryButton}
+      </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
+
+      <MediaPickerDialog
+        open={libraryOpen}
+        onOpenChange={setLibraryOpen}
+        filter={libraryFilter}
+        onSelect={onChange}
+      />
     </div>
   );
 }

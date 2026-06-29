@@ -6,6 +6,7 @@ import {
   createOffer,
   deleteOffer,
   getOffers,
+  resetOffersToV1,
   type OfferFilters,
   updateOffer,
 } from "@/lib/actions/offers";
@@ -53,6 +54,18 @@ export function useDeleteOffer() {
   return useMutation({
     mutationFn: async (id: string) => {
       const result = await deleteOffer(id);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: OFFERS_KEY }),
+  });
+}
+
+export function useResetOffersToV1() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const result = await resetOffersToV1();
       if (!result.success) throw new Error(result.error);
       return result.data;
     },

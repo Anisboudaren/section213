@@ -6,6 +6,7 @@ import {
   Film,
   Handshake,
   Home,
+  Image,
   MoreHorizontal,
   Package,
   Settings,
@@ -50,6 +51,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
     label: "Contenu",
     items: [
       { label: "Études de cas", href: "/admin/case-studies", icon: Film },
+      { label: "Médias", href: "/admin/media", icon: Image },
       { label: "Ils nous font confiance", href: "/admin/trusted", icon: Handshake },
       { label: "Offres", href: "/admin/offers", icon: Package },
     ],

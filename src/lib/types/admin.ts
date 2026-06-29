@@ -82,24 +82,25 @@ export type CaseStudyResult = {
 
 export type CaseStudy = {
   id: string;
+  slug: string;
   title: string;
   clientId?: string;
   clientName: string;
   industry?: string;
+  categoryLabel?: string;
+  excerpt?: string;
   videoUrl: string;
   thumbnailUrl?: string;
   services: string[];
   results: CaseStudyResult[];
+  sections: import("@/lib/case-study-sections").CaseStudySection[];
   published: boolean;
+  featured: boolean;
   order: number;
   createdAt: string;
 };
 
-export type OfferCategory =
-  | "media"
-  | "brand_content"
-  | "websites_apps"
-  | "automations";
+export type OfferCategory = "pack" | "ala_carte";
 
 export type Offer = {
   id: string;
@@ -114,10 +115,16 @@ export type Offer = {
   featuresFr?: string[];
   price?: number;
   priceLabel?: string;
+  priceLabelFr?: string;
   active: boolean;
   featured: boolean;
+  studyOnly?: boolean;
   order: number;
   cta?: string;
+  ctaFr?: string;
+  noteEn?: string;
+  noteFr?: string;
+  metadata?: import("@/lib/offers/offer-types").OfferMetadata;
 };
 
 export type PixelPlatform =

@@ -1,42 +1,37 @@
 "use client";
 
-import { ReelsScroll } from "@/components/Hero";
+import { BookCTA } from "@/components/home-v2/BookCTA";
 import { HeroMobile } from "@/components/home-v2/HeroMobile";
-import { CaseStudies } from "@/components/home-v2/CaseStudies";
 import { Method213 } from "@/components/home-v2/Method213";
-import { Solutions } from "@/components/home-v2/Solutions";
+import { Offers } from "@/components/home-v2/Offers";
+import { Problem } from "@/components/home-v2/Problem";
 import { TrustedClients } from "@/components/home-v2/TrustedClients";
 import { WhySection213 } from "@/components/home-v2/WhySection213";
-import { CreatorProgram } from "@/components/sections/CreatorProgram";
 import { FAQ } from "@/components/sections/FAQ";
 import { Footer } from "@/components/sections/Footer";
-import { InstagramCTA } from "@/components/sections/InstagramCTA";
-import { Pricing } from "@/components/sections/Pricing";
-import { Stats } from "@/components/sections/Stats";
 import { Testimonials } from "@/components/sections/Testimonials";
-import { Travel } from "@/components/sections/Travel";
 import { useHeroMedia } from "@/hooks/use-hero-media";
+import type { OfferAlaCarteView, OfferPackView } from "@/lib/offers/offer-types";
 import type { TrustedSectionData } from "@/lib/queries/trusted-section";
 
 type HomePageV2Props = {
   trustedSection: TrustedSectionData;
+  packs: OfferPackView[];
+  alaCarte: OfferAlaCarteView[];
 };
 
-export function HomePageV2({ trustedSection }: HomePageV2Props) {
+export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props) {
   const {
     soundOn,
     reelsInView,
     heroInView,
     toggleSound,
     heroVideoRef,
-    reelVideoRefs,
     handleHeroInView,
-    handleReelsInView,
-    handleActiveReelChange,
   } = useHeroMedia();
 
   return (
-    <main className="theme-marketing min-h-screen bg-background">
+    <main className="theme-marketing min-h-screen bg-ink">
       <HeroMobile
         soundOn={soundOn}
         onToggleSound={toggleSound}
@@ -44,35 +39,33 @@ export function HomePageV2({ trustedSection }: HomePageV2Props) {
         heroInView={heroInView}
         videoRef={heroVideoRef}
         onHeroInViewChange={handleHeroInView}
-        scrollTargetId="portfolio"
+        scrollTargetId="problem"
       />
 
-      <ReelsScroll
-        soundOn={soundOn}
-        onToggleSound={toggleSound}
-        onInViewChange={handleReelsInView}
-        onActiveIndexChange={handleActiveReelChange}
-        reelVideoRefs={reelVideoRefs}
-        sectionLabel="001"
-        compactPhone
-      />
+      {/* 001 — Problem (dark) */}
+      <Problem />
 
+      {/* 002 — Method (dark) */}
       <Method213 />
+
+      {/* 003 — Proof / logos (dark) */}
       <TrustedClients
         partners={trustedSection.partners}
         copy={trustedSection.copy}
       />
-      <Solutions />
-      <CaseStudies />
+
+      {/* 004 — Why us (light) */}
       <WhySection213 />
 
-      <Pricing />
-      <CreatorProgram />
-      <Travel />
-      <Stats />
+      {/* 005 — Offers (dark) */}
+      <Offers packs={packs} alaCarte={alaCarte} />
+
+      {/* Light breathing room before checkout */}
       <Testimonials />
       <FAQ />
-      <InstagramCTA />
+
+      {/* 006 — Checkout entry (dark) */}
+      <BookCTA />
       <Footer />
     </main>
   );

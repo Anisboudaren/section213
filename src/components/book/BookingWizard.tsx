@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import { BookingNav } from "@/components/book/BookingNav";
 import { BookingProgress } from "@/components/book/BookingProgress";
@@ -13,19 +14,31 @@ import { Step06Confirmation } from "@/components/book/steps/Step06Confirmation";
 import { Card, CardContent } from "@/components/ui/card";
 import { validateBookingStep } from "@/lib/booking-schema";
 import type { BookingFormData } from "@/lib/booking-types";
-import type { Offer } from "@/lib/types/admin";
+import type { OfferAlaCarteView, OfferPackView } from "@/lib/offers/offer-types";
 import { cn } from "@/lib/utils";
 
 const INITIAL_DATA: Partial<BookingFormData> = {
   isFlexible: false,
   preferredDate: "",
-  projectTypes: [],
+  projectName: "",
+  wilaya: "",
+  location: "",
   projectDescription: "",
-  bookingOptions: [],
+  uploadedFiles: [],
+  selectedPackId: "",
+  alaCarteOptions: [],
   depositChoice: "no_deposit",
 };
 
-export function BookingWizard({ offers }: { offers: Offer[] }) {
+type BookingWizardProps = {
+  packs: OfferPackView[];
+  alaCarte: OfferAlaCarteView[];
+};
+
+export function BookingWizard({ packs, alaCarte }: BookingWizardProps) {
+  const searchParams = useSearchParams();
+  const initialPackId = searchParams.get("pack") ?? undefined;
+
   const [step, setStep] = useState(1);
   const [data, setData] = useState<Partial<BookingFormData>>(INITIAL_DATA);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -73,7 +86,7 @@ export function BookingWizard({ offers }: { offers: Offer[] }) {
       <div className="flex min-h-[calc(100svh-4rem)] flex-col md:min-h-0">
         <Card className="mt-6 flex flex-1 flex-col border-border/60 shadow-sm md:mx-auto md:max-w-[560px] md:w-full">
           <CardContent className="flex flex-1 flex-col p-6 md:p-8">
-            <Step06Confirmation data={data} offers={offers} />
+            <Step06Confirmation data={data} packs={packs} />
           </CardContent>
         </Card>
       </div>
@@ -102,15 +115,23 @@ export function BookingWizard({ offers }: { offers: Offer[] }) {
               <Step03Objectif data={data} onChange={updateData} errors={errors} />
             )}
             {step === 4 && (
-              <Step04Offre data={data} onChange={updateData} errors={errors} offers={offers} />
+              <Step04Offre
+                data={data}
+                onChange={updateData}
+                errors={errors}
+                initialPackId={initialPackId}
+                packs={packs}
+                alaCarte={alaCarte}
+              />
             )}
             {step === 5 && (
               <Step05Recap
                 data={data}
                 onChange={updateData}
                 errors={errors}
-                offers={offers}
                 onSubmitSuccess={() => setConfirmed(true)}
+                packs={packs}
+                alaCarte={alaCarte}
               />
             )}
           </div>

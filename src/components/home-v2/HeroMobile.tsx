@@ -8,9 +8,7 @@ import {
   ChevronDown,
   ChevronRight,
   MapPin,
-  Pencil,
   Phone,
-  User,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -75,7 +73,7 @@ export function HeroMobile({
   heroInView,
   videoRef,
   onHeroInViewChange,
-  scrollTargetId = "portfolio",
+  scrollTargetId = "problem",
 }: HeroMobileProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const heroVideoRef = useRef<HTMLVideoElement>(null);
@@ -171,11 +169,11 @@ export function HeroMobile({
         </div>
 
         <div className="hidden md:flex md:flex-1 md:items-center md:gap-6 lg:gap-8 text-sm font-medium">
-          <a href="#services" onClick={(e) => handleSmoothScroll(e, "services")} className="hover:text-ruby transition-colors">
+          <a href="#offers" onClick={(e) => handleSmoothScroll(e, "offers")} className="hover:text-ruby transition-colors">
             {t.nav.services}
           </a>
-          <a href={`#${scrollTargetId}`} onClick={(e) => handleSmoothScroll(e, scrollTargetId)} className="hover:text-ruby transition-colors">
-            {t.nav.portfolio}
+          <a href="#problem" onClick={(e) => handleSmoothScroll(e, "problem")} className="hover:text-ruby transition-colors">
+            {t.nav.problem}
           </a>
           <a href="#about" onClick={(e) => handleSmoothScroll(e, "about")} className="hover:text-ruby transition-colors">
             {t.nav.about}
@@ -213,39 +211,32 @@ export function HeroMobile({
           <p className="max-w-md leading-snug">{t.hero.location}</p>
         </div>
 
-        <h1 className="mt-3 font-display text-[clamp(2rem,7.5vw,2.75rem)] leading-[0.93] tracking-tight sm:mt-4 sm:max-w-xl sm:text-5xl md:max-w-3xl md:text-6xl lg:max-w-4xl lg:text-7xl">
-          <span className="text-ruby">{t.hero.headlineGold}</span> {t.hero.headlineRest}
+        <h1 className="mt-3 font-display text-[clamp(1.75rem,6.5vw,2.75rem)] leading-[1.02] tracking-tight sm:mt-4 sm:max-w-2xl sm:text-4xl md:max-w-3xl md:text-5xl lg:max-w-4xl lg:text-6xl">
+          {t.hero.headline}
         </h1>
 
-        <div className="mt-5 space-y-2.5 text-sm text-white/90 sm:mt-6 sm:space-y-3 sm:text-base md:mt-8 md:max-w-2xl">
-          <div className="flex gap-3">
-            <Pencil className="mt-0.5 h-4 w-4 shrink-0 text-ruby sm:h-5 sm:w-5" />
-            <p className="leading-snug">{t.hero.bullet1}</p>
-          </div>
-          <div className="hidden gap-3 sm:flex">
-            <User className="mt-0.5 h-5 w-5 shrink-0 text-ruby" />
-            <p className="leading-snug">{t.hero.bullet2}</p>
-          </div>
-        </div>
+        <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/85 sm:mt-5 sm:text-base md:max-w-2xl">
+          {t.hero.subheadline}
+        </p>
 
         <div className="mt-7 flex flex-col gap-3 sm:mt-8 md:mt-10 lg:flex-row lg:items-end lg:justify-between">
           <div className="hidden lg:block lg:flex-1" />
 
           <div className="flex w-full flex-col gap-2.5 sm:max-w-md sm:gap-3 lg:ml-auto lg:items-end">
             <a
-              href="#services"
-              onClick={(e) => handleSmoothScroll(e, "services")}
+              href="#offers"
+              onClick={(e) => handleSmoothScroll(e, "offers")}
               className="hero-stair-step hero-stair-step-1 bg-brand-accent flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-ruby-foreground shadow-lg transition hover:brightness-110 sm:text-base lg:max-w-[18rem]"
             >
-              {t.hero.ourPackages}
+              {t.hero.ctaPrimary}
               <ChevronRight className="h-4 w-4" />
             </a>
             <a
-              href={`#${scrollTargetId}`}
-              onClick={(e) => handleSmoothScroll(e, scrollTargetId)}
+              href="#about"
+              onClick={(e) => handleSmoothScroll(e, "about")}
               className="hero-stair-step hero-stair-step-2 flex w-full items-center justify-center rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 lg:max-w-[16rem]"
             >
-              {t.hero.seeViralReels}
+              {t.hero.ctaSecondary}
             </a>
             <button
               type="button"
@@ -255,6 +246,15 @@ export function HeroMobile({
               <Volume2 className="h-4 w-4" />
               {soundOn ? t.nav.soundOn : t.hero.enableSound}
             </button>
+
+            <div className="hero-stair-step hero-stair-step-4 mt-1 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50 sm:text-xs lg:max-w-[18rem]">
+              {t.hero.visualBand.map((step, i) => (
+                <span key={step} className="inline-flex items-center gap-2">
+                  {i > 0 && <span className="text-white/25">→</span>}
+                  <span>{step}</span>
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -263,7 +263,7 @@ export function HeroMobile({
         href={`#${scrollTargetId}`}
         onClick={(e) => handleSmoothScroll(e, scrollTargetId)}
         className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1 text-white/55 transition hover:text-white"
-        aria-label={t.hero.scrollToReels}
+        aria-label={t.hero.scrollToContent}
       >
         <span className="text-[10px] font-semibold uppercase tracking-[0.25em]">{t.hero.scroll}</span>
         <ChevronDown className="h-5 w-5 animate-bounce" />

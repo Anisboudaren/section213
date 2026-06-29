@@ -6,15 +6,28 @@ import type { BookingFormData } from "@/lib/booking-types";
 const minBookingDate = addHours(new Date(), 48);
 
 const projectTypeEnum = z.enum([
-  "shooting_video",
-  "shooting_photo",
-  "reels_content",
-  "website",
-  "brand_identity",
-  "automation",
-  "full_package",
+  "residence",
+  "lotissement",
+  "immeuble",
+  "villa",
+  "commercial",
   "other",
 ]);
+
+const objectiveEnum = z.enum([
+  "visites",
+  "vendre_vite",
+  "confiance",
+  "diaspora",
+  "nouveau_projet",
+  "autre",
+]);
+
+const uploadedFileSchema = z.object({
+  name: z.string(),
+  url: z.string().url(),
+  kind: z.enum(["plans", "visuels", "logo", "documents"]),
+});
 
 export const step01Schema = z
   .object({
@@ -40,28 +53,24 @@ export const step01Schema = z
   });
 
 export const step02Schema = z.object({
-  projectTypes: z.array(projectTypeEnum).min(1, "required"),
+  projectName: z.string().trim().min(2, "min2"),
+  wilaya: z.string().min(1, "required"),
+  location: z.string().trim().min(2, "min2"),
+  projectType: projectTypeEnum,
   projectDescription: z.string().trim().min(10, "min10").max(500, "max500"),
+  uploadedFiles: z.array(uploadedFileSchema).default([]),
 });
 
 export const step03Schema = z.object({
-  objective: z.enum(["notoriete", "conversion", "engagement", "confiance", "autre"]),
-  budgetRange: z.enum([
-    "under_50k",
-    "50k_150k",
-    "150k_300k",
-    "over_300k",
-    "flexible",
-  ]),
+  objective: objectiveEnum,
 });
 
 export const step04Schema = z.object({
-  selectedOfferId: z.string().min(1, "required"),
-  bookingOptions: z.array(z.string()).default([]),
+  selectedPackId: z.string().min(1, "required"),
+  alaCarteOptions: z.array(z.string()).default([]),
 });
 
 export const step05Schema = z.object({
-  wilaya: z.string().min(1, "required"),
   fullName: z.string().trim().min(2, "min2"),
   phone: z.string().trim().min(8, "phone"),
   email: z
@@ -70,6 +79,8 @@ export const step05Schema = z.object({
     .optional()
     .refine((v) => !v || z.string().email().safeParse(v).success, { message: "email" }),
   company: z.string().trim().optional(),
+  depositChoice: z.enum(["no_deposit", "deposit_50"]),
+  depositMethod: z.enum(["manual_transfer", "chargilly"]).optional(),
 });
 
 export const fullBookingSchema = step01Schema
@@ -86,7 +97,6 @@ export const STEP_SCHEMAS = [
   step05Schema,
 ] as const;
 
-/** Only pass fields relevant to the current step — avoids partial wizard state breaking validation */
 export function getStepInput(
   step: number,
   data: Partial<BookingFormData>,
@@ -100,26 +110,30 @@ export function getStepInput(
       };
     case 2:
       return {
-        projectTypes: data.projectTypes ?? [],
+        projectName: data.projectName ?? "",
+        wilaya: data.wilaya ?? "",
+        location: data.location ?? "",
+        projectType: data.projectType,
         projectDescription: data.projectDescription ?? "",
+        uploadedFiles: data.uploadedFiles ?? [],
       };
     case 3:
       return {
         objective: data.objective,
-        budgetRange: data.budgetRange,
       };
     case 4:
       return {
-        selectedOfferId: data.selectedOfferId ?? "",
-        bookingOptions: data.bookingOptions ?? [],
+        selectedPackId: data.selectedPackId || undefined,
+        alaCarteOptions: data.alaCarteOptions ?? [],
       };
     case 5:
       return {
-        wilaya: data.wilaya ?? "",
         fullName: data.fullName ?? "",
         phone: data.phone ?? "",
         email: data.email ?? "",
         company: data.company ?? "",
+        depositChoice: data.depositChoice ?? "no_deposit",
+        depositMethod: data.depositMethod,
       };
     default:
       return {};

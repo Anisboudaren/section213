@@ -21,7 +21,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { incrementLinkClick, createLead } from "@/lib/actions/leads";
-import { useOffers } from "@/lib/queries/offers";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import type { OfferPackView } from "@/lib/offers/offer-types";
 import { trackMetaLead, trackTikTokSubmit } from "@/lib/pixel-events";
 import {
   contactFormSchema,
@@ -31,9 +32,15 @@ import {
 import type { LeadSource } from "@/lib/types/admin";
 import { cn } from "@/lib/utils";
 
-export function ContactForm() {
+type ContactFormProps = {
+  embedded?: boolean;
+  packs: OfferPackView[];
+};
+
+export function ContactForm({ embedded = false, packs }: ContactFormProps) {
   const searchParams = useSearchParams();
-  const { data: offers = [] } = useOffers({ activeOnly: true });
+  const { translations: t, locale } = useLanguage();
+  const c = t.contact;
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,6 +80,7 @@ export function ContactForm() {
       notes: values.message ?? "",
       pixelEventFired: "Lead",
       stage: "new",
+      submissionType: "contact",
     });
 
     if (!result.success) {
@@ -87,49 +95,52 @@ export function ContactForm() {
 
   if (submitted) {
     return (
-      <div className="flex flex-col items-center py-8 text-center">
+      <div className="flex flex-col items-center py-6 text-center">
         <CheckCircle2 className="mb-4 h-14 w-14 text-brand-accent" />
-        <h2 className="font-display text-2xl tracking-wide">Demande envoyée !</h2>
-        <p className="mt-2 text-muted-foreground">
-          Notre équipe vous contactera dans les 24h.
-        </p>
+        <h2 className="font-display text-2xl tracking-wide text-ink">{c.successTitle}</h2>
+        <p className="mt-2 text-sm text-muted-foreground">{c.successMessage}</p>
         <Button asChild variant="ruby" className="mt-6 min-h-11">
-          <Link href="/">← Retour à l&apos;accueil</Link>
+          <Link href="/">{c.backHome}</Link>
         </Button>
       </div>
     );
   }
 
-  return (
-    <div className="w-full max-w-md">
-      <div className="mb-8 flex justify-center">
-        <Section213Logo size="md" />
-      </div>
+  const isFr = locale === "fr";
 
-      <h1 className="text-center font-display text-2xl tracking-wide">Contactez-nous</h1>
-      <p className="mt-2 text-center text-sm text-muted-foreground">
-        Décrivez votre projet — réponse sous 24h.
-      </p>
+  return (
+    <div className={cn("w-full", !embedded && "max-w-md")}>
+      {!embedded && (
+        <>
+          <div className="mb-8 flex justify-center">
+            <Section213Logo size="md" />
+          </div>
+          <h1 className="text-center font-display text-2xl tracking-wide">
+            {c.title} <span className="text-ruby">{c.titleHighlight}</span>
+          </h1>
+          <p className="mt-2 text-center text-sm text-muted-foreground">{c.subtitle}</p>
+        </>
+      )}
 
       {srcParam && sourceLabel && (
-        <p className="mt-4 text-center">
+        <p className={cn("text-center", embedded ? "mt-0 mb-4" : "mt-4")}>
           <span className="inline-flex rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
-            Lien depuis {sourceLabel}
+            {c.sourceFrom} {sourceLabel}
           </span>
         </p>
       )}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="mt-8 space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className={cn("space-y-4", embedded ? "" : "mt-8")}>
           <div className="grid gap-4 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="prenom"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Prénom</FormLabel>
+                  <FormLabel>{c.firstName}</FormLabel>
                   <FormControl>
-                    <Input {...field} className="min-h-11" />
+                    <Input {...field} className="min-h-11 bg-paper" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -140,9 +151,9 @@ export function ContactForm() {
               name="nom"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom</FormLabel>
+                  <FormLabel>{c.lastName}</FormLabel>
                   <FormControl>
-                    <Input {...field} className="min-h-11" />
+                    <Input {...field} className="min-h-11 bg-paper" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -155,9 +166,9 @@ export function ContactForm() {
             name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Téléphone *</FormLabel>
+                <FormLabel>{c.phoneLabel} *</FormLabel>
                 <FormControl>
-                  <Input {...field} type="tel" className="min-h-11" />
+                  <Input {...field} type="tel" className="min-h-11 bg-paper" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -169,9 +180,9 @@ export function ContactForm() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{c.emailLabel}</FormLabel>
                 <FormControl>
-                  <Input {...field} type="email" className="min-h-11" />
+                  <Input {...field} type="email" className="min-h-11 bg-paper" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -183,15 +194,15 @@ export function ContactForm() {
             name="interestedIn"
             render={() => (
               <FormItem>
-                <FormLabel>Je suis intéressé par…</FormLabel>
+                <FormLabel>{c.interestedIn}</FormLabel>
                 <div className="space-y-2">
-                  {offers.map((offer) => (
+                  {packs.map((pack) => (
                     <FormField
-                      key={offer.id}
+                      key={pack.id}
                       control={form.control}
                       name="interestedIn"
                       render={({ field }) => {
-                        const checked = field.value.includes(offer.slug);
+                        const checked = field.value.includes(pack.slug);
                         return (
                           <FormItem className="flex items-center gap-3 space-y-0">
                             <FormControl>
@@ -199,14 +210,14 @@ export function ContactForm() {
                                 checked={checked}
                                 onCheckedChange={(v) => {
                                   const next = v
-                                    ? [...field.value, offer.slug]
-                                    : field.value.filter((s) => s !== offer.slug);
+                                    ? [...field.value, pack.slug]
+                                    : field.value.filter((s) => s !== pack.slug);
                                   field.onChange(next);
                                 }}
                               />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              {offer.nameFr ?? offer.name}
+                              {isFr ? pack.nameFr : pack.nameEn}
                             </FormLabel>
                           </FormItem>
                         );
@@ -223,13 +234,14 @@ export function ContactForm() {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Message / Projet</FormLabel>
+                <FormLabel>{c.message}</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
                     rows={4}
                     maxLength={300}
-                    placeholder="Décrivez brièvement votre besoin…"
+                    placeholder={c.messagePlaceholder}
+                    className="bg-paper"
                   />
                 </FormControl>
                 <FormMessage />
@@ -242,10 +254,10 @@ export function ContactForm() {
           <Button
             type="submit"
             variant="ruby"
-            className={cn("min-h-11 w-full")}
+            className="min-h-11 w-full"
             disabled={form.formState.isSubmitting}
           >
-            Envoyer ma demande
+            {c.submit}
           </Button>
         </form>
       </Form>

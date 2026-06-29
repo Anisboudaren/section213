@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Briefcase, Plus } from "lucide-react";
+import { Briefcase, Plus, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 import { AdminPageShell } from "@/components/admin/AdminPageShell";
@@ -31,17 +31,13 @@ import { adminT } from "@/lib/i18n/admin-en";
 import {
   useCreateOffer,
   useDeleteOffer,
+  useResetOffersToV1,
   useUpdateOffer,
 } from "@/lib/queries/offers";
 import { offerFormValuesToInput } from "@/lib/schemas/offer-schema";
 import type { Offer, OfferCategory } from "@/lib/types/admin";
 
-const CATEGORIES: OfferCategory[] = [
-  "media",
-  "brand_content",
-  "websites_apps",
-  "automations",
-];
+const CATEGORIES: OfferCategory[] = ["pack", "ala_carte"];
 
 type OffersViewProps = {
   initialOffers: Offer[];
@@ -51,12 +47,14 @@ export function OffersView({ initialOffers }: OffersViewProps) {
   const [offers, setOffers] = useState(initialOffers);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Offer | null>(null);
-  const [addCategory, setAddCategory] = useState<OfferCategory>("media");
+  const [addCategory, setAddCategory] = useState<OfferCategory>("pack");
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
 
   const createOffer = useCreateOffer();
   const updateOffer = useUpdateOffer();
   const deleteOffer = useDeleteOffer();
+  const resetOffers = useResetOffersToV1();
 
   const handleSubmit = async (values: Parameters<typeof offerFormValuesToInput>[0]) => {
     const payload = offerFormValuesToInput(values);
@@ -99,6 +97,18 @@ export function OffersView({ initialOffers }: OffersViewProps) {
     }
   };
 
+  const handleReset = async () => {
+    try {
+      const data = await resetOffers.mutateAsync();
+      setOffers(data);
+      toast.success(adminT("offers.resetSuccess"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Erreur");
+    } finally {
+      setResetOpen(false);
+    }
+  };
+
   const openAdd = (category: OfferCategory) => {
     setEditing(null);
     setAddCategory(category);
@@ -115,7 +125,19 @@ export function OffersView({ initialOffers }: OffersViewProps) {
       title={adminT("offers.title")}
       description={adminT("offers.drivesPublicSite")}
     >
-      <Tabs defaultValue="media" className="space-y-4">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          className="min-h-11"
+          onClick={() => setResetOpen(true)}
+          disabled={resetOffers.isPending}
+        >
+          <RotateCcw className="mr-2 h-4 w-4" />
+          {adminT("offers.resetToV1")}
+        </Button>
+      </div>
+
+      <Tabs defaultValue="pack" className="space-y-4">
         <TabsList className="flex h-auto flex-wrap gap-1.5 bg-transparent p-0">
           {CATEGORIES.map((cat) => (
             <TabsTrigger
@@ -218,6 +240,24 @@ export function OffersView({ initialOffers }: OffersViewProps) {
               onClick={() => void handleDelete()}
             >
               {adminT("common.delete")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{adminT("offers.resetToV1")}</AlertDialogTitle>
+            <AlertDialogDescription>{adminT("offers.resetConfirm")}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{adminT("common.cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => void handleReset()}
+              disabled={resetOffers.isPending}
+            >
+              {adminT("offers.resetToV1")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

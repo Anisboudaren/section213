@@ -92,6 +92,12 @@ export const adminNavSections: NavSection[] = [
         description: "Portfolio case studies for the public website.",
       },
       {
+        title: "Media Library",
+        url: "/admin/media",
+        icon: Image,
+        description: "Browse and reuse uploaded blob assets across the admin.",
+      },
+      {
         title: "Trusted Section",
         url: "/admin/trusted",
         icon: Handshake,

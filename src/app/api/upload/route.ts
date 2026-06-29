@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { registerMediaAsset } from "@/lib/actions/media";
 import { getBlobEnv } from "@/lib/blob-config";
 import {
   PUBLIC_UPLOAD_FOLDERS,
@@ -17,6 +18,7 @@ const ALLOWED_FOLDERS: BlobFolder[] = [
   "case-studies/videos",
   "case-studies/thumbnails",
   "bookings/deposit-proofs",
+  "bookings/project-files",
   "brand/platform",
 ];
 
@@ -80,6 +82,16 @@ export async function POST(request: Request) {
     }
 
     const result = await uploadToBlob(file, folder, file.name);
+
+    await registerMediaAsset({
+      url: result.url,
+      pathname: result.pathname,
+      filename: file.name,
+      mimeType: file.type || "application/octet-stream",
+      folder,
+      sizeBytes: file.size,
+    });
+
     return NextResponse.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Upload failed";

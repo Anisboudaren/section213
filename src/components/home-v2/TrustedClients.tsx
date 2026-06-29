@@ -20,7 +20,7 @@ export function TrustedClients({ partners, copy }: TrustedClientsProps) {
   const c = locale === "fr" ? copy.fr : copy.en;
 
   return (
-    <section className="border-t border-white/5 bg-ink px-4 py-16 text-white sm:px-6 sm:py-24">
+    <section className="bg-ink px-4 py-16 text-white sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <RevealInView>
           <SectionIndex index={copy.index} />

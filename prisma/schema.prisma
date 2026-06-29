@@ -125,10 +125,8 @@ enum ServiceType {
 }
 
 enum OfferCategory {
-  media
-  brand_content
-  websites_apps
-  automations
+  pack
+  ala_carte
 }
 
 model Offer {
@@ -144,10 +142,16 @@ model Offer {
   featuresFr    String[]      @default([])
   price         Int?
   priceLabel    String?
+  priceLabelFr  String?
   active        Boolean       @default(true)
   featured      Boolean       @default(false)
+  studyOnly     Boolean       @default(false)
   sortOrder     Int           @default(0)
   cta           String?
+  ctaFr         String?
+  noteEn        String?
+  noteFr        String?
+  metadata      Json?
 
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -176,6 +180,7 @@ model Client {
   totalRevenue  Int?
 
   projects      Project[]
+  caseStudies   CaseStudy[]
 
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -249,8 +254,17 @@ model SiteSettings {
   defaultLocale          String   @default("fr")
   contactEmail           String?
   contactPhone           String?
+  contactAddress         String?
+  contactCity            String?
+  contactHoursFr         String?
+  contactHoursEn         String?
   whatsappNumber         String?
   instagramHandle        String?
+  facebookUrl            String?
+  tiktokHandle           String?
+  youtubeUrl             String?
+  linkedinUrl            String?
+  mapsUrl                String?
   ogImageUrl             String?
   logoUrl                String?
   faviconUrl             String?
@@ -278,4 +292,44 @@ model TrustedPartner {
   updatedAt   DateTime @updatedAt
 
   @@index([active, sortOrder])
+}
+
+model CaseStudy {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  clientId      String?
+  client        Client?  @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientName    String
+  industry      String?
+  categoryLabel String?
+  excerpt       String?
+  videoUrl      String
+  thumbnailUrl  String?
+  services      String[] @default([])
+  results       Json     @default("[]")
+  sections      Json     @default("[]")
+  published     Boolean  @default(false)
+  featured      Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([published, sortOrder])
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  url       String   @unique
+  pathname  String   @unique
+  filename  String
+  mimeType  String
+  folder    String
+  sizeBytes Int      @default(0)
+  label     String?
+  createdAt DateTime @default(now())
+
+  @@index([folder])
+  @@index([mimeType])
+  @@index([createdAt(sort: Desc)])
 }

@@ -15,8 +15,17 @@ export const DEFAULT_SITE_SETTINGS = {
   defaultLocale: "fr" as const,
   contactEmail: "",
   contactPhone: "",
+  contactAddress: "",
+  contactCity: "Oran, Algérie",
+  contactHoursFr: "Lun–Ven · 9h–18h",
+  contactHoursEn: "Mon–Fri · 9am–6pm",
   whatsappNumber: "",
   instagramHandle: "",
+  facebookUrl: "",
+  tiktokHandle: "",
+  youtubeUrl: "",
+  linkedinUrl: "",
+  mapsUrl: "",
   ogImageUrl:
     "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/817cc14b-4e07-44b9-82a2-b16d0b653ff9/id-preview-db619953--5900c77a-8423-4386-8c1b-4a6ef34f94c1.lovable.app-1780515916701.png",
   logoUrl: "",
@@ -35,8 +44,17 @@ export type SiteSettingsDto = {
   defaultLocale: "fr" | "en";
   contactEmail?: string;
   contactPhone?: string;
+  contactAddress?: string;
+  contactCity?: string;
+  contactHoursFr?: string;
+  contactHoursEn?: string;
   whatsappNumber?: string;
   instagramHandle?: string;
+  facebookUrl?: string;
+  tiktokHandle?: string;
+  youtubeUrl?: string;
+  linkedinUrl?: string;
+  mapsUrl?: string;
   ogImageUrl?: string;
   logoUrl?: string;
   faviconUrl?: string;

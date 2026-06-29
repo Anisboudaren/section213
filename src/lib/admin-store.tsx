@@ -10,11 +10,9 @@ import {
   type ReactNode,
 } from "react";
 
-import { MOCK_CASE_STUDIES } from "@/lib/mock-data/case-studies";
 import { MOCK_CLIENTS } from "@/lib/mock-data/clients";
 import { MOCK_LEADS } from "@/lib/mock-data/leads";
 import type {
-  CaseStudy,
   Client,
   Lead,
   PixelConfig,
@@ -57,7 +55,6 @@ function generateId(prefix: string): string {
 type AdminStoreContextValue = {
   leads: Lead[];
   clients: Client[];
-  caseStudies: CaseStudy[];
   pixelConfig: PixelConfig;
   addLead: (lead: Omit<Lead, "id">) => Lead;
   updateLead: (id: string, data: Partial<Lead>) => void;
@@ -66,9 +63,6 @@ type AdminStoreContextValue = {
   updateClient: (id: string, data: Partial<Client>) => void;
   deleteClient: (id: string) => void;
   upgradeLeadToClient: (leadId: string) => string;
-  addCaseStudy: (cs: Omit<CaseStudy, "id">) => CaseStudy;
-  updateCaseStudy: (id: string, data: Partial<CaseStudy>) => void;
-  deleteCaseStudy: (id: string) => void;
   setPixelConfig: (config: PixelConfig) => void;
   getLeadById: (id: string) => Lead | undefined;
   getClientById: (id: string) => Client | undefined;
@@ -79,7 +73,6 @@ const AdminStoreContext = createContext<AdminStoreContextValue | null>(null);
 export function AdminStoreProvider({ children }: { children: ReactNode }) {
   const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS);
-  const [caseStudies, setCaseStudies] = useState<CaseStudy[]>(MOCK_CASE_STUDIES);
   const [pixelConfig, setPixelConfigState] = useState<PixelConfig>(DEFAULT_PIXEL_CONFIG);
   const [hydrated, setHydrated] = useState(false);
 
@@ -152,20 +145,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     [leads, addClient, updateLead],
   );
 
-  const addCaseStudy = useCallback((cs: Omit<CaseStudy, "id">): CaseStudy => {
-    const newCs: CaseStudy = { ...cs, id: generateId("cs") };
-    setCaseStudies((prev) => [...prev, newCs]);
-    return newCs;
-  }, []);
-
-  const updateCaseStudy = useCallback((id: string, data: Partial<CaseStudy>) => {
-    setCaseStudies((prev) => prev.map((c) => (c.id === id ? { ...c, ...data } : c)));
-  }, []);
-
-  const deleteCaseStudy = useCallback((id: string) => {
-    setCaseStudies((prev) => prev.filter((c) => c.id !== id));
-  }, []);
-
   const setPixelConfig = useCallback((config: PixelConfig) => {
     setPixelConfigState(config);
   }, []);
@@ -177,7 +156,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     () => ({
       leads,
       clients,
-      caseStudies,
       pixelConfig,
       addLead,
       updateLead,
@@ -186,9 +164,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
       updateClient,
       deleteClient,
       upgradeLeadToClient,
-      addCaseStudy,
-      updateCaseStudy,
-      deleteCaseStudy,
       setPixelConfig,
       getLeadById,
       getClientById,
@@ -196,7 +171,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     [
       leads,
       clients,
-      caseStudies,
       pixelConfig,
       addLead,
       updateLead,
@@ -205,9 +179,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
       updateClient,
       deleteClient,
       upgradeLeadToClient,
-      addCaseStudy,
-      updateCaseStudy,
-      deleteCaseStudy,
       setPixelConfig,
       getLeadById,
       getClientById,

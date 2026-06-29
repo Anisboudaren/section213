@@ -9,6 +9,7 @@ export type BlobFolder =
   | "case-studies/videos"
   | "case-studies/thumbnails"
   | "bookings/deposit-proofs"
+  | "bookings/project-files"
   | "brand/platform";
 
 const MIME_LIMITS: Record<
@@ -22,6 +23,7 @@ const MIME_LIMITS: Record<
       "clients/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
+      "bookings/project-files",
       "brand/platform",
     ],
   },
@@ -32,6 +34,7 @@ const MIME_LIMITS: Record<
       "clients/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
+      "bookings/project-files",
       "brand/platform",
     ],
   },
@@ -42,6 +45,7 @@ const MIME_LIMITS: Record<
       "clients/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
+      "bookings/project-files",
       "brand/platform",
     ],
   },
@@ -59,11 +63,14 @@ const MIME_LIMITS: Record<
   },
   "application/pdf": {
     maxBytes: 10 * 1024 * 1024,
-    folders: ["bookings/deposit-proofs"],
+    folders: ["bookings/deposit-proofs", "bookings/project-files"],
   },
 };
 
-export const PUBLIC_UPLOAD_FOLDERS: BlobFolder[] = ["bookings/deposit-proofs"];
+export const PUBLIC_UPLOAD_FOLDERS: BlobFolder[] = [
+  "bookings/deposit-proofs",
+  "bookings/project-files",
+];
 
 export function validateBlobUpload(
   mimeType: string,

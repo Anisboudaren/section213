@@ -68,8 +68,17 @@ function settingsToFormValues(settings: SiteSettingsDto): UpdateSiteSettingsInpu
     defaultLocale: settings.defaultLocale,
     contactEmail: settings.contactEmail ?? "",
     contactPhone: settings.contactPhone ?? "",
+    contactAddress: settings.contactAddress ?? "",
+    contactCity: settings.contactCity ?? "",
+    contactHoursFr: settings.contactHoursFr ?? "",
+    contactHoursEn: settings.contactHoursEn ?? "",
     whatsappNumber: settings.whatsappNumber ?? "",
     instagramHandle: settings.instagramHandle ?? "",
+    facebookUrl: settings.facebookUrl ?? "",
+    tiktokHandle: settings.tiktokHandle ?? "",
+    youtubeUrl: settings.youtubeUrl ?? "",
+    linkedinUrl: settings.linkedinUrl ?? "",
+    mapsUrl: settings.mapsUrl ?? "",
     ogImageUrl: settings.ogImageUrl ?? "",
     logoUrl: settings.logoUrl ?? "",
     faviconUrl: settings.faviconUrl ?? "",
@@ -406,7 +415,7 @@ export function PlatformSettingsView({ initialSettings }: PlatformSettingsViewPr
                   </span>
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="pb-6">
+              <AccordionContent className="pb-6 space-y-6">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <FormField
                     control={form.control}
@@ -428,7 +437,7 @@ export function PlatformSettingsView({ initialSettings }: PlatformSettingsViewPr
                       <FormItem>
                         <FormLabel>{adminT("settings.platform.contactPhone")}</FormLabel>
                         <FormControl>
-                          <Input {...field} className="min-h-11" />
+                          <Input {...field} className="min-h-11" placeholder="+213..." />
                         </FormControl>
                       </FormItem>
                     )}
@@ -438,7 +447,7 @@ export function PlatformSettingsView({ initialSettings }: PlatformSettingsViewPr
                     name="whatsappNumber"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>WhatsApp</FormLabel>
+                        <FormLabel>{adminT("settings.platform.whatsapp")}</FormLabel>
                         <FormControl>
                           <Input {...field} className="min-h-11" placeholder="+213..." />
                         </FormControl>
@@ -457,6 +466,125 @@ export function PlatformSettingsView({ initialSettings }: PlatformSettingsViewPr
                       </FormItem>
                     )}
                   />
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="contactAddress"
+                    render={({ field }) => (
+                      <FormItem className="sm:col-span-2">
+                        <FormLabel>{adminT("settings.platform.contactAddress")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="min-h-11" placeholder="Adresse, quartier…" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="contactCity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{adminT("settings.platform.contactCity")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="min-h-11" placeholder="Oran, Algérie" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="mapsUrl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{adminT("settings.platform.mapsUrl")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="min-h-11" placeholder="https://maps.google.com/…" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="contactHoursFr"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{adminT("settings.platform.contactHoursFr")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="min-h-11" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="contactHoursEn"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{adminT("settings.platform.contactHoursEn")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} className="min-h-11" />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <p className="mb-3 text-xs font-medium text-muted-foreground">
+                    {adminT("settings.platform.socialLinks")}
+                  </p>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="facebookUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Facebook</FormLabel>
+                          <FormControl>
+                            <Input {...field} className="min-h-11" placeholder="https://facebook.com/…" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="tiktokHandle"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>TikTok</FormLabel>
+                          <FormControl>
+                            <Input {...field} className="min-h-11" placeholder="@section213" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="youtubeUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>YouTube</FormLabel>
+                          <FormControl>
+                            <Input {...field} className="min-h-11" placeholder="https://youtube.com/…" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="linkedinUrl"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>LinkedIn</FormLabel>
+                          <FormControl>
+                            <Input {...field} className="min-h-11" placeholder="https://linkedin.com/…" />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </AccordionContent>
             </AccordionItem>

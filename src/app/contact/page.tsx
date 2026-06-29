@@ -1,26 +1,24 @@
-import { Suspense } from "react";
+import type { Metadata } from "next";
 
-import { ContactForm } from "@/components/contact/ContactForm";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ContactPageContent } from "@/components/pages/ContactPageContent";
+import { getOffers } from "@/lib/actions/offers";
+import { getSiteSettings } from "@/lib/actions/site-settings";
+import { toPublicContactInfo } from "@/lib/contact-info";
+import { partitionOffers } from "@/lib/offers/offer-types";
 
-function ContactFormFallback() {
-  return (
-    <div className="w-full max-w-md space-y-4">
-      <Skeleton className="mx-auto h-10 w-40" />
-      <Skeleton className="h-8 w-full" />
-      <Skeleton className="h-11 w-full" />
-      <Skeleton className="h-11 w-full" />
-      <Skeleton className="h-24 w-full" />
-    </div>
-  );
-}
+export const metadata: Metadata = {
+  title: "Contact — Section 213",
+  description: "Contactez Section 213 — promoteurs immobiliers à Oran et au Maghreb.",
+};
 
-export default function ContactPage() {
-  return (
-    <div className="theme-marketing flex min-h-svh items-center justify-center bg-background px-4 py-10">
-      <Suspense fallback={<ContactFormFallback />}>
-        <ContactForm />
-      </Suspense>
-    </div>
-  );
+export default async function ContactPage() {
+  const [settings, offersResult] = await Promise.all([
+    getSiteSettings(),
+    getOffers({ activeOnly: true }),
+  ]);
+  const contactInfo = toPublicContactInfo(settings);
+  const offers = offersResult.success ? offersResult.data : [];
+  const { packs } = partitionOffers(offers);
+
+  return <ContactPageContent contactInfo={contactInfo} packs={packs} />;
 }

@@ -9,20 +9,19 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { BookingFormData } from "@/lib/booking-types";
 import { getWilayaName } from "@/lib/algeria-wilayas";
+import { findPackView, type OfferPackView } from "@/lib/offers/offer-types";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
-import type { Offer } from "@/lib/types/admin";
 
 type StepProps = {
   data: Partial<BookingFormData>;
-  offers: Offer[];
+  packs: OfferPackView[];
 };
 
-export function Step06Confirmation({ data, offers }: StepProps) {
+export function Step06Confirmation({ data, packs }: StepProps) {
   const { translations: t, locale } = useLanguage();
+  const isFr = locale === "fr";
 
-  const offer = data.selectedOfferId
-    ? offers.find((o) => o.id === data.selectedOfferId)
-    : undefined;
+  const pack = findPackView(packs, data.selectedPackId || undefined);
 
   const dateLabel = data.isFlexible
     ? t.booking.flexibleDate
@@ -31,6 +30,11 @@ export function Step06Confirmation({ data, offers }: StepProps) {
           locale: locale === "fr" ? fr : undefined,
         })
       : "—";
+
+  const depositLabel =
+    data.depositChoice === "deposit_50"
+      ? t.booking.deposit.optionB
+      : t.booking.deposit.optionA;
 
   return (
     <div className="flex flex-col items-center text-center space-y-6">
@@ -46,30 +50,45 @@ export function Step06Confirmation({ data, offers }: StepProps) {
             <span className="text-muted-foreground">{t.booking.summary.date}</span>
             <span className="font-medium">{dateLabel}</span>
           </div>
+          {data.projectName && (
+            <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">{t.booking.summary.projectName}</span>
+              <span className="font-medium text-right">{data.projectName}</span>
+            </div>
+          )}
           {data.wilaya && (
             <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">{t.booking.summary.wilaya}</span>
               <span className="font-medium">{getWilayaName(data.wilaya)}</span>
             </div>
           )}
+          {data.projectType && (
+            <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">{t.booking.summary.project}</span>
+              <span className="font-medium">{t.booking.projectTypes[data.projectType]}</span>
+            </div>
+          )}
+          {data.objective && (
+            <div className="flex justify-between gap-4">
+              <span className="text-muted-foreground">{t.booking.summary.objective}</span>
+              <span className="font-medium">{t.booking.objectives[data.objective]}</span>
+            </div>
+          )}
           <div className="flex justify-between gap-4">
-            <span className="text-muted-foreground">{t.booking.summary.project}</span>
-            <span className="font-medium text-right">
-              {data.projectTypes?.length
-                ? data.projectTypes.map((type) => t.booking.projectTypes[type]).join(", ")
-                : "—"}
+            <span className="text-muted-foreground">{t.booking.summary.offer}</span>
+            <span className="font-medium">
+              {pack ? (isFr ? pack.nameFr : pack.nameEn) : "—"}
             </span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-muted-foreground">{t.booking.summary.offer}</span>
-            <span className="font-medium">{offer?.nameFr ?? offer?.name ?? "—"}</span>
+            <span className="text-muted-foreground">{t.booking.summary.deposit}</span>
+            <span className="font-medium">{depositLabel}</span>
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">{t.booking.summary.contact}</span>
             <span className="font-medium text-right">
               {data.fullName}
               {data.phone ? ` · ${data.phone}` : ""}
-              {data.email ? ` · ${data.email}` : ""}
             </span>
           </div>
         </CardContent>
@@ -80,7 +99,7 @@ export function Step06Confirmation({ data, offers }: StepProps) {
           <Link href="/">{t.booking.confirmation.home}</Link>
         </Button>
         <Button asChild variant="outline" className="min-h-11">
-          <Link href="/#case-studies">{t.booking.confirmation.portfolio}</Link>
+          <Link href="/#portfolio">{t.booking.confirmation.portfolio}</Link>
         </Button>
       </div>
     </div>

@@ -150,7 +150,7 @@ function ScrollHint() {
       href="#portfolio"
       onClick={(e) => handleSmoothScroll(e, "portfolio")}
       className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-1 text-white/60 transition-colors hover:text-gold"
-      aria-label={t.hero.scrollToReels}
+      aria-label={t.hero.scrollToContent}
     >
       <span className="text-[10px] font-semibold uppercase tracking-[0.25em]">{t.hero.scroll}</span>
       <ChevronDown className="h-6 w-6 animate-bounce" />
@@ -218,34 +218,25 @@ function HeroTop({
           {t.hero.location}
         </div>
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-[0.95] tracking-tight max-w-4xl">
-          <span className="text-ruby">{t.hero.headlineGold}</span> {t.hero.headlineRest}
+          {t.hero.headline}
         </h1>
-        <div className="mt-8 space-y-3 text-white/90 max-w-2xl">
-          <div className="flex gap-3">
-            <Pencil className="w-5 h-5 text-gold shrink-0 mt-0.5" />
-            <p>{t.hero.bullet1}</p>
-          </div>
-          <div className="flex gap-3">
-            <User className="w-5 h-5 text-gold shrink-0 mt-0.5" />
-            <p>{t.hero.bullet2}</p>
-          </div>
-        </div>
+        <p className="mt-6 max-w-2xl text-white/90">{t.hero.subheadline}</p>
         <div className="mt-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="hidden lg:block lg:flex-1" />
           <div className="hero-stair-buttons ml-auto flex w-full max-w-sm flex-col items-end gap-3 sm:max-w-md">
             <a
-              href="#services"
-              onClick={(e) => handleSmoothScroll(e, "services")}
+              href="#offers"
+              onClick={(e) => handleSmoothScroll(e, "offers")}
               className="hero-stair-step hero-stair-step-1 bg-brand-accent text-ruby-foreground px-6 py-3 rounded-md font-semibold flex items-center gap-2 hover:brightness-110 transition shadow-lg"
             >
-              {t.hero.ourPackages} <ChevronRight className="w-4 h-4" />
+              {t.hero.ctaPrimary} <ChevronRight className="w-4 h-4" />
             </a>
             <a
-              href="#portfolio"
-              onClick={(e) => handleSmoothScroll(e, "portfolio")}
+              href="#about"
+              onClick={(e) => handleSmoothScroll(e, "about")}
               className="hero-stair-step hero-stair-step-2 rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/60 hover:text-white"
             >
-              {t.hero.seeViralReels}
+              {t.hero.ctaSecondary}
             </a>
             {!soundOn ? (
               <button
