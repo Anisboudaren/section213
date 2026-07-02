@@ -425,6 +425,7 @@ export const en = {
       titleHighlight: "OFFERS",
       intro: "Choose your objective.",
       priceFrom: "From",
+      pricesStartFrom: "From",
       seeDetails: "See details",
       hideDetails: "Hide details",
       packPrice: "Pack",

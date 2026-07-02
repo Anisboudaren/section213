@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
 import { AccentColorTester } from "@/components/AccentColorTester";
+import { PageTransitionLoader } from "@/components/PageTransitionLoader";
 import { PublicLanguagePicker } from "@/components/PublicLanguagePicker";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,6 +31,7 @@ export function Providers({ children, siteSettings }: ProvidersProps) {
           >
             <TooltipProvider>
               {children}
+              <PageTransitionLoader />
               <PublicLanguagePicker />
               <AccentColorTester />
               <Toaster richColors position="top-right" />

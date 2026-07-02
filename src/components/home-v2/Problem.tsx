@@ -11,7 +11,7 @@ export function Problem() {
   const p = t.homeV2.problem;
 
   return (
-    <section id="problem" className="overflow-hidden bg-ink px-4 py-16 text-white sm:px-6 sm:py-24">
+    <section id="problem" className="overflow-x-visible overflow-y-hidden bg-ink bg-ink-texture px-4 py-16 text-white sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
           <RevealInView>
@@ -42,7 +42,7 @@ export function Problem() {
             </div>
           </RevealInView>
 
-          <RevealInView className="lg:delay-100">
+          <RevealInView className="overflow-visible lg:delay-100">
             <ProblemPhoneReels channels={p.channels} />
           </RevealInView>
         </div>

@@ -206,16 +206,16 @@ export function HeroMobile({
       />
 
       <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-20 pt-24 sm:px-6 sm:pb-24 md:justify-center md:px-8 md:pb-16 md:pt-28">
-        <div className="flex items-start gap-2 text-xs text-white/85 sm:text-sm md:mb-5">
+        <div className="hidden items-start gap-2 text-xs text-white/85 sm:text-sm md:mb-5 md:flex">
           <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-ruby" />
           <p className="max-w-md leading-snug">{t.hero.location}</p>
         </div>
 
-        <h1 className="mt-3 font-display text-[clamp(1.75rem,6.5vw,2.75rem)] leading-[1.02] tracking-tight sm:mt-4 sm:max-w-2xl sm:text-4xl md:max-w-3xl md:text-5xl lg:max-w-4xl lg:text-6xl">
+        <h1 className="mt-0 font-display text-[clamp(2.15rem,9vw,2.75rem)] leading-[1.02] tracking-tight sm:max-w-2xl sm:text-4xl md:mt-0 md:max-w-3xl md:text-5xl lg:max-w-4xl lg:text-6xl">
           {t.hero.headline}
         </h1>
 
-        <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/85 sm:mt-5 sm:text-base md:max-w-2xl">
+        <p className="mt-3 hidden max-w-xl text-sm leading-relaxed text-white/85 sm:mt-5 sm:text-base md:block md:max-w-2xl">
           {t.hero.subheadline}
         </p>
 
@@ -247,10 +247,18 @@ export function HeroMobile({
               {soundOn ? t.nav.soundOn : t.hero.enableSound}
             </button>
 
-            <div className="hero-stair-step hero-stair-step-4 mt-1 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/50 sm:text-xs lg:max-w-[18rem]">
+            <div
+              aria-hidden
+              className="hero-stair-step hero-stair-step-4 mt-1 flex max-sm:flex-col max-sm:items-center max-sm:gap-1 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50 sm:text-xs lg:max-w-[18rem]"
+            >
               {t.hero.visualBand.map((step, i) => (
-                <span key={step} className="inline-flex items-center gap-2">
-                  {i > 0 && <span className="text-white/25">→</span>}
+                <span key={step} className="hero-visual-band-step inline-flex max-sm:flex-col max-sm:items-center max-sm:gap-1 items-center gap-2">
+                  {i > 0 && (
+                    <>
+                      <ChevronDown className="h-3.5 w-3.5 text-white/25 max-sm:inline sm:hidden" />
+                      <span className="text-white/25 max-sm:hidden">→</span>
+                    </>
+                  )}
                   <span>{step}</span>
                 </span>
               ))}

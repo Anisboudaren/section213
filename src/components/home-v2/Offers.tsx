@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { Check, ChevronDown, ChevronRight } from "lucide-react";
 
@@ -14,6 +14,40 @@ import { cn } from "@/lib/utils";
 
 import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
+
+function maskDigitsWithHash(text: string): string {
+  return text.replace(/\d/g, "#");
+}
+
+function FunMaskedPrice({ text, className }: { text: string; className?: string }) {
+  const masked = maskDigitsWithHash(text);
+
+  return (
+    <span
+      className={cn("fun-masked-price inline-flex font-display tracking-widest", className)}
+      aria-hidden
+    >
+      {masked.split("").map((char, i) => (
+        <span
+          key={`${char}-${i}`}
+          className={char === "#" ? "fun-masked-price-hash" : undefined}
+          style={char === "#" ? ({ "--hash-i": i } as CSSProperties) : undefined}
+        >
+          {char}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function getLowestPackPrice(packs: OfferPackView[]): number | undefined {
+  const prices = packs
+    .map((pack) => pack.priceFrom)
+    .filter((price): price is number => price != null);
+
+  if (prices.length === 0) return undefined;
+  return Math.min(...prices);
+}
 
 type OffersProps = {
   packs: OfferPackView[];
@@ -40,13 +74,17 @@ function PackCard({
   const valueBreakdown = isFr ? pack.valueBreakdownFr : pack.valueBreakdownEn;
   const totalValue = isFr ? pack.totalValueFr : pack.totalValueEn;
 
-  const priceLine = pack.studyOnly
-    ? isFr
-      ? pack.priceLabelFr
-      : pack.priceLabelEn
-    : pack.priceFrom
-      ? `${o.priceFrom} ${formatPriceFrom(pack.priceFrom, locale)}`
-      : null;
+  const priceLine = pack.studyOnly ? (
+    <span>{isFr ? pack.priceLabelFr : pack.priceLabelEn}</span>
+  ) : pack.priceFrom ? (
+  <span className="inline-flex flex-wrap items-baseline gap-x-2">
+      <span className="text-lg font-semibold text-white/70">{o.priceFrom}</span>
+      <FunMaskedPrice
+        text={formatPriceFrom(pack.priceFrom, locale)}
+        className="text-2xl font-bold text-ruby"
+      />
+    </span>
+  ) : null;
 
   return (
     <article
@@ -65,7 +103,7 @@ function PackCard({
 
       <h3 className="font-display text-2xl tracking-wider">{name}</h3>
       <p className="mt-2 text-sm text-white/65">{tagline}</p>
-      <p className="mt-4 text-2xl font-bold text-white">{priceLine}</p>
+      <p className="mt-4">{priceLine}</p>
 
       <Link
         href={`/book?pack=${pack.slug}`}
@@ -111,19 +149,22 @@ function PackCard({
               {valueBreakdown.map((row) => (
                 <div key={row.label} className="flex justify-between gap-2">
                   <span>{row.label}</span>
-                  <span>{row.value}</span>
+                  <FunMaskedPrice text={row.value} className="text-sm text-white/55" />
                 </div>
               ))}
               {totalValue && (
                 <div className="flex justify-between gap-2 border-t border-white/10 pt-2 font-medium text-white/80">
                   <span>{o.totalValue}</span>
-                  <span>{totalValue}</span>
+                  <FunMaskedPrice text={totalValue} className="text-sm text-white/80" />
                 </div>
               )}
               {pack.priceFrom && (
                 <div className="flex justify-between gap-2 text-ruby">
                   <span>{o.packPrice}</span>
-                  <span>{formatPriceFrom(pack.priceFrom, locale)}</span>
+                  <FunMaskedPrice
+                    text={formatPriceFrom(pack.priceFrom, locale)}
+                    className="text-sm text-ruby"
+                  />
                 </div>
               )}
             </div>
@@ -141,9 +182,10 @@ export function Offers({ packs, alaCarte }: OffersProps) {
   const o = t.homeV2.offers;
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [alaCarteOpen, setAlaCarteOpen] = useState(false);
+  const lowestPackPrice = getLowestPackPrice(packs);
 
   return (
-    <section id="offers" className="bg-ink px-4 py-16 text-white sm:px-6 sm:py-24">
+    <section id="offers" className="bg-ink bg-ink-texture px-4 py-16 text-white sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <RevealInView>
           <SectionIndex index={o.index} />
@@ -151,6 +193,14 @@ export function Offers({ packs, alaCarte }: OffersProps) {
             {o.title} <span className="text-ruby">{o.titleHighlight}</span>
           </h2>
           <p className="mt-3 max-w-lg text-sm text-white/60 sm:text-base">{o.intro}</p>
+          {lowestPackPrice != null ? (
+            <p className="mt-5 text-sm text-white/70 sm:text-base">
+              {o.pricesStartFrom}{" "}
+              <span className="font-display text-lg font-semibold text-white sm:text-xl">
+                {formatPriceFrom(lowestPackPrice, locale)}
+              </span>
+            </p>
+          ) : null}
         </RevealInView>
 
         <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -194,9 +244,10 @@ export function Offers({ packs, alaCarte }: OffersProps) {
                       <span className="text-white/85">
                         {locale === "fr" ? item.nameFr : item.nameEn}
                       </span>
-                      <span className="shrink-0 font-medium text-white/60">
-                        {locale === "fr" ? item.priceFr : item.priceEn}
-                      </span>
+                      <FunMaskedPrice
+                        text={locale === "fr" ? item.priceFr : item.priceEn}
+                        className="shrink-0 text-sm font-medium text-white/60"
+                      />
                     </li>
                   ))}
                 </ul>

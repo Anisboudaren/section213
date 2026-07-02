@@ -444,6 +444,7 @@ export const fr: Translations = {
       titleHighlight: "OFFRES",
       intro: "Choisissez votre objectif.",
       priceFrom: "À partir de",
+      pricesStartFrom: "À partir de",
       seeDetails: "Voir le détail",
       hideDetails: "Masquer le détail",
       packPrice: "Pack",

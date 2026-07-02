@@ -60,12 +60,11 @@ export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props)
       {/* 005 — Offers (dark) */}
       <Offers packs={packs} alaCarte={alaCarte} />
 
-      {/* Light breathing room before checkout */}
-      <Testimonials />
-      <FAQ />
-
       {/* 006 — Checkout entry (dark) */}
       <BookCTA />
+
+      <Testimonials />
+      <FAQ />
       <Footer />
     </main>
   );
