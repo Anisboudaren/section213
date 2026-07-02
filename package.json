@@ -19,6 +19,12 @@
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
+  "pnpm": {
+    "overrides": {
+      "@hono/node-server": ">=1.19.13",
+      "postcss": ">=8.5.10"
+    }
+  },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
     "@neondatabase/serverless": "^1.1.0",
