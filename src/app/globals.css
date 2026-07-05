@@ -223,6 +223,38 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
       100% 100%;
   }
 
+  /* Soft ruby wash + fine dots for light sections — one continuous field */
+  .bg-mist-ruby-texture {
+    background-color: var(--mist);
+    background-image:
+      radial-gradient(
+        ellipse 80% 42% at 8% 0%,
+        color-mix(in oklch, var(--ruby) 10%, transparent),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 70% 38% at 96% 100%,
+        color-mix(in oklch, var(--ruby) 8%, transparent),
+        transparent 74%
+      ),
+      radial-gradient(
+        ellipse 55% 28% at 48% 52%,
+        color-mix(in oklch, var(--ruby) 4%, transparent),
+        transparent 78%
+      ),
+      radial-gradient(
+        circle,
+        color-mix(in oklch, var(--ruby) 10%, transparent) 1px,
+        transparent 1px
+      );
+    background-size:
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      22px 22px;
+    background-repeat: no-repeat, no-repeat, no-repeat, repeat;
+  }
+
   .bg-brand-accent {
     background-color: var(--ruby);
     background-image: var(--accent-gradient, none);
@@ -294,33 +326,6 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
 
   .viral-burst-set {
     animation: viral-burst-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .hero-stair-buttons {
-    position: relative;
-  }
-
-  .hero-stair-step {
-    width: 100%;
-    max-width: 100%;
-    margin-left: 0;
-    justify-content: center;
-  }
-
-  @media (min-width: 768px) {
-    .hero-stair-step-1 {
-      max-width: 18rem;
-    }
-
-    .hero-stair-step-2 {
-      margin-left: 3.5rem;
-      max-width: 16rem;
-    }
-
-    .hero-stair-step-3 {
-      margin-left: 7rem;
-      max-width: 15rem;
-    }
   }
 
   .hero-visual-band-step {

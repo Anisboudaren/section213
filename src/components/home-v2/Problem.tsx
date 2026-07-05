@@ -11,12 +11,12 @@ export function Problem() {
   const p = t.homeV2.problem;
 
   return (
-    <section id="problem" className="overflow-x-visible overflow-y-hidden bg-ink bg-ink-texture px-4 py-16 text-white sm:px-6 sm:py-24">
+    <section id="problem" className="overflow-x-clip bg-ink bg-ink-texture px-4 py-16 text-white sm:px-6 sm:py-24">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
-          <RevealInView>
+          <RevealInView className="min-w-0">
             <SectionIndex index={p.index} />
-            <h2 className="font-display text-3xl leading-tight sm:text-5xl md:text-6xl">
+            <h2 className="font-display text-3xl leading-tight break-words sm:text-5xl md:text-6xl">
               {p.title} <span className="text-ruby">{p.titleHighlight}</span>
             </h2>
             <p className="mt-4 text-sm text-white/70 sm:text-base">{p.subtitle}</p>
@@ -42,7 +42,7 @@ export function Problem() {
             </div>
           </RevealInView>
 
-          <RevealInView className="overflow-visible lg:delay-100">
+          <RevealInView className="min-w-0 lg:delay-100">
             <ProblemPhoneReels channels={p.channels} />
           </RevealInView>
         </div>

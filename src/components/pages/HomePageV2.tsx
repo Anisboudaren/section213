@@ -62,8 +62,10 @@ export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props)
       {/* 006 — Checkout entry (dark) */}
       <BookCTA />
 
-      <Testimonials />
-      <FAQ />
+      <div className="bg-mist-ruby-texture">
+        <Testimonials />
+        <FAQ />
+      </div>
       <Footer />
     </main>
   );

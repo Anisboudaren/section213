@@ -18,7 +18,7 @@ export function FAQ() {
   const list = t.faq.items[active as keyof typeof t.faq.items] ?? t.faq.items.general;
 
   return (
-    <section className="bg-mist bg-dot-grid py-20 px-6">
+    <section className="px-6 pt-10 pb-20 sm:pt-12">
       <div className="max-w-3xl mx-auto">
         <h2 className="font-display text-3xl md:text-5xl text-center text-ink mb-10">
           {t.faq.title} <span className="text-ruby">{t.faq.titleHighlight}</span>

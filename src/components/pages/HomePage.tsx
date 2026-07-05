@@ -24,8 +24,10 @@ export function HomePage() {
       <Travel />
       <Trusted />
       <Stats />
-      <Testimonials />
-      <FAQ />
+      <div className="bg-mist-ruby-texture">
+        <Testimonials />
+        <FAQ />
+      </div>
       <InstagramCTA />
       <Footer />
     </main>
