@@ -26,12 +26,14 @@ function MethodStepCard({
   index: number;
 }) {
   return (
-    <article className="group border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/25 sm:p-6">
+    <article className="group flex h-[268px] flex-col border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/25 sm:h-[288px] sm:p-6 lg:h-full lg:min-h-[288px]">
       <span className="font-display text-3xl text-white/15 transition group-hover:text-ruby/80">
         0{index + 1}
       </span>
-      <h3 className="mt-3 font-display text-lg tracking-wider sm:text-xl">{step.title.toUpperCase()}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-white/60">{step.desc}</p>
+      <h3 className="mt-3 min-h-[2.75rem] font-display text-lg leading-tight tracking-wider sm:min-h-[3rem] sm:text-xl">
+        {step.title.toUpperCase()}
+      </h3>
+      <p className="mt-2 flex-1 text-sm leading-relaxed text-white/60">{step.desc}</p>
     </article>
   );
 }
@@ -95,7 +97,9 @@ function MethodMobileCarousel({ steps }: { steps: { title: string; desc: string 
         <CarouselContent className="-ml-4">
           {steps.map((step, i) => (
             <CarouselItem key={step.title} className="basis-[85%] pl-4">
-              <MethodStepCard step={step} index={i} />
+              <div className="h-full">
+                <MethodStepCard step={step} index={i} />
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -125,9 +129,12 @@ export function Method213() {
 
         <MethodMobileCarousel steps={m.steps} />
 
-        <div className="mt-10 hidden space-y-3 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-4 sm:space-y-0 lg:grid-cols-4">
+        <div className="mt-10 hidden sm:mt-14 sm:grid sm:grid-cols-2 sm:items-stretch sm:gap-4 lg:grid-cols-4">
           {m.steps.map((step, i) => (
-            <RevealInView key={step.title} className="sm:[&:nth-child(2)]:delay-75 sm:[&:nth-child(3)]:delay-150 sm:[&:nth-child(4)]:delay-200">
+            <RevealInView
+              key={step.title}
+              className="h-full sm:[&:nth-child(2)]:delay-75 sm:[&:nth-child(3)]:delay-150 sm:[&:nth-child(4)]:delay-200"
+            >
               <MethodStepCard step={step} index={i} />
             </RevealInView>
           ))}

@@ -302,26 +302,12 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
 
   .hero-stair-step {
     width: 100%;
-    max-width: 15rem;
+    max-width: 100%;
+    margin-left: 0;
     justify-content: center;
   }
 
-  .hero-stair-step-1 {
-    margin-left: 0;
-    max-width: 16.5rem;
-  }
-
-  .hero-stair-step-2 {
-    margin-left: 2.5rem;
-    max-width: 14.5rem;
-  }
-
-  .hero-stair-step-3 {
-    margin-left: 5rem;
-    max-width: 13.5rem;
-  }
-
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
     .hero-stair-step-1 {
       max-width: 18rem;
     }
@@ -426,7 +412,36 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
   }
 
   .page-loader-ring {
-    animation: page-loader-ring 0.85s linear infinite;
+    animation: page-loader-ring 1.1s linear infinite;
+  }
+
+  .page-loader-orbit {
+    animation: page-loader-ring 1.1s linear infinite;
+  }
+
+  .page-loader-dot {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    margin-left: -5px;
+    border-radius: 9999px;
+    background-color: var(--ruby);
+    box-shadow:
+      0 0 8px color-mix(in oklch, var(--ruby) 90%, transparent),
+      0 0 18px color-mix(in oklch, var(--ruby) 55%, transparent),
+      0 0 32px color-mix(in oklch, var(--ruby) 30%, transparent);
+    animation: page-loader-dot-pulse 1.1s ease-in-out infinite;
+  }
+
+  .page-loader-glow {
+    background: radial-gradient(
+      circle,
+      color-mix(in oklch, var(--ruby) 22%, transparent) 0%,
+      transparent 70%
+    );
+    animation: page-loader-glow-pulse 2.2s ease-in-out infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -435,7 +450,10 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
     }
 
     .page-loader-bar,
-    .page-loader-ring {
+    .page-loader-ring,
+    .page-loader-orbit,
+    .page-loader-dot,
+    .page-loader-glow {
       animation: none;
     }
   }
@@ -577,6 +595,32 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes page-loader-dot-pulse {
+  0%,
+  100% {
+    transform: scale(0.85);
+    opacity: 0.75;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes page-loader-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
   }
 }
 

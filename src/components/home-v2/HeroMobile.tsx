@@ -228,11 +228,11 @@ export function HeroMobile({
         </p>
 
         <div className="mt-7 flex flex-col gap-3 sm:mt-8 md:mt-10">
-          <div className="hero-stair-buttons flex w-full max-w-md flex-col items-start gap-2.5 sm:gap-3">
+          <div className="hero-stair-buttons flex w-full flex-col gap-2.5 sm:gap-3">
             <a
               href="#offers"
               onClick={(e) => handleSmoothScroll(e, "offers")}
-              className="hero-stair-step hero-stair-step-1 bg-brand-accent flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-ruby-foreground shadow-lg transition hover:brightness-110 sm:text-base sm:max-w-[18rem]"
+              className="hero-stair-step hero-stair-step-1 bg-brand-accent flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-ruby-foreground shadow-lg transition hover:brightness-110 sm:text-base"
             >
               {t.hero.ctaPrimary}
               <ChevronRight className="h-4 w-4" />
@@ -240,14 +240,14 @@ export function HeroMobile({
             <a
               href="#about"
               onClick={(e) => handleSmoothScroll(e, "about")}
-              className="hero-stair-step hero-stair-step-2 flex w-full items-center justify-center rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 sm:max-w-[16rem]"
+              className="hero-stair-step hero-stair-step-2 flex w-full items-center justify-center rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55"
             >
               {t.hero.ctaSecondary}
             </a>
             <button
               type="button"
               onClick={onToggleSound}
-              className="hero-stair-step hero-stair-step-3 hidden items-center justify-center gap-2 rounded-md border border-white/30 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 sm:flex sm:max-w-[15rem]"
+              className="hero-stair-step hero-stair-step-3 hidden items-center justify-center gap-2 rounded-md border border-white/30 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 sm:flex"
             >
               <Volume2 className="h-4 w-4" />
               {soundOn ? t.nav.soundOn : t.hero.enableSound}
