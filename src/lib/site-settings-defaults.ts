@@ -14,7 +14,7 @@ export const DEFAULT_SITE_SETTINGS = {
   enabledAccentPresetIds: DEFAULT_ENABLED_ACCENT_IDS,
   defaultLocale: "fr" as const,
   contactEmail: "",
-  contactPhone: "",
+  contactPhone: "0770 14 12 91",
   contactAddress: "",
   contactCity: "Oran, Algérie",
   contactHoursFr: "Lun–Ven · 9h–18h",

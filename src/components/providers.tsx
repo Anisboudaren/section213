@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AccentColorProvider } from "@/lib/accent-color/AccentColorProvider";
 import { AdminStoreProvider } from "@/lib/admin-store";
+import { ContactInfoProvider } from "@/lib/contact-info-context";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
 import type { PublicPixelConfig } from "@/lib/pixel-settings-defaults";
 import type { SiteSettingsDto } from "@/lib/site-settings-defaults";
@@ -28,20 +29,22 @@ export function Providers({ children, siteSettings, pixelSettings }: ProvidersPr
     <QueryClientProvider client={queryClient}>
       <AdminStoreProvider>
         <LanguageProvider>
-          <AccentColorProvider
-            initialAccentPresetId={siteSettings.accentPresetId}
-            enabledAccentPresetIds={siteSettings.enabledAccentPresetIds}
-          >
-            <TooltipProvider>
-              <PixelProvider config={pixelSettings}>
-                {children}
-              </PixelProvider>
+          <ContactInfoProvider settings={siteSettings}>
+            <AccentColorProvider
+              initialAccentPresetId={siteSettings.accentPresetId}
+              enabledAccentPresetIds={siteSettings.enabledAccentPresetIds}
+            >
+              <TooltipProvider>
+                <PixelProvider config={pixelSettings}>
+                  {children}
+                </PixelProvider>
               <PageTransitionLoader />
               <PublicLanguagePicker />
               <AccentColorTester />
               <Toaster richColors position="top-right" />
-            </TooltipProvider>
-          </AccentColorProvider>
+              </TooltipProvider>
+            </AccentColorProvider>
+          </ContactInfoProvider>
         </LanguageProvider>
       </AdminStoreProvider>
     </QueryClientProvider>

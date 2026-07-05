@@ -1,12 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { Plus, Minus } from "lucide-react";
+import { ChevronRight, Minus, Phone, Plus } from "lucide-react";
 
+import { useContactInfo } from "@/lib/contact-info-context";
+import { telHref } from "@/lib/contact-info";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 
 export function FAQ() {
   const { translations: t } = useLanguage();
+  const { contactPhone } = useContactInfo();
+  const bookCta = t.homeV2.bookCta;
   const [active, setActive] = useState("general");
   const [open, setOpen] = useState<number | null>(0);
 
@@ -18,21 +23,23 @@ export function FAQ() {
         <h2 className="font-display text-3xl md:text-5xl text-center text-ink mb-10">
           {t.faq.title} <span className="text-ruby">{t.faq.titleHighlight}</span>
         </h2>
-        <div className="flex flex-wrap gap-2 justify-center mb-8">
-          {t.faq.categories.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setActive(c.id)}
-              className={`text-xs px-3 py-1.5 rounded-full border transition ${
-                active === c.id
-                  ? "bg-ink text-white border-ink"
-                  : "border-ink/20 text-ink/70 hover:border-ink"
-              }`}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
+        {t.faq.categories.length > 1 ? (
+          <div className="flex flex-wrap gap-2 justify-center mb-8">
+            {t.faq.categories.map((c) => (
+              <button
+                key={c.id}
+                onClick={() => setActive(c.id)}
+                className={`text-xs px-3 py-1.5 rounded-full border transition ${
+                  active === c.id
+                    ? "bg-ink text-white border-ink"
+                    : "border-ink/20 text-ink/70 hover:border-ink"
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <div className="space-y-3">
           {list.map((item, i) => (
             <div key={item.q} className="bg-white rounded-xl border border-ink/10">
@@ -49,14 +56,29 @@ export function FAQ() {
             </div>
           ))}
         </div>
-        <div className="mt-8 bg-ink text-white rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div>
-            <div className="font-semibold text-sm">{t.faq.stillHaveQuestions}</div>
-            <div className="text-xs text-white/60">{t.faq.teamReply}</div>
+        <div className="mt-8 rounded-xl bg-ink p-6 text-white md:flex md:items-center md:justify-between md:gap-6">
+          <div className="text-center md:text-left">
+            <h3 className="font-display text-xl sm:text-2xl">{bookCta.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-white/65">{bookCta.subtitle}</p>
           </div>
-          <button className="bg-brand-accent px-4 py-2 rounded-md text-sm font-semibold hover:brightness-110 transition">
-            {t.faq.contactUs}
-          </button>
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row md:mt-0 md:shrink-0">
+            <Link
+              href="/book"
+              className="bg-brand-accent inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-ruby-foreground transition hover:brightness-110"
+            >
+              {bookCta.cta}
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            {contactPhone ? (
+              <a
+                href={telHref(contactPhone)}
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-white/25 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-white/50"
+              >
+                <Phone className="h-4 w-4" />
+                {contactPhone}
+              </a>
+            ) : null}
+          </div>
         </div>
       </div>
     </section>

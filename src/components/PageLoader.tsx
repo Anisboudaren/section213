@@ -8,7 +8,7 @@ export function PageLoader({ className }: PageLoaderProps) {
   return (
     <div
       className={cn(
-        "pointer-events-none fixed inset-0 z-[9999] flex items-start justify-center",
+        "pointer-events-none fixed inset-0 z-[9999] flex items-center justify-center",
         className,
       )}
       aria-hidden
@@ -19,13 +19,14 @@ export function PageLoader({ className }: PageLoaderProps) {
         <div className="page-loader-bar h-full w-1/3 bg-brand-accent" />
       </div>
 
-      <div className="relative mt-[18vh] flex flex-col items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          <span className="page-loader-dot h-2 w-2 rounded-full bg-ruby" />
-          <span className="page-loader-dot page-loader-dot--delay-1 h-2 w-2 rounded-full bg-ruby/70" />
-          <span className="page-loader-dot page-loader-dot--delay-2 h-2 w-2 rounded-full bg-ruby/45" />
-        </div>
-        <span className="font-display text-sm tracking-[0.35em] text-ink/70">213</span>
+      <div className="relative flex h-28 w-28 items-center justify-center">
+        <div
+          className="page-loader-ring absolute inset-0 rounded-full border-[3px] border-ink/10 border-t-brand-accent"
+          aria-hidden
+        />
+        <span className="relative font-display text-2xl tracking-[0.2em] text-ink/80">
+          s213
+        </span>
       </div>
     </div>
   );

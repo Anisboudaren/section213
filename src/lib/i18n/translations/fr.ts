@@ -225,32 +225,44 @@ export const fr: Translations = {
     stillHaveQuestions: "Encore des questions ?",
     teamReply: "Notre équipe vous répond sous 24 heures.",
     contactUs: "Nous contacter",
-    categories: [
-      { id: "general", label: "Questions générales" },
-      { id: "booking", label: "Réservation & planning" },
-      { id: "pricing", label: "Tarifs & forfaits" },
-      { id: "content", label: "Contenu & livraison" },
-      { id: "shoot", label: "Jour du tournage" },
-      { id: "turnaround", label: "Délais & révisions" },
-      { id: "travel", label: "Voyages & lieux" },
-    ],
+    categories: [{ id: "general", label: "Questions fréquentes" }],
     items: {
       general: [
         {
-          q: "Dans quoi Section 213 se spécialise-t-il ?",
-          a: "Section 213 est une plateforme digitale complète — vidéos cinématographiques, photos, drone, marketing, sites web, apps et automatisations pour les entreprises prêtes à se digitaliser.",
+          q: "Est-ce que vous garantissez des ventes ?",
+          a: "Non — et méfiez-vous de ceux qui le promettent. Notre rôle est d'agir sur les leviers qui font avancer un acheteur : clarté de l'offre, preuve, confiance et qualification. Résultat : plus de visites, des acheteurs plus rassurés, et une meilleure probabilité de réservation avant même le rendez-vous.",
         },
         {
-          q: "Avec qui travaillez-vous ?",
-          a: "Entreprises, marques et équipes en Algérie, au Maghreb et dans le monde entier qui veulent du contenu cinématographique, du marketing et des builds digitaux complets.",
+          q: "Êtes-vous une agence de communication ?",
+          a: "Non. Une agence produit du contenu et s'arrête là. Nous installons un système : présentation de votre offre, pages structurées pour la décision, qualification des prospects, orientation rapide et suivi de ce qui bloque vos réservations.",
         },
         {
-          q: "Quelles zones couvrez-vous ?",
-          a: "Basés à Oran, Algérie, nous servons les clients localement et à l'international — sur site pour les tournages et à distance pour le développement et les automatisations.",
+          q: "Qu'est-ce que je reçois concrètement ?",
+          a: "D'abord un résultat : un projet présenté clairement et de manière crédible, des acheteurs plus confiants avant la visite, et une visibilité sur ce qui convertit. Les livrables (vidéos stratégiques, landing page, pixel de tracking, assistant IA…) sont les moyens d'y arriver — détaillés dans chaque offre.",
         },
         {
-          q: "Proposez-vous du développement et des automatisations ?",
-          a: "Oui. Section 213 construit sites web, apps, intégrations CRM et automatisations métier en complément de nos services média et marketing.",
+          q: "Pourquoi le pack Growth est-il « sur étude » ?",
+          a: "Growth est un système complet adapté à votre projet : infrastructure digitale, reporting, Buyer Intelligence Engine™ et accompagnement stratégique. Comme le périmètre varie d'un promoteur à l'autre, le prix est fixé après une courte étude de vos besoins.",
+        },
+        {
+          q: "Que comprend l'assistant IA (pack Authority) ?",
+          a: "Il répond automatiquement aux prospects 24h/24, qualifie les demandes et accompagne les visiteurs avant la prise de contact — pour que vous ne perdiez plus aucun acheteur intéressé.",
+        },
+        {
+          q: "Mon projet est en dehors d'Oran, est-ce possible ?",
+          a: "Oui. Les projets situés hors d'Oran peuvent nécessiter des frais de déplacement et d'hébergement. Le montant est calculé automatiquement lors de la réservation, en toute transparence.",
+        },
+        {
+          q: "Comment se passe la réservation ?",
+          a: "En quelques étapes simples : vous choisissez votre date de tournage, vous présentez votre projet, vous précisez votre objectif, puis vous sélectionnez votre offre. Vous recevez un récapitulatif, puis une confirmation.",
+        },
+        {
+          q: "Dois-je payer immédiatement ?",
+          a: "À la réservation, vous validez date, projet, objectif et offre. Selon l'option choisie, un acompte peut être demandé au moment du checkout ; sinon, notre équipe vous recontacte pour finaliser.",
+        },
+        {
+          q: "Combien de temps avant de voir des résultats ?",
+          a: "Le tournage se planifie dès la réservation, et vos assets (vidéos, landing page) sont livrés rapidement pour être mis en ligne. L'objectif est simple : réduire l'incertitude de vos acheteurs le plus tôt possible.",
         },
       ],
     },
@@ -305,6 +317,7 @@ export const fr: Translations = {
     company: "Entreprise",
     companyItems: ["À propos", "Portfolio", "Contact"],
     follow: "Suivez-nous",
+    contact: "Contact",
     rights: "© 2026 Section 213. Tous droits réservés.",
   },
   homeV2: {
@@ -506,7 +519,8 @@ export const fr: Translations = {
     deposit: {
       title: "Décision acompte",
       optionA: "Option A — Sans acompte",
-      optionADesc: "Confirmation par l'équipe, sans paiement immédiat",
+      optionADesc:
+        "Confirmation par l'équipe, sans paiement immédiat. Les clients qui ne paient pas après contact seront bannis.",
       optionB: "Option B — Acompte 50%",
       optionBDesc: "Réservez votre créneau avec un acompte",
       methodTitle: "Mode de paiement",

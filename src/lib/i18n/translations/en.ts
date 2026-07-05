@@ -210,32 +210,44 @@ export const en = {
     stillHaveQuestions: "Still have questions?",
     teamReply: "Our team will get back to you within 24 hours.",
     contactUs: "Contact Us",
-    categories: [
-      { id: "general", label: "General Questions" },
-      { id: "booking", label: "Booking & Scheduling" },
-      { id: "pricing", label: "Pricing & Packages" },
-      { id: "content", label: "Content & Delivery" },
-      { id: "shoot", label: "Shoot Day Essentials" },
-      { id: "turnaround", label: "Turnaround & Revisions" },
-      { id: "travel", label: "Travel & Locations" },
-    ],
+    categories: [{ id: "general", label: "Common questions" }],
     items: {
       general: [
         {
-          q: "What does Section 213 specialize in?",
-          a: "Section 213 is a full-service digital platform — cinematic videos, photos, drone, marketing, websites, apps, and automations for businesses ready to digitalize.",
+          q: "Do you guarantee sales?",
+          a: "No — and be wary of anyone who promises that. Our role is to act on the levers that move a buyer forward: offer clarity, proof, trust, and qualification. The result: more visits, more confident buyers, and a better chance of booking before the appointment even happens.",
         },
         {
-          q: "Who do you work with?",
-          a: "Businesses, brands, and teams across Algeria, the Maghreb, and worldwide who want cinematic content, marketing, and full digital builds.",
+          q: "Are you a communications agency?",
+          a: "No. An agency produces content and stops there. We install a system: how your offer is presented, decision-ready pages, lead qualification, fast routing, and tracking what blocks your bookings.",
         },
         {
-          q: "What areas do you serve?",
-          a: "Based in Oran, Algeria, serving clients locally and internationally — on-site for shoots and remote for development and automations.",
+          q: "What do I actually receive?",
+          a: "First, an outcome: your project presented clearly and credibly, buyers who are more confident before the visit, and visibility into what converts. Deliverables (strategic videos, landing page, tracking pixel, AI assistant…) are how we get there — detailed in each offer.",
         },
         {
-          q: "Do you offer development and automations?",
-          a: "Yes. Section 213 builds websites, apps, CRM integrations, and business automations alongside our media and marketing services.",
+          q: "Why is the Growth pack priced « on request »?",
+          a: "Growth is a full system tailored to your project: digital infrastructure, reporting, Buyer Intelligence Engine™, and strategic support. Because scope varies from one developer to another, pricing is set after a short needs assessment.",
+        },
+        {
+          q: "What does the AI assistant include (Authority pack)?",
+          a: "It automatically responds to prospects 24/7, qualifies inquiries, and guides visitors before they reach out — so you never lose an interested buyer again.",
+        },
+        {
+          q: "My project is outside Oran — is that possible?",
+          a: "Yes. Projects outside Oran may require travel and accommodation fees. The amount is calculated automatically at booking, with full transparency.",
+        },
+        {
+          q: "How does booking work?",
+          a: "In a few simple steps: choose your shoot date, present your project, clarify your objective, then select your offer. You receive a recap, then a confirmation.",
+        },
+        {
+          q: "Do I have to pay immediately?",
+          a: "When you book, you confirm date, project, objective, and offer. Depending on the option you choose, a deposit may be required at checkout; otherwise our team follows up with you to finalize.",
+        },
+        {
+          q: "How long before I see results?",
+          a: "The shoot is scheduled as soon as you book, and your assets (videos, landing page) are delivered quickly to go live. The goal is simple: reduce buyer uncertainty as early as possible.",
         },
       ],
     },
@@ -290,6 +302,7 @@ export const en = {
     company: "Company",
     companyItems: ["About", "Portfolio", "Contact"],
     follow: "Follow",
+    contact: "Contact",
     rights: "© 2026 Section 213. All rights reserved.",
   },
   homeV2: {
@@ -487,7 +500,8 @@ export const en = {
     deposit: {
       title: "Deposit decision",
       optionA: "Option A — No deposit",
-      optionADesc: "Team confirmation, no immediate payment",
+      optionADesc:
+        "Team confirmation, no immediate payment. Clients who do not pay after contact will be banned.",
       optionB: "Option B — 50% deposit",
       optionBDesc: "Secure your slot with a deposit",
       methodTitle: "Payment method",

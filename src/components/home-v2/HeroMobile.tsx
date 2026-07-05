@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 import {
   Camera,
   ChevronDown,
@@ -23,6 +23,8 @@ import {
 } from "@/lib/hero-video-sources";
 import { safePlay } from "@/lib/safe-video-play";
 import { handleSmoothScroll } from "@/lib/smooth-scroll";
+import { useContactInfo } from "@/lib/contact-info-context";
+import { telHref } from "@/lib/contact-info";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { cn } from "@/lib/utils";
 
@@ -80,6 +82,7 @@ export function HeroMobile({
   const [videoFailed, setVideoFailed] = useState(false);
   const isMobile = useIsMobileViewport();
   const { translations: t } = useLanguage();
+  const { contactPhone } = useContactInfo();
   const heroAudible = soundOn && heroInView && !reelsInView;
 
   const heroPoster =
@@ -186,9 +189,14 @@ export function HeroMobile({
 
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           <SoundToggle soundOn={soundOn} onToggle={onToggleSound} className="hidden sm:inline-flex" />
-          <a href="tel:7048324498" className="hidden items-center gap-2 text-sm font-semibold lg:flex">
-            (704) 832-4498 <Phone className="h-4 w-4 text-ruby" />
-          </a>
+          {contactPhone ? (
+            <a
+              href={telHref(contactPhone)}
+              className="hidden items-center gap-2 text-sm font-semibold lg:flex"
+            >
+              {contactPhone} <Phone className="h-4 w-4 text-ruby" />
+            </a>
+          ) : null}
           <Link
             href="/book"
             className="bg-brand-accent inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold text-ruby-foreground transition hover:brightness-110 sm:gap-2 sm:px-4 sm:text-sm"
@@ -219,14 +227,12 @@ export function HeroMobile({
           {t.hero.subheadline}
         </p>
 
-        <div className="mt-7 flex flex-col gap-3 sm:mt-8 md:mt-10 lg:flex-row lg:items-end lg:justify-between">
-          <div className="hidden lg:block lg:flex-1" />
-
-          <div className="flex w-full flex-col gap-2.5 sm:max-w-md sm:gap-3 lg:ml-auto lg:items-end">
+        <div className="mt-7 flex flex-col gap-3 sm:mt-8 md:mt-10">
+          <div className="hero-stair-buttons flex w-full max-w-md flex-col items-start gap-2.5 sm:gap-3">
             <a
               href="#offers"
               onClick={(e) => handleSmoothScroll(e, "offers")}
-              className="hero-stair-step hero-stair-step-1 bg-brand-accent flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-ruby-foreground shadow-lg transition hover:brightness-110 sm:text-base lg:max-w-[18rem]"
+              className="hero-stair-step hero-stair-step-1 bg-brand-accent flex w-full items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-ruby-foreground shadow-lg transition hover:brightness-110 sm:text-base sm:max-w-[18rem]"
             >
               {t.hero.ctaPrimary}
               <ChevronRight className="h-4 w-4" />
@@ -234,35 +240,49 @@ export function HeroMobile({
             <a
               href="#about"
               onClick={(e) => handleSmoothScroll(e, "about")}
-              className="hero-stair-step hero-stair-step-2 flex w-full items-center justify-center rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 lg:max-w-[16rem]"
+              className="hero-stair-step hero-stair-step-2 flex w-full items-center justify-center rounded-md border border-white/30 bg-black/30 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 sm:max-w-[16rem]"
             >
               {t.hero.ctaSecondary}
             </a>
             <button
               type="button"
               onClick={onToggleSound}
-              className="hero-stair-step hero-stair-step-3 hidden items-center justify-center gap-2 rounded-md border border-white/30 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 sm:flex lg:max-w-[15rem]"
+              className="hero-stair-step hero-stair-step-3 hidden items-center justify-center gap-2 rounded-md border border-white/30 bg-black/20 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:border-white/55 sm:flex sm:max-w-[15rem]"
             >
               <Volume2 className="h-4 w-4" />
               {soundOn ? t.nav.soundOn : t.hero.enableSound}
             </button>
+          </div>
 
-            <div
-              aria-hidden
-              className="hero-stair-step hero-stair-step-4 mt-1 flex max-sm:flex-col max-sm:items-center max-sm:gap-1 flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/50 sm:text-xs lg:max-w-[18rem]"
-            >
-              {t.hero.visualBand.map((step, i) => (
-                <span key={step} className="hero-visual-band-step inline-flex max-sm:flex-col max-sm:items-center max-sm:gap-1 items-center gap-2">
-                  {i > 0 && (
-                    <>
-                      <ChevronDown className="h-3.5 w-3.5 text-white/25 max-sm:inline sm:hidden" />
-                      <span className="text-white/25 max-sm:hidden">→</span>
-                    </>
-                  )}
-                  <span>{step}</span>
+          <div
+            aria-hidden
+            className="hero-visual-band flex w-full max-w-md flex-col items-start gap-1 md:mx-auto md:max-w-4xl md:flex-row md:flex-nowrap md:items-center md:justify-center md:gap-x-2 md:gap-y-0"
+          >
+            {t.hero.visualBand.map((step, i) => (
+              <Fragment key={step}>
+                {i > 0 ? (
+                  <>
+                    <ChevronDown
+                      className="hero-visual-band-arrow hero-visual-band-arrow--mobile h-3.5 w-3.5 shrink-0 text-white/25 md:hidden"
+                      style={{ ["--arrow-index" as string]: i - 1 }}
+                    />
+                    <span
+                      className="hero-visual-band-arrow hero-visual-band-arrow--desktop hidden shrink-0 text-sm text-white/25 md:inline"
+                      style={{ ["--arrow-index" as string]: i - 1 }}
+                    >
+                      →
+                    </span>
+                  </>
+                ) : null}
+                <span
+                  className="hero-visual-band-step inline-flex shrink-0 items-center gap-2 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45 md:text-xs"
+                  style={{ ["--band-step" as string]: i }}
+                >
+                  <span className="hero-visual-band-dot h-1.5 w-1.5 shrink-0 rounded-full bg-ruby/70" />
+                  {step}
                 </span>
-              ))}
-            </div>
+              </Fragment>
+            ))}
           </div>
         </div>
       </div>

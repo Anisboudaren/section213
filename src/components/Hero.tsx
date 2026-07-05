@@ -9,6 +9,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { safePlay } from "@/lib/safe-video-play";
 import { handleSmoothScroll } from "@/lib/smooth-scroll";
+import { useContactInfo } from "@/lib/contact-info-context";
+import { telHref } from "@/lib/contact-info";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import {
   Bookmark,
@@ -94,6 +96,7 @@ function SoundToggle({
 
 function Nav({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () => void }) {
   const { translations: t } = useLanguage();
+  const { contactPhone } = useContactInfo();
 
   return (
     <nav className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 py-5 text-white md:px-8">
@@ -125,12 +128,14 @@ function Nav({ soundOn, onToggleSound }: { soundOn: boolean; onToggleSound: () =
 
       <div className="flex shrink-0 items-center gap-3">
         <SoundToggle soundOn={soundOn} onToggle={onToggleSound} className="hidden sm:flex" />
-        <a
-          href="tel:7048324498"
-          className="hidden lg:flex items-center gap-2 text-sm font-semibold"
-        >
-          (704) 832-4498 <Phone className="w-4 h-4 text-gold" />
-        </a>
+        {contactPhone ? (
+          <a
+            href={telHref(contactPhone)}
+            className="hidden lg:flex items-center gap-2 text-sm font-semibold"
+          >
+            {contactPhone} <Phone className="w-4 h-4 text-gold" />
+          </a>
+        ) : null}
         <Link
           href="/book"
           className="bg-brand-accent px-4 py-2 rounded-md text-sm font-semibold flex items-center gap-2 hover:brightness-110 transition"
