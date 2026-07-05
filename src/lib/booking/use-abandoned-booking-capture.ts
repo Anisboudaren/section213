@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, type MutableRefObject } from "react";
 import { buildAbandonedBookingInput } from "@/lib/booking/abandoned-payload";
 import { saveAbandonedBooking } from "@/lib/actions/leads";
 import type { BookingFormData } from "@/lib/booking-types";
+import type { Locale } from "@/lib/i18n/types";
 import type { OfferAlaCarteView, OfferPackView } from "@/lib/offers/offer-types";
 
 type UseAbandonedBookingCaptureArgs = {
@@ -12,7 +13,7 @@ type UseAbandonedBookingCaptureArgs = {
   data: Partial<BookingFormData>;
   packs: OfferPackView[];
   alaCarte: OfferAlaCarteView[];
-  locale: "fr" | "en";
+  locale: Locale;
   submittedRef: MutableRefObject<boolean>;
   onAbandonedSaved?: (id: string) => void;
 };

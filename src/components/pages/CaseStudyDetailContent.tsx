@@ -8,6 +8,7 @@ import { CaseStudyVideo } from "@/components/home-v2/CaseStudyVideo";
 import { Footer } from "@/components/sections/Footer";
 import { Section213Logo } from "@/components/Section213Logo";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
 import type { CaseStudy } from "@/lib/types/admin";
 
 type CaseStudyDetailContentProps = {
@@ -16,7 +17,7 @@ type CaseStudyDetailContentProps = {
 };
 
 export function CaseStudyDetailContent({ study, related }: CaseStudyDetailContentProps) {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
   const p = t.caseStudiesPage;
 
   return (
@@ -53,7 +54,7 @@ export function CaseStudyDetailContent({ study, related }: CaseStudyDetailConten
             </p>
           )}
           <h1 className="mt-3 max-w-4xl font-display text-4xl leading-tight tracking-wide sm:text-6xl md:text-7xl">
-            {study.title.toUpperCase()}
+            {formatDisplayText(study.title, locale)}
           </h1>
           <p className="mt-4 text-lg text-white/70">{study.clientName}</p>
         </div>

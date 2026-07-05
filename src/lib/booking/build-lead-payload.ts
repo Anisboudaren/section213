@@ -1,4 +1,5 @@
 import type { BookingFormData, UploadedFile } from "@/lib/booking-types";
+import type { Locale } from "@/lib/i18n/types";
 import {
   computeBookingTotal,
   findPackView,
@@ -11,7 +12,7 @@ export type BookingLeadPayloadInput = {
   data: Partial<BookingFormData>;
   packs: OfferPackView[];
   alaCarte: OfferAlaCarteView[];
-  locale: "fr" | "en";
+  locale: Locale;
   submissionStatus: "abandoned" | "completed";
   name: string;
   phone: string;

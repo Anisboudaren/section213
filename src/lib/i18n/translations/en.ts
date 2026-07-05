@@ -8,7 +8,8 @@ import {
 export const en = {
   language: {
     pickerTitle: "Choose your language",
-    pickerSubtitle: "Section 213 is available in English and French. Pick your preference — you can change it anytime from the footer.",
+    pickerSubtitle:
+      "Section 213 is available in English, French, and Arabic. Pick your preference — you can change it anytime from the footer.",
     continue: "Continue",
     switcherLabel: "Language",
   },
@@ -288,6 +289,24 @@ export const en = {
     message: "Message / Project",
     messagePlaceholder: "Briefly describe your need…",
     submit: "Send my request",
+    validation: {
+      firstNameRequired: "First name is required",
+      lastNameRequired: "Last name is required",
+      phoneRequired: "Phone is required",
+      emailInvalid: "Invalid email",
+    },
+    leadSources: {
+      website: "Website",
+      instagram: "Instagram",
+      facebook: "Facebook / Messenger",
+      whatsapp: "WhatsApp",
+      google: "Google Search",
+      tiktok: "TikTok",
+      referral: "Referral / network",
+      cold: "Direct outreach",
+      other: "Other",
+    },
+    hoursDefault: "Mon–Fri 9am–6pm",
   },
   footer: {
     tagline: "Full-service digital for modern businesses.",
@@ -431,6 +450,12 @@ export const en = {
       closingBefore: "Most projects try to generate more attention.",
       closingHighlight: "The best ones reduce uncertainty before the visit.",
       channels: ["Instagram", "Facebook", "Landing", "Ads", "Videos", "Stories"],
+      follow: "Follow",
+      reelSounds: [
+        "Original Sound — Section 213",
+        "Trending Audio — Section 213",
+        "Viral Mix — Section 213",
+      ],
     },
     offers: {
       index: "005",
@@ -465,6 +490,8 @@ export const en = {
     recommended: "Recommended",
     alaCarteTitle: "À la carte services",
     flexibleDate: "I'm flexible on the date",
+    preferredTimeSlot: "Preferred time slot",
+    descriptionPlaceholder: "Describe your project…",
     projectName: "Project name",
     projectNamePlaceholder: "e.g. Les Oliviers Residence",
     location: "Location",

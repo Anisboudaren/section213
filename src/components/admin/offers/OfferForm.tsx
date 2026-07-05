@@ -156,6 +156,19 @@ export function OfferForm({
           />
         </div>
 
+        <FormField
+          control={form.control}
+          name="nameAr"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{adminT("offers.nameAr")}</FormLabel>
+              <FormControl>
+                <Input {...field} className="min-h-11" dir="rtl" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
         <div className="grid gap-4 sm:grid-cols-2">
           <FormField
             control={form.control}

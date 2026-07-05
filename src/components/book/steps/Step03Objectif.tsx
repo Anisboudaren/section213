@@ -24,7 +24,7 @@ export function Step03Objectif({ data, onChange, errors }: StepProps) {
             aria-pressed={data.objective === obj}
             className={bookingChoiceClass(
               data.objective === obj,
-              "rounded-lg p-4 text-left min-h-11",
+              "rounded-lg p-4 text-start min-h-11",
             )}
             onClick={() => onChange({ objective: obj })}
           >

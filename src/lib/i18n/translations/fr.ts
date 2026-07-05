@@ -10,7 +10,7 @@ export const fr: Translations = {
   language: {
     pickerTitle: "Choisissez votre langue",
     pickerSubtitle:
-      "Section 213 est disponible en anglais et en français. Choisissez votre préférence — vous pourrez la modifier à tout moment depuis le pied de page.",
+      "Section 213 est disponible en anglais, en français et en arabe. Choisissez votre préférence — vous pourrez la modifier à tout moment depuis le pied de page.",
     continue: "Continuer",
     switcherLabel: "Langue",
   },
@@ -303,6 +303,24 @@ export const fr: Translations = {
     message: "Message / Projet",
     messagePlaceholder: "Décrivez brièvement votre besoin…",
     submit: "Envoyer ma demande",
+    validation: {
+      firstNameRequired: "Prénom requis",
+      lastNameRequired: "Nom requis",
+      phoneRequired: "Téléphone requis",
+      emailInvalid: "Email invalide",
+    },
+    leadSources: {
+      website: "Site web",
+      instagram: "Instagram",
+      facebook: "Facebook / Messenger",
+      whatsapp: "WhatsApp",
+      google: "Recherche Google",
+      tiktok: "TikTok",
+      referral: "Référence / réseau",
+      cold: "Prospection directe",
+      other: "Autre",
+    },
+    hoursDefault: "Lun–Ven 9h–18h",
   },
   footer: {
     tagline: "Digital complet pour les entreprises modernes.",
@@ -450,6 +468,12 @@ export const fr: Translations = {
       closingBefore: "La plupart des projets essaient de générer plus d'attention.",
       closingHighlight: "Les meilleurs réduisent l'incertitude avant la visite.",
       channels: ["Instagram", "Facebook", "Landing", "Ads", "Videos", "Stories"],
+      follow: "Suivre",
+      reelSounds: [
+        "Son original — Section 213",
+        "Audio tendance — Section 213",
+        "Mix viral — Section 213",
+      ],
     },
     offers: {
       index: "005",
@@ -484,6 +508,8 @@ export const fr: Translations = {
     recommended: "Recommandé",
     alaCarteTitle: "Services à la carte",
     flexibleDate: "Je suis flexible sur la date",
+    preferredTimeSlot: "Créneau préféré",
+    descriptionPlaceholder: "Décrivez votre projet…",
     projectName: "Nom du projet",
     projectNamePlaceholder: "Ex. Résidence Les Oliviers",
     location: "Localisation",

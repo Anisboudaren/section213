@@ -1,7 +1,9 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const BYPASS_PREFIXES = ["/admin", "/api", "/maintenance", "/_next"];
+import { getSessionFromRequest } from "@/lib/auth/session-edge";
+
+const BYPASS_PREFIXES = ["/api", "/maintenance", "/_next"];
 
 function isStaticAsset(pathname: string) {
   return /\.(ico|png|jpe?g|gif|webp|svg|mov|mp4|woff2?|txt|xml)$/i.test(pathname);
@@ -12,6 +14,24 @@ export async function middleware(request: NextRequest) {
 
   if (pathname === "/favicon.ico") {
     return NextResponse.rewrite(new URL("/icon", request.url));
+  }
+
+  if (pathname.startsWith("/admin")) {
+    const session = await getSessionFromRequest(request);
+    if (!session) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
+
+  if (pathname === "/login") {
+    const session = await getSessionFromRequest(request);
+    if (session) {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
+    return NextResponse.next();
   }
 
   if (BYPASS_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {

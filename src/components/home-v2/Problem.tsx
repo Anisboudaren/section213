@@ -36,7 +36,7 @@ export function Problem() {
               ))}
             </div>
 
-            <div className="mt-8 border-l-2 border-ruby/60 pl-4">
+            <div className="mt-8 border-s-2 border-ruby/60 ps-4">
               <p className="text-sm text-white/60">{p.closingBefore}</p>
               <p className="mt-1 font-display text-lg text-ruby sm:text-xl">{p.closingHighlight}</p>
             </div>

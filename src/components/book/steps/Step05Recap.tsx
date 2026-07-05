@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Loader2 } from "lucide-react";
@@ -15,7 +14,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  useFormField,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -30,9 +29,12 @@ import { ORAN_WILAYA_CODE } from "@/lib/offers/v1-packs-constants";
 import {
   computeBookingTotal,
   findPackView,
+  getAlaCarteName,
+  getPackName,
   type OfferAlaCarteView,
   type OfferPackView,
 } from "@/lib/offers/offer-types";
+import { getDateFnsLocale } from "@/lib/i18n/date-locale";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import { trackFormView, trackLeadConversion } from "@/lib/pixel-events";
 import { cn } from "@/lib/utils";
@@ -49,12 +51,22 @@ type StepProps = {
   alaCarte: OfferAlaCarteView[];
 };
 
+function MappedFormMessage({ mapError }: { mapError: (key: string) => string }) {
+  const { error, formMessageId } = useFormField();
+  if (!error?.message) return null;
+  return (
+    <p id={formMessageId} className="text-[0.8rem] font-medium text-destructive">
+      {mapError(String(error.message))}
+    </p>
+  );
+}
+
 function SummaryRow({ label, value }: { label: string; value: string | null | undefined }) {
   if (!value) return null;
   return (
     <div className="flex justify-between gap-4 text-sm">
       <span className="text-muted-foreground">{label}</span>
-      <span className="font-medium text-right">{value}</span>
+      <span className="font-medium text-end">{value}</span>
     </div>
   );
 }
@@ -72,7 +84,6 @@ export function Step05Recap({
   const [submitting, setSubmitting] = useState(false);
   const [uploadingProof, setUploadingProof] = useState(false);
   const proofInputRef = useRef<HTMLInputElement>(null);
-  const isFr = locale === "fr";
 
   useEffect(() => {
     trackFormView("booking_recap");
@@ -106,7 +117,7 @@ export function Step05Recap({
     ? t.booking.flexibleDate
     : data.preferredDate
       ? format(new Date(data.preferredDate), "d MMM yyyy", {
-          locale: locale === "fr" ? fr : undefined,
+          locale: getDateFnsLocale(locale),
         })
       : null;
 
@@ -114,17 +125,17 @@ export function Step05Recap({
     ? t.booking.timeSlots[data.preferredTime]
     : null;
 
-  const packName = pack ? (isFr ? pack.nameFr : pack.nameEn) : null;
+  const packName = pack ? getPackName(pack, locale) : null;
 
   const alaCarteLabel = useMemo(() => {
     if (!data.alaCarteOptions?.length) return null;
     return data.alaCarteOptions
       .map((slug) => {
         const item = alaCarte.find((i) => i.slug === slug);
-        return item ? (isFr ? item.nameFr : item.nameEn) : slug;
+        return item ? getAlaCarteName(item, locale) : slug;
       })
       .join(", ");
-  }, [data.alaCarteOptions, alaCarte, isFr]);
+  }, [data.alaCarteOptions, alaCarte, locale]);
 
   const pricing = useMemo(
     () =>
@@ -132,7 +143,7 @@ export function Step05Recap({
         pack,
         alaCarte,
         data.alaCarteOptions ?? [],
-        locale === "fr" ? "fr" : "en",
+        locale,
       ),
     [pack, alaCarte, data.alaCarteOptions, locale],
   );
@@ -171,7 +182,7 @@ export function Step05Recap({
         data,
         packs,
         alaCarte,
-        locale: locale === "fr" ? "fr" : "en",
+        locale,
         submissionStatus: "completed",
         name: values.fullName,
         phone: values.phone,
@@ -288,7 +299,7 @@ export function Step05Recap({
                     }}
                   />
                 </FormControl>
-                <FormMessage />
+                <MappedFormMessage mapError={mapError} />
               </FormItem>
             )}
           />
@@ -313,7 +324,7 @@ export function Step05Recap({
                     }}
                   />
                 </FormControl>
-                <FormMessage />
+                <MappedFormMessage mapError={mapError} />
               </FormItem>
             )}
           />
@@ -337,7 +348,7 @@ export function Step05Recap({
                       }}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <MappedFormMessage mapError={mapError} />
                 </FormItem>
               )}
             />
@@ -371,7 +382,7 @@ export function Step05Recap({
                   key={choice}
                   type="button"
                   className={cn(
-                    bookingChoiceClass(depositChoice === choice, "rounded-lg p-3 text-left"),
+                    bookingChoiceClass(depositChoice === choice, "rounded-lg p-3 text-start"),
                   )}
                   onClick={() => {
                     form.setValue("depositChoice", choice);
@@ -412,7 +423,7 @@ export function Step05Recap({
                     key={method}
                     type="button"
                     className={cn(
-                      bookingChoiceClass(depositMethod === method, "rounded-lg p-3 text-left"),
+                      bookingChoiceClass(depositMethod === method, "rounded-lg p-3 text-start"),
                     )}
                     onClick={() => {
                       form.setValue("depositMethod", method, { shouldValidate: true });
@@ -496,7 +507,7 @@ export function Step05Recap({
           <Button type="submit" variant="ruby" className="h-11 w-full" disabled={submitting}>
             {submitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="me-2 h-4 w-4 animate-spin" />
                 {t.booking.recap.submitting}
               </>
             ) : (

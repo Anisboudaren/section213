@@ -11,6 +11,7 @@ import {
   Package,
   Settings,
   UserPlus,
+  UserCog,
   UserX,
 } from "lucide-react";
 
@@ -67,6 +68,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
   {
     label: "Paramètres",
     items: [
+      { label: "Utilisateurs", href: "/admin/team/users", icon: UserCog },
       { label: "Paramètres", href: "/admin/settings/platform", icon: Settings },
     ],
   },
@@ -75,7 +77,6 @@ export const NAV_GROUPS: NavGroupConfig[] = [
 export const HIDDEN_NAV_ITEMS = [
   { label: "Pipeline", href: "/admin/pipeline" },
   { label: "Facturation", href: "/admin/billing/invoices" },
-  { label: "Équipe", href: "/admin/team/users" },
   { label: "Analytiques", href: "/admin/analytics" },
 ] as const;
 

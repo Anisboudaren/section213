@@ -45,7 +45,7 @@ export function FAQ() {
             <div key={item.q} className="bg-white rounded-xl border border-ink/10">
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full flex items-center justify-between p-4 text-left"
+                className="w-full flex items-center justify-between p-4 text-start"
               >
                 <span className="font-medium text-ink text-sm">{item.q}</span>
                 {open === i ? <Minus className="w-4 h-4 text-ink" /> : <Plus className="w-4 h-4 text-ink" />}
@@ -57,7 +57,7 @@ export function FAQ() {
           ))}
         </div>
         <div className="mt-8 rounded-xl bg-ink p-6 text-white md:flex md:items-center md:justify-between md:gap-6">
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-start">
             <h3 className="font-display text-xl sm:text-2xl">{bookCta.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-white/65">{bookCta.subtitle}</p>
           </div>
@@ -67,7 +67,7 @@ export function FAQ() {
               className="bg-brand-accent inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-sm font-semibold text-ruby-foreground transition hover:brightness-110"
             >
               {bookCta.cta}
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4 rtl:rotate-180" />
             </Link>
             {contactPhone ? (
               <a

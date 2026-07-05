@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import { CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { BookingFormData } from "@/lib/booking-types";
 import { getWilayaName } from "@/lib/algeria-wilayas";
-import { findPackView, type OfferPackView } from "@/lib/offers/offer-types";
+import { getDateFnsLocale } from "@/lib/i18n/date-locale";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { findPackView, getPackName, type OfferPackView } from "@/lib/offers/offer-types";
 
 type StepProps = {
   data: Partial<BookingFormData>;
@@ -19,7 +19,6 @@ type StepProps = {
 
 export function Step06Confirmation({ data, packs }: StepProps) {
   const { translations: t, locale } = useLanguage();
-  const isFr = locale === "fr";
 
   const pack = findPackView(packs, data.selectedPackId || undefined);
 
@@ -27,7 +26,7 @@ export function Step06Confirmation({ data, packs }: StepProps) {
     ? t.booking.flexibleDate
     : data.preferredDate
       ? format(new Date(data.preferredDate), "PPP", {
-          locale: locale === "fr" ? fr : undefined,
+          locale: getDateFnsLocale(locale),
         })
       : "—";
 
@@ -44,7 +43,7 @@ export function Step06Confirmation({ data, packs }: StepProps) {
         <p className="mt-2 text-muted-foreground">{t.booking.confirmation.message}</p>
       </div>
 
-      <Card className="w-full text-left">
+      <Card className="w-full text-start">
         <CardContent className="space-y-3 p-4 text-sm">
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">{t.booking.summary.date}</span>
@@ -53,7 +52,7 @@ export function Step06Confirmation({ data, packs }: StepProps) {
           {data.projectName && (
             <div className="flex justify-between gap-4">
               <span className="text-muted-foreground">{t.booking.summary.projectName}</span>
-              <span className="font-medium text-right">{data.projectName}</span>
+              <span className="font-medium text-end">{data.projectName}</span>
             </div>
           )}
           {data.wilaya && (
@@ -77,7 +76,7 @@ export function Step06Confirmation({ data, packs }: StepProps) {
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">{t.booking.summary.offer}</span>
             <span className="font-medium">
-              {pack ? (isFr ? pack.nameFr : pack.nameEn) : "—"}
+              {pack ? getPackName(pack, locale) : "—"}
             </span>
           </div>
           <div className="flex justify-between gap-4">
@@ -86,7 +85,7 @@ export function Step06Confirmation({ data, packs }: StepProps) {
           </div>
           <div className="flex justify-between gap-4">
             <span className="text-muted-foreground">{t.booking.summary.contact}</span>
-            <span className="font-medium text-right">
+            <span className="font-medium text-end">
               {data.fullName}
               {data.phone ? ` · ${data.phone}` : ""}
             </span>

@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/i18n/types";
 import type { BookingFormData } from "@/lib/booking-types";
 import {
   computeBookingTotal,
@@ -10,7 +11,7 @@ export function buildAbandonedBookingInput(
   data: Partial<BookingFormData>,
   packs: OfferPackView[],
   alaCarte: OfferAlaCarteView[],
-  locale: "fr" | "en",
+  locale: Locale,
 ): AbandonedBookingInput | null {
   const phone = data.phone?.trim();
   if (!data.bookingSessionId || !phone || phone.length < 8) return null;

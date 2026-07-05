@@ -4,6 +4,7 @@ import { ChevronRight, Clapperboard, Code2, Megaphone, Workflow } from "lucide-r
 
 import { handleSmoothScroll } from "@/lib/smooth-scroll";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
 
 import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
@@ -11,7 +12,7 @@ import { SectionIndex } from "./SectionIndex";
 const ICONS = [Clapperboard, Megaphone, Code2, Workflow];
 
 export function Solutions() {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
   const s = t.homeV2.solutions;
 
   return (
@@ -35,7 +36,9 @@ export function Solutions() {
                     <Icon className="h-5 w-5 text-ink" />
                   </div>
                   <div>
-                    <h3 className="font-display text-lg tracking-wider text-ink">{item.title.toUpperCase()}</h3>
+                    <h3 className="font-display text-lg tracking-wider text-ink">
+                      {formatDisplayText(item.title, locale)}
+                    </h3>
                     <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
                   </div>
                 </article>

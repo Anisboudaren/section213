@@ -9,6 +9,11 @@ import { Label } from "@/components/ui/label";
 import type { BookingFormData } from "@/lib/booking-types";
 import {
   formatPriceFrom,
+  getAlaCarteName,
+  getAlaCartePriceDisplay,
+  getPackFeatures,
+  getPackName,
+  getPackTagline,
   type OfferAlaCarteView,
   type OfferPackView,
 } from "@/lib/offers/offer-types";
@@ -33,7 +38,6 @@ export function Step04Offre({
   alaCarte,
 }: StepProps) {
   const { locale, translations: t } = useLanguage();
-  const isFr = locale === "fr";
   const selected = data.selectedPackId;
   const alaCarteSelected = data.alaCarteOptions ?? [];
 
@@ -56,12 +60,14 @@ export function Step04Offre({
       <div className="space-y-3">
         {packs.map((pack) => {
           const isSelected = selected === pack.slug;
-          const name = isFr ? pack.nameFr : pack.nameEn;
-          const tagline = isFr ? pack.taglineFr : pack.taglineEn;
+          const name = getPackName(pack, locale);
+          const tagline = getPackTagline(pack, locale);
           const priceLine = pack.studyOnly
-            ? isFr
+            ? locale === "fr"
               ? pack.priceLabelFr
-              : pack.priceLabelEn
+              : locale === "ar"
+                ? (pack.priceLabelEn ?? "حسب الدراسة")
+                : pack.priceLabelEn
             : pack.priceFrom
               ? formatPriceFrom(pack.priceFrom, locale)
               : null;
@@ -73,7 +79,7 @@ export function Step04Offre({
               aria-pressed={isSelected}
               onClick={() => onChange({ selectedPackId: pack.slug })}
               className={cn(
-                bookingChoiceClass(isSelected, "w-full min-w-0 rounded-xl p-4 text-left"),
+                bookingChoiceClass(isSelected, "w-full min-w-0 rounded-xl p-4 text-start"),
                 pack.recommended && "ring-1 ring-ruby/30",
               )}
             >
@@ -90,14 +96,14 @@ export function Step04Offre({
                   <p className="mt-1 text-xs text-muted-foreground">{tagline}</p>
                 </div>
                 {priceLine && (
-                  <span className="shrink-0 self-start text-sm font-bold tabular-nums sm:text-right">
+                  <span className="shrink-0 self-start text-sm font-bold tabular-nums sm:text-end">
                     {priceLine}
                   </span>
                 )}
               </div>
               {isSelected && (
                 <ul className="mt-3 space-y-1 border-t border-ink/10 pt-3">
-                  {(isFr ? pack.featuresFr : pack.featuresEn).map((f) => (
+                  {getPackFeatures(pack, locale).map((f) => (
                     <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
                       <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ruby" />
                       {f}
@@ -128,9 +134,9 @@ export function Step04Offre({
                   htmlFor={`ala-${item.slug}`}
                   className="flex min-w-0 flex-1 cursor-pointer items-start justify-between gap-3 text-sm font-normal"
                 >
-                  <span className="min-w-0">{isFr ? item.nameFr : item.nameEn}</span>
+                  <span className="min-w-0">{getAlaCarteName(item, locale)}</span>
                   <span className="shrink-0 text-muted-foreground tabular-nums">
-                    {isFr ? item.priceFr : item.priceEn}
+                    {getAlaCartePriceDisplay(item, locale)}
                   </span>
                 </Label>
               </div>

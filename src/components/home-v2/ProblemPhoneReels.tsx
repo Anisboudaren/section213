@@ -43,6 +43,7 @@ type ProblemPhoneReelsProps = {
 
 export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
   const { translations: t, locale } = useLanguage();
+  const p = t.homeV2.problem;
   const reelCount = PROBLEM_PHONE_REELS.length;
   const initialIndex = Math.floor(reelCount / 2);
   const caseItems = t.homeV2.caseStudies.items.slice(0, PROBLEM_PHONE_REELS.length);
@@ -186,7 +187,7 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
       className="relative isolate mx-auto w-full max-w-[320px] overflow-visible sm:max-w-[340px]"
     >
       <div className="pointer-events-none absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-ruby/20 via-transparent to-transparent blur-2xl" />
-      <div className="relative rounded-[2rem] border border-white/15 bg-gradient-to-b from-white/[0.08] to-black/40 p-3 shadow-2xl backdrop-blur-sm">
+      <div dir="ltr" className="relative rounded-[2rem] border border-white/15 bg-gradient-to-b from-white/[0.08] to-black/40 p-3 shadow-2xl backdrop-blur-sm">
         <div className="relative overflow-visible rounded-[1.5rem] border border-white/10 bg-black">
           <div className="flex items-center justify-between rounded-t-[1.5rem] border-b border-white/10 bg-black px-3 py-2">
             <span className="rounded-full bg-ruby/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-ruby">
@@ -262,12 +263,12 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
                   <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/95 via-black/55 to-transparent p-3 pt-12 text-white">
                     <div className="mb-1.5 flex items-center gap-2">
                       <span className="text-xs font-semibold">@section213</span>
-                      <span className="rounded bg-white/20 px-1.5 py-0.5 text-[9px]">Follow</span>
+                      <span className="rounded bg-white/20 px-1.5 py-0.5 text-[9px]">{p.follow}</span>
                     </div>
-                    <p className="pr-10 text-xs leading-snug">{meta?.title}</p>
+                    <p className="pe-10 text-xs leading-snug">{meta?.title}</p>
                     <div className="mt-1.5 flex items-center gap-1.5 text-[10px] text-white/75">
                       <Music2 className="h-3 w-3 shrink-0 animate-pulse" />
-                      <span className="truncate">{item.sound}</span>
+                      <span className="truncate">{p.reelSounds[i] ?? item.sound}</span>
                     </div>
                     {meta?.category && (
                       <p className="mt-1 text-[9px] uppercase tracking-wider text-ruby">
@@ -285,7 +286,7 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
               <button
                 key={i}
                 type="button"
-                aria-label={`${locale === "fr" ? "Vidéo" : "Video"} ${i + 1}`}
+                aria-label={`${locale === "fr" ? "Vidéo" : locale === "ar" ? "فيديو" : "Video"} ${i + 1}`}
                 onClick={() => goTo(i)}
                 className={cn(
                   "h-1.5 rounded-full transition-all",

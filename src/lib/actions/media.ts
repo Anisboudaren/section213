@@ -108,6 +108,7 @@ export async function registerMediaAsset(
 export type MediaFilters = {
   mimePrefix?: "image" | "video";
   folder?: string;
+  limit?: number;
 };
 
 export async function getMediaAssets(
@@ -123,6 +124,7 @@ export async function getMediaAssets(
           : {}),
       },
       orderBy: { createdAt: "desc" },
+      ...(filters?.limit ? { take: filters.limit } : {}),
     });
     return { success: true, data: rows.map(toMediaDto) };
   } catch (error) {

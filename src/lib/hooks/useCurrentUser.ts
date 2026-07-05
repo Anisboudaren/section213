@@ -1,14 +1,36 @@
 "use client";
 
-import type { TeamMember } from "@/lib/types/admin";
-import { TEAM } from "@/lib/mock-data/team";
+import type { UserRole } from "@/generated/prisma/client";
+import { useAdminUser } from "@/lib/admin/user-context";
+import type { AdminAccessLevel, TeamMember } from "@/lib/types/admin";
 
-// Replace with real auth session when Neon + Auth is connected
-const DEFAULT_USER_ID = "amine";
+function roleToAdminAccess(role: UserRole): AdminAccessLevel {
+  switch (role) {
+    case "SUPER_ADMIN":
+      return "full";
+    case "ADMIN":
+      return "full_no_billing";
+    default:
+      return "tasks_only";
+  }
+}
 
 export function useCurrentUser(): TeamMember {
-  const member = TEAM.find((m) => m.id === DEFAULT_USER_ID);
-  return member ?? TEAM[0];
+  const user = useAdminUser();
+
+  return {
+    id: user.id,
+    name: user.fullName,
+    role: "ceo",
+    displayRole: user.role === "SUPER_ADMIN" ? "Super Admin" : user.role === "ADMIN" ? "Admin" : "Team Member",
+    responsibilities: [],
+    reportsTo: [],
+    adminAccess: roleToAdminAccess(user.role),
+    active: true,
+    email: user.email,
+    phone: user.phone,
+    avatar: user.photoUrl,
+  };
 }
 
 export function canManageLeads(user: TeamMember): boolean {
@@ -25,4 +47,8 @@ export function canReassignLead(user: TeamMember): boolean {
 
 export function canAccessBilling(user: TeamMember): boolean {
   return user.adminAccess === "full";
+}
+
+export function canManageUsers(user: TeamMember): boolean {
+  return user.adminAccess === "full" || user.adminAccess === "full_no_billing";
 }

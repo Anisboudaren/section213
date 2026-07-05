@@ -22,10 +22,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { incrementLinkClick, createLead } from "@/lib/actions/leads";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
-import type { OfferPackView } from "@/lib/offers/offer-types";
+import { getPackName, type OfferPackView } from "@/lib/offers/offer-types";
 import { trackFormView, trackLeadConversion } from "@/lib/pixel-events";
 import {
-  contactFormSchema,
+  createContactFormSchema,
   leadSourceOptions,
   type ContactFormInput,
 } from "@/lib/schemas/lead-schema";
@@ -48,7 +48,7 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
   const refParam = searchParams.get("ref");
   const source: LeadSource =
     srcParam && leadSourceOptions.some((o) => o.value === srcParam) ? srcParam : "website";
-  const sourceLabel = leadSourceOptions.find((o) => o.value === source)?.label;
+  const sourceLabel = c.leadSources[source as keyof typeof c.leadSources];
 
   useEffect(() => {
     if (refParam) {
@@ -61,7 +61,8 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
   }, []);
 
   const form = useForm<ContactFormInput>({
-    resolver: zodResolver(contactFormSchema),
+    resolver: async (values, context, options) =>
+      zodResolver(createContactFormSchema(c.validation))(values, context, options),
     defaultValues: {
       prenom: "",
       nom: "",
@@ -71,6 +72,10 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
       message: "",
     },
   });
+
+  useEffect(() => {
+    form.clearErrors();
+  }, [locale, form]);
 
   const onSubmit = async (values: ContactFormInput) => {
     setError(null);
@@ -115,8 +120,6 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
       </div>
     );
   }
-
-  const isFr = locale === "fr";
 
   return (
     <div className={cn("w-full", !embedded && "max-w-md")}>
@@ -227,7 +230,7 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
                               />
                             </FormControl>
                             <FormLabel className="font-normal">
-                              {isFr ? pack.nameFr : pack.nameEn}
+                              {getPackName(pack, locale)}
                             </FormLabel>
                           </FormItem>
                         );

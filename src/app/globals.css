@@ -122,7 +122,7 @@ html {
   --color-ruby: var(--ruby);
   --color-ruby-foreground: var(--ruby-foreground);
   --color-brand-accent: var(--ruby);
-  --font-display: "Anton", "Impact", sans-serif;
+  --font-display: var(--font-anton), Impact, sans-serif;
 }
 
 /* Marketing pages inherit accent from :root — no override here. */
@@ -200,8 +200,17 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   }
+
+  html[lang="ar"] body {
+    font-family: var(--font-body-ar), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  html[lang="ar"] {
+    --font-display: var(--font-display-ar), sans-serif;
+  }
+
 }
 
 @layer utilities {
@@ -378,11 +387,11 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
   }
 
   .trusted-marquee-left {
-    animation: trusted-marquee-left 38s linear infinite;
+    animation: trusted-marquee-left 18s linear infinite;
   }
 
   .trusted-marquee-right {
-    animation: trusted-marquee-right 42s linear infinite;
+    animation: trusted-marquee-right 22s linear infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -703,4 +712,16 @@ html[data-accent-preset="monochrome"] .theme-marketing .bg-mist [class*="bg-ruby
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   box-shadow: 0 3px 10px oklch(0 0 0 / 0.3);
+}
+
+/* Arabic typography — Tailwind bakes Anton into .font-display at build time */
+html[lang="ar"] .font-display {
+  font-family: var(--font-display-ar), var(--font-body-ar), ui-sans-serif, sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+html[lang="ar"] [class*="tracking-"] {
+  letter-spacing: normal;
 }

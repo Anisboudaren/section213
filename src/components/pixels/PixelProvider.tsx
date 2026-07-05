@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { ClarityAnalytics } from "@/components/analytics/ClarityAnalytics";
 import { PageViewTracker } from "@/components/pixels/PageViewTracker";
 import { PixelScripts } from "@/components/pixels/PixelScripts";
 import type { PublicPixelConfig } from "@/lib/pixel-settings-defaults";
@@ -20,6 +21,7 @@ export function PixelProvider({ config, children }: PixelProviderProps) {
   return (
     <>
       <PixelScripts config={config} />
+      <ClarityAnalytics disabled={config.testMode} />
       <PageViewTracker config={config} />
       {children}
     </>

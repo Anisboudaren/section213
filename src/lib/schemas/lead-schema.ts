@@ -124,4 +124,22 @@ export const contactFormSchema = z.object({
   message: z.string().max(300).optional(),
 });
 
+export type ContactValidationMessages = {
+  firstNameRequired: string;
+  lastNameRequired: string;
+  phoneRequired: string;
+  emailInvalid: string;
+};
+
+export function createContactFormSchema(messages: ContactValidationMessages) {
+  return z.object({
+    prenom: z.string().min(1, messages.firstNameRequired),
+    nom: z.string().min(1, messages.lastNameRequired),
+    phone: z.string().min(6, messages.phoneRequired),
+    email: z.string().email(messages.emailInvalid).optional().or(z.literal("")),
+    interestedIn: z.array(z.string()),
+    message: z.string().max(300).optional(),
+  });
+}
+
 export type ContactFormInput = z.infer<typeof contactFormSchema>;

@@ -41,7 +41,7 @@ export function Providers({ children, siteSettings, pixelSettings }: ProvidersPr
               <PageTransitionLoader />
               <PublicLanguagePicker />
               <AccentColorTester />
-              <Toaster richColors position="top-right" />
+              <Toaster richColors position="top-center" />
               </TooltipProvider>
             </AccentColorProvider>
           </ContactInfoProvider>

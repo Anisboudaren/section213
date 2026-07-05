@@ -68,7 +68,7 @@ export function BookingWizard({ packs, alaCarte }: BookingWizardProps) {
     data,
     packs,
     alaCarte,
-    locale: locale === "fr" ? "fr" : "en",
+    locale,
     submittedRef,
     onAbandonedSaved: (id) => {
       setData((prev) => ({ ...prev, abandonedLeadId: id }));

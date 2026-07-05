@@ -178,6 +178,8 @@ export type TeamMember = {
   reportsTo: string[];
   adminAccess: AdminAccessLevel;
   avatar?: string;
+  email?: string;
+  phone?: string;
   active: boolean;
 };
 

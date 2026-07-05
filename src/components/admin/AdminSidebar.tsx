@@ -19,7 +19,7 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +28,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { clearAdminAuth } from "@/lib/admin/auth";
+import { logoutAction } from "@/lib/actions/auth";
 import {
   HIDDEN_NAV_ITEMS,
   isNavActive,
@@ -70,8 +71,9 @@ export function AdminSidebar({
     .slice(0, 2)
     .toUpperCase();
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     clearAdminAuth();
+    await logoutAction();
     window.location.href = "/login";
   };
 
@@ -202,6 +204,7 @@ export function AdminSidebar({
 
         <div className="flex items-center gap-2 p-2">
           <Avatar className="h-8 w-8 shrink-0 rounded-lg">
+            {user.avatar ? <AvatarImage src={user.avatar} alt="" className="rounded-lg object-cover" /> : null}
             <AvatarFallback className="rounded-lg bg-gold text-gold-foreground">
               {initials}
             </AvatarFallback>

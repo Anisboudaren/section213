@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Check } from "lucide-react";
 
 import {
@@ -9,6 +10,7 @@ import {
   offerCardFeatureClass,
 } from "@/components/offers/offer-card-styles";
 import { Button } from "@/components/ui/button";
+import { pickLocaleField } from "@/lib/i18n/locale-field";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import type { Offer } from "@/lib/types/admin";
 import { cn } from "@/lib/utils";
@@ -21,14 +23,22 @@ type BookOfferCardProps = {
 
 export function BookOfferCard({ offer, selected, onSelect }: BookOfferCardProps) {
   const { translations: t, locale } = useLanguage();
-  const name = locale === "fr" && offer.nameFr ? offer.nameFr : offer.name;
-  const description =
-    locale === "fr" && offer.descriptionFr ? offer.descriptionFr : offer.description;
+  const name = pickLocaleField(locale, {
+    en: offer.name,
+    fr: offer.nameFr ?? offer.name,
+    ar: offer.nameAr,
+  });
+  const description = pickLocaleField(locale, {
+    en: offer.description,
+    fr: offer.descriptionFr ?? offer.description,
+  });
   const features =
     locale === "fr" && offer.featuresFr?.length ? offer.featuresFr : offer.features;
   const priceDisplay =
     offer.priceLabel ??
-    (offer.price ? `${offer.price.toLocaleString("fr-DZ")} DZD` : null);
+    (offer.price
+      ? `${offer.price.toLocaleString(locale === "fr" ? "fr-DZ" : locale === "ar" ? "ar-DZ" : "en-US")} ${locale === "fr" ? "DA" : locale === "ar" ? "د.ج" : "DZD"}`
+      : null);
 
   return (
     <article
@@ -47,7 +57,7 @@ export function BookOfferCard({ offer, selected, onSelect }: BookOfferCardProps)
         <span className={offerCardBadgeClass(selected)}>{t.booking.recommended}</span>
       )}
 
-      <div className="flex items-start justify-between gap-3 pr-16">
+      <div className="flex items-start justify-between gap-3 pe-16">
         <h3 className="font-display text-xl tracking-wider md:text-2xl">{name}</h3>
         {selected && (
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ruby text-white">

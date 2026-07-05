@@ -6,6 +6,7 @@ import { assertBlobConfigured } from "@/lib/blob-config";
 export type BlobFolder =
   | "clients/logos"
   | "clients/avatars"
+  | "team/avatars"
   | "case-studies/videos"
   | "case-studies/thumbnails"
   | "bookings/deposit-proofs"
@@ -21,6 +22,7 @@ const MIME_LIMITS: Record<
     folders: [
       "clients/logos",
       "clients/avatars",
+      "team/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
       "bookings/project-files",
@@ -32,6 +34,7 @@ const MIME_LIMITS: Record<
     folders: [
       "clients/logos",
       "clients/avatars",
+      "team/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
       "bookings/project-files",
@@ -43,6 +46,7 @@ const MIME_LIMITS: Record<
     folders: [
       "clients/logos",
       "clients/avatars",
+      "team/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
       "bookings/project-files",

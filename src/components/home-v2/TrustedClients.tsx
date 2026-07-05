@@ -5,6 +5,8 @@ import Link from "next/link";
 
 import type { TrustedPartnerDto, TrustedSectionCopyDto } from "@/lib/actions/trusted-partners";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
+import type { Locale } from "@/lib/i18n/types";
 import { cn } from "@/lib/utils";
 
 import { RevealInView } from "./RevealInView";
@@ -15,7 +17,7 @@ type TrustedClientsProps = {
   copy: TrustedSectionCopyDto;
 };
 
-function PartnerMarqueeItem({ client }: { client: TrustedPartnerDto }) {
+function PartnerMarqueeItem({ client, locale }: { client: TrustedPartnerDto; locale: Locale }) {
   const inner = (
     <div className="flex h-[7rem] w-[13rem] shrink-0 flex-col items-center justify-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.04] px-5 py-4 transition hover:border-white/25 hover:bg-white/[0.06] sm:h-[8rem] sm:w-[15rem] sm:gap-3">
       <div className="relative flex h-14 w-full items-center justify-center sm:h-16">
@@ -35,7 +37,7 @@ function PartnerMarqueeItem({ client }: { client: TrustedPartnerDto }) {
         />
       </div>
       <p className="truncate text-center font-display text-xs tracking-wider text-white/85 sm:text-sm">
-        {client.name.toUpperCase()}
+        {formatDisplayText(client.name, locale)}
       </p>
     </div>
   );
@@ -59,9 +61,11 @@ function PartnerMarqueeItem({ client }: { client: TrustedPartnerDto }) {
 function TrustedMarqueeStripe({
   partners,
   direction,
+  locale,
 }: {
   partners: TrustedPartnerDto[];
   direction: "left" | "right";
+  locale: Locale;
 }) {
   const loop = [...partners, ...partners];
 
@@ -74,7 +78,7 @@ function TrustedMarqueeStripe({
         )}
       >
         {loop.map((client, i) => (
-          <PartnerMarqueeItem key={`${client.id}-${i}`} client={client} />
+          <PartnerMarqueeItem key={`${client.id}-${i}`} client={client} locale={locale} />
         ))}
       </div>
     </div>
@@ -82,8 +86,17 @@ function TrustedMarqueeStripe({
 }
 
 export function TrustedClients({ partners, copy }: TrustedClientsProps) {
-  const { locale } = useLanguage();
-  const c = locale === "fr" ? copy.fr : copy.en;
+  const { locale, translations: t } = useLanguage();
+  const c =
+    locale === "fr"
+      ? copy.fr
+      : locale === "ar"
+        ? {
+            title: t.homeV2.trusted.title,
+            titleHighlight: t.homeV2.trusted.titleHighlight,
+            subtitle: t.homeV2.trusted.subtitle,
+          }
+        : copy.en;
 
   const midpoint = Math.ceil(partners.length / 2);
   const topRow = partners.slice(0, midpoint);
@@ -112,12 +125,12 @@ export function TrustedClients({ partners, copy }: TrustedClientsProps) {
                 className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 bg-gradient-to-t from-ink via-ink/80 to-transparent sm:h-14"
               />
 
-              <div className="space-y-4 py-4 sm:space-y-5 sm:py-5">
+              <div dir="ltr" className="space-y-4 py-4 sm:space-y-5 sm:py-5">
                 {topRow.length > 0 ? (
-                  <TrustedMarqueeStripe partners={topRow} direction="left" />
+                  <TrustedMarqueeStripe partners={topRow} direction="left" locale={locale} />
                 ) : null}
                 {bottomRow.length > 0 ? (
-                  <TrustedMarqueeStripe partners={bottomRow} direction="right" />
+                  <TrustedMarqueeStripe partners={bottomRow} direction="right" locale={locale} />
                 ) : null}
               </div>
             </div>

@@ -1,9 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -16,32 +16,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { setAdminAuthed } from "@/lib/admin/auth";
-
-const loginSchema = z.object({
-  email: z.string().email("Enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  remember: z.boolean().optional(),
-});
-
-type LoginValues = z.infer<typeof loginSchema>;
+import { loginAction } from "@/lib/actions/auth";
+import { loginSchema, type LoginInput } from "@/lib/schemas/user-schema";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [submitting, setSubmitting] = useState(false);
 
-  const form = useForm<LoginValues>({
+  const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
-      remember: true,
     },
   });
 
-  const onSubmit = (values: LoginValues) => {
-    setAdminAuthed();
-    toast.success(`Welcome back${values.email ? `, ${values.email.split("@")[0]}` : ""}`);
-    router.push("/admin");
+  const onSubmit = async (values: LoginInput) => {
+    setSubmitting(true);
+    try {
+      const result = await loginAction(values);
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success(`Welcome back, ${result.data.fullName}`);
+      const next = searchParams.get("next");
+      router.push(next?.startsWith("/admin") ? next : "/admin");
+      router.refresh();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -66,16 +72,7 @@ export function LoginForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <div className="flex items-center justify-between">
-                <FormLabel>Password</FormLabel>
-                <button
-                  type="button"
-                  className="text-xs text-muted-foreground transition-colors hover:text-ruby"
-                  onClick={() => toast.message("Password reset will be available with Supabase Auth.")}
-                >
-                  Forgot password?
-                </button>
-              </div>
+              <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input
                   type="password"
@@ -89,8 +86,8 @@ export function LoginForm() {
           )}
         />
 
-        <Button type="submit" variant="ruby" className="w-full" size="lg">
-          Sign in to Admin
+        <Button type="submit" variant="ruby" className="w-full" size="lg" disabled={submitting}>
+          {submitting ? "Signing in…" : "Sign in to Admin"}
         </Button>
       </form>
     </Form>

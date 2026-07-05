@@ -31,7 +31,12 @@ export function Footer() {
   const { translations: t, locale } = useLanguage();
   const info = useContactInfo();
   const { contactPhone, contactEmail, contactAddress, contactCity, mapsUrl } = info;
-  const hours = locale === "fr" ? info.contactHoursFr : info.contactHoursEn;
+  const hours =
+    locale === "fr"
+      ? info.contactHoursFr
+      : locale === "ar"
+        ? (info.contactHoursEn ?? t.contact.hoursDefault)
+        : info.contactHoursEn;
   const socials = buildSocialLinks(info);
   const addressLine = [contactAddress, contactCity].filter(Boolean).join(", ");
 

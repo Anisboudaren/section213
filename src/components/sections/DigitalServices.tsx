@@ -3,11 +3,12 @@
 import { Bot, ChevronRight, Code2, Globe, Plug, Smartphone, Workflow } from "lucide-react";
 
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
 
 const SERVICE_ICONS = [Globe, Smartphone, Bot, Workflow, Plug, Code2];
 
 export function DigitalServices() {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
 
   return (
     <section id="digital" className="bg-mist bg-dot-grid py-24 px-6 border-t border-ink/5">
@@ -31,7 +32,7 @@ export function DigitalServices() {
                   <Icon className="h-5 w-5 text-ink" />
                 </div>
                 <h3 className="font-display text-xl tracking-wider text-ink mb-2">
-                  {service.title.toUpperCase()}
+                  {formatDisplayText(service.title, locale)}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{service.desc}</p>
               </div>

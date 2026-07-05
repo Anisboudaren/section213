@@ -6,7 +6,10 @@ import ws from "ws";
 
 import { PrismaClient } from "../src/generated/prisma/client";
 import { CASE_STUDY_SEED, MEDIA_ASSET_SEED } from "../src/lib/case-studies-seed-data";
+import { hashPassword } from "../src/lib/auth/password";
 import { V1_OFFER_SEED } from "../src/lib/offers/v1-seed-data";
+
+const SUPER_ADMIN_EMAIL = "section213.agency@gmail.com";
 
 neonConfig.webSocketConstructor = ws;
 
@@ -90,6 +93,23 @@ async function main() {
     });
   }
   console.log(`Seeded ${MEDIA_ASSET_SEED.length} media assets.`);
+
+  const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD ?? "Section213!";
+  await prisma.user.upsert({
+    where: { email: SUPER_ADMIN_EMAIL },
+    create: {
+      email: SUPER_ADMIN_EMAIL,
+      passwordHash: await hashPassword(superAdminPassword),
+      fullName: "Section 213",
+      role: "SUPER_ADMIN",
+      active: true,
+    },
+    update: {},
+  });
+  console.log(`Seeded super admin: ${SUPER_ADMIN_EMAIL}`);
+  if (!process.env.SUPER_ADMIN_PASSWORD) {
+    console.log(`Default super admin password: ${superAdminPassword}`);
+  }
 }
 
 main()

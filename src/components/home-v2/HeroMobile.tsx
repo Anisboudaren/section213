@@ -210,7 +210,7 @@ export function HeroMobile({
       <SoundToggle
         soundOn={soundOn}
         onToggle={onToggleSound}
-        className="absolute bottom-5 right-4 z-20 sm:hidden"
+        className="absolute bottom-5 end-4 z-20 sm:hidden"
       />
 
       <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-4 pb-20 pt-24 sm:px-6 sm:pb-24 md:justify-center md:px-8 md:pb-16 md:pt-28">
@@ -235,7 +235,7 @@ export function HeroMobile({
               className="bg-brand-accent inline-flex w-[13.5rem] items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold text-ruby-foreground shadow-lg transition hover:brightness-110 sm:w-[15rem] sm:text-base"
             >
               {t.hero.ctaPrimary}
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4 rtl:rotate-180" />
             </a>
             <a
               href="#about"
@@ -267,7 +267,7 @@ export function HeroMobile({
                       style={{ ["--arrow-index" as string]: i - 1 }}
                     />
                     <span
-                      className="hero-visual-band-arrow hero-visual-band-arrow--desktop hidden shrink-0 text-sm text-white/25 md:inline"
+                      className="hero-visual-band-arrow hero-visual-band-arrow--desktop hidden shrink-0 text-sm text-white/25 md:inline rtl:rotate-180"
                       style={{ ["--arrow-index" as string]: i - 1 }}
                     >
                       →

@@ -1,42 +1,60 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+function TestimonialCard({ quote, name }: { quote: string; name: string }) {
+  return (
+    <article dir="auto" className="h-full rounded-xl bg-white/90 p-6 shadow-sm backdrop-blur-[1px]">
+      <p className="mb-5 text-sm leading-relaxed text-ink/80">&ldquo;{quote}&rdquo;</p>
+      <div className="text-sm font-semibold text-ink">{name}</div>
+    </article>
+  );
+}
 
 export function Testimonials() {
   const { translations: t } = useLanguage();
-  const [index, setIndex] = useState(0);
-  const visible = 4;
 
   return (
-    <section className="px-6 pt-20 pb-10 sm:pb-12">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="font-display text-3xl md:text-5xl text-center text-ink mb-12">
-          {t.testimonials.title} <span className="text-ruby">{t.testimonials.titleHighlight}</span>
+    <section className="px-4 pt-20 pb-10 sm:px-6 sm:pb-12">
+      <div className="mx-auto max-w-6xl">
+        <h2 className="mb-12 text-center font-display text-3xl text-ink md:text-5xl">
+          {t.testimonials.title}{" "}
+          <span className="text-ruby">{t.testimonials.titleHighlight}</span>
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {t.testimonials.items.slice(0, visible).map((item) => (
-            <div key={item.name} className="bg-white/90 rounded-xl p-6 shadow-sm backdrop-blur-[1px]">
-              <p className="text-sm text-ink/80 leading-relaxed mb-5">&ldquo;{item.quote}&rdquo;</p>
-              <div className="text-sm font-semibold text-ink">{item.name}</div>
+
+        <div dir="ltr">
+          <Carousel
+            opts={{
+              align: "start",
+              containScroll: "trimSnaps",
+            }}
+            className="flex flex-col gap-4"
+          >
+            <CarouselContent className="-ms-4">
+              {t.testimonials.items.map((item) => (
+                <CarouselItem
+                  key={item.name}
+                  className="basis-[85%] ps-4 sm:basis-1/2 lg:basis-1/3"
+                >
+                  <div className="h-full">
+                    <TestimonialCard quote={item.quote} name={item.name} />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex items-center justify-center gap-4">
+              <CarouselPrevious className="static h-9 w-9 translate-x-0 translate-y-0 border-ink/20 bg-white/90 text-ink hover:bg-ink hover:text-white" />
+              <CarouselNext className="static h-9 w-9 translate-x-0 translate-y-0 border-ink/20 bg-white/90 text-ink hover:bg-ink hover:text-white" />
             </div>
-          ))}
-        </div>
-        <div className="flex items-center justify-center gap-3 mt-8">
-          <button
-            onClick={() => setIndex(Math.max(0, index - 1))}
-            className="w-9 h-9 rounded-full border border-ink/20 flex items-center justify-center hover:bg-ink hover:text-white transition"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setIndex(Math.min(t.testimonials.items.length - visible, index + 1))}
-            className="w-9 h-9 rounded-full border border-ink/20 flex items-center justify-center hover:bg-ink hover:text-white transition"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+          </Carousel>
         </div>
       </div>
     </section>

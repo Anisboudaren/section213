@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Inter } from "next/font/google";
+import { Anton, IBM_Plex_Sans_Arabic, Inter, Tajawal } from "next/font/google";
 
 import { Providers } from "@/components/providers";
 import { getPublicPixelSettings } from "@/lib/actions/pixel-settings";
@@ -18,6 +18,20 @@ const anton = Anton({
   weight: "400",
   subsets: ["latin"],
   variable: "--font-anton",
+  display: "swap",
+});
+
+const ibmPlexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-body-ar",
+  display: "swap",
+});
+
+const tajawal = Tajawal({
+  subsets: ["arabic"],
+  weight: ["400", "700", "800"],
+  variable: "--font-display-ar",
   display: "swap",
 });
 
@@ -68,7 +82,7 @@ export default async function RootLayout({
     <html
       lang={settings.defaultLocale}
       data-accent-preset={settings.accentPresetId}
-      className={`${inter.variable} ${anton.variable}`}
+      className={`${inter.variable} ${anton.variable} ${ibmPlexArabic.variable} ${tajawal.variable}`}
       style={accentStyles}
     >
       <head>

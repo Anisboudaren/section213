@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -72,7 +73,9 @@ export function LoginPageContent() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm />
+            <Suspense fallback={<div className="h-40 animate-pulse rounded-md bg-muted" />}>
+              <LoginForm />
+            </Suspense>
             <p className="mt-6 text-center text-xs text-muted-foreground">
               <Link href="/" className="transition-colors hover:text-ruby">
                 Back to marketing site

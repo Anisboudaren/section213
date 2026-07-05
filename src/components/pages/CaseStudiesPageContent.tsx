@@ -7,6 +7,8 @@ import { CaseStudyVideo } from "@/components/home-v2/CaseStudyVideo";
 import { Footer } from "@/components/sections/Footer";
 import { Section213Logo } from "@/components/Section213Logo";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
+import type { Locale } from "@/lib/i18n/types";
 import type { CaseStudy } from "@/lib/types/admin";
 import { cn } from "@/lib/utils";
 
@@ -18,10 +20,12 @@ function PortfolioCard({
   study,
   large,
   label,
+  locale,
 }: {
   study: CaseStudy;
   large?: boolean;
   label: string;
+  locale: Locale;
 }) {
   return (
     <Link
@@ -58,7 +62,7 @@ function PortfolioCard({
                 large ? "text-3xl sm:text-4xl" : "text-xl sm:text-2xl",
               )}
             >
-              {study.title.toUpperCase()}
+              {formatDisplayText(study.title, locale)}
             </h2>
             <p className="mt-1 text-sm text-white/60">{study.clientName}</p>
           </div>
@@ -72,7 +76,7 @@ function PortfolioCard({
 }
 
 export function CaseStudiesPageContent({ caseStudies }: CaseStudiesPageContentProps) {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
   const p = t.caseStudiesPage;
 
   const featured = caseStudies.find((c) => c.featured) ?? caseStudies[0];
@@ -126,10 +130,10 @@ export function CaseStudiesPageContent({ caseStudies }: CaseStudiesPageContentPr
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
               {featured && (
-                <PortfolioCard study={featured} large label={p.featured} />
+                <PortfolioCard study={featured} large label={p.featured} locale={locale} />
               )}
               {rest.map((study) => (
-                <PortfolioCard key={study.id} study={study} label={p.featured} />
+                <PortfolioCard key={study.id} study={study} label={p.featured} locale={locale} />
               ))}
             </div>
           )}

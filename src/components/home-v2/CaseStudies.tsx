@@ -3,13 +3,14 @@
 import { ArrowUpRight } from "lucide-react";
 
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
 
 import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
 import { CaseStudyVideo } from "./CaseStudyVideo";
 
 export function CaseStudies() {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
   const cs = t.homeV2.caseStudies;
 
   return (
@@ -37,7 +38,9 @@ export function CaseStudies() {
                     {item.category}
                   </p>
                   <div className="mt-2 flex items-end justify-between gap-3">
-                    <h3 className="font-display text-xl leading-tight sm:text-2xl">{item.title.toUpperCase()}</h3>
+                    <h3 className="font-display text-xl leading-tight sm:text-2xl">
+                      {formatDisplayText(item.title, locale)}
+                    </h3>
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-sm transition group-hover:border-ruby group-hover:bg-ruby/20">
                       <ArrowUpRight className="h-4 w-4" />
                     </span>

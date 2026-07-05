@@ -33,6 +33,29 @@ enum LeadStage {
   lost
 }
 
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MEMBER
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  photoUrl     String?
+  role         UserRole @default(MEMBER)
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastLoginAt  DateTime?
+
+  @@index([role])
+  @@index([active])
+}
+
 model Lead {
   id              String     @id @default(cuid())
   name            String

@@ -13,6 +13,8 @@ import {
 import { getTranslations, type Translations } from "@/lib/i18n/translations";
 import {
   DEFAULT_LOCALE,
+  getDir,
+  isValidLocale,
   LOCALE_CHOSEN_KEY,
   LOCALE_STORAGE_KEY,
   type Locale,
@@ -32,12 +34,17 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 function readStoredLocale(): Locale {
   if (typeof window === "undefined") return DEFAULT_LOCALE;
   const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-  return stored === "fr" ? "fr" : DEFAULT_LOCALE;
+  return isValidLocale(stored) ? stored : DEFAULT_LOCALE;
 }
 
 function readHasChosenLocale(): boolean {
   if (typeof window === "undefined") return false;
   return localStorage.getItem(LOCALE_CHOSEN_KEY) === "1";
+}
+
+function applyDocumentLocale(locale: Locale) {
+  document.documentElement.lang = locale;
+  document.documentElement.dir = getDir(locale);
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
@@ -46,14 +53,16 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    setLocaleState(readStoredLocale());
+    const stored = readStoredLocale();
+    setLocaleState(stored);
     setHasChosenLocale(readHasChosenLocale());
+    applyDocumentLocale(stored);
     setReady(true);
   }, []);
 
   useEffect(() => {
     if (!ready) return;
-    document.documentElement.lang = locale;
+    applyDocumentLocale(locale);
   }, [locale, ready]);
 
   const setLocale = useCallback((next: Locale) => {
@@ -61,7 +70,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(LOCALE_STORAGE_KEY, next);
     localStorage.setItem(LOCALE_CHOSEN_KEY, "1");
     setHasChosenLocale(true);
-    document.documentElement.lang = next;
+    applyDocumentLocale(next);
   }, []);
 
   const markLocaleChosen = useCallback(() => {

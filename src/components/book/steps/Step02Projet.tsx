@@ -163,7 +163,7 @@ export function Step02Projet({ data, onChange, errors }: StepProps) {
           onChange={(e) => onChange({ projectDescription: e.target.value })}
           rows={4}
           maxLength={500}
-          placeholder="Décrivez votre projet…"
+          placeholder={t.booking.descriptionPlaceholder}
           aria-invalid={Boolean(errors?.projectDescription)}
         />
         {errors?.projectDescription && (

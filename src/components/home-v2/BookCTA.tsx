@@ -26,7 +26,7 @@ export function BookCTA() {
             className="bg-brand-accent mt-8 inline-flex items-center gap-2 rounded-md px-8 py-3.5 text-sm font-semibold text-ruby-foreground transition hover:brightness-110 sm:text-base"
           >
             {c.cta}
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4 rtl:rotate-180" />
           </Link>
         </RevealInView>
       </div>

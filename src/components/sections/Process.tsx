@@ -3,11 +3,12 @@
 import { Calendar, Package, Camera, Send } from "lucide-react";
 
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
 
 const STEP_ICONS = [Calendar, Package, Camera, Send];
 
 export function Process() {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
 
   return (
     <section className="bg-ink text-white py-24 px-6">
@@ -34,7 +35,9 @@ export function Process() {
                   </div>
                   <span className="font-display text-3xl text-white/20">0{i + 1}</span>
                 </div>
-                <h3 className="font-display text-xl tracking-wider mb-2">{s.title.toUpperCase()}</h3>
+                <h3 className="font-display text-xl tracking-wider mb-2">
+                  {formatDisplayText(s.title, locale)}
+                </h3>
                 <p className="text-sm text-white/60">{s.desc}</p>
               </div>
             );

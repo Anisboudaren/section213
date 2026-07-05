@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
-import { LOCALE_LABELS, type Locale } from "@/lib/i18n/types";
+import { LOCALE_CODES, LOCALE_LABELS, type Locale } from "@/lib/i18n/types";
 import { cn } from "@/lib/utils";
 
 type LanguagePickerDialogProps = {
@@ -91,21 +91,21 @@ export function LanguagePickerDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="grid grid-cols-2 gap-2 sm:mt-1 sm:gap-3">
-          {(["en", "fr"] as const).map((code) => (
+        <div className="grid grid-cols-1 gap-2 sm:mt-1 sm:grid-cols-3 sm:gap-3">
+          {(["en", "fr", "ar"] as const).map((code) => (
             <button
               key={code}
               type="button"
               onClick={() => setPendingLocale(code)}
               className={cn(
-                "rounded-lg border px-3 py-3 text-left transition sm:rounded-xl sm:px-4 sm:py-4",
+                "rounded-lg border px-3 py-3 text-start transition sm:rounded-xl sm:px-4 sm:py-4",
                 pendingLocale === code
                   ? "border-ruby bg-ruby/10 ring-1 ring-ruby/40"
                   : "border-border hover:border-ruby/30",
               )}
             >
               <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-xs">
-                {code === "en" ? "EN" : "FR"}
+                {LOCALE_CODES[code]}
               </p>
               <p className="mt-0.5 font-display text-base tracking-wide text-ink sm:mt-1 sm:text-lg">
                 {LOCALE_LABELS[code]}

@@ -71,6 +71,7 @@ export function MediaUploadField({
           method: "POST",
           body: formData,
           headers,
+          credentials: "include",
         });
 
         const data = (await res.json()) as { url?: string; error?: string };

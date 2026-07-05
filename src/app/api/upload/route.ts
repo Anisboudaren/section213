@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { registerMediaAsset } from "@/lib/actions/media";
+import { getSessionUser } from "@/lib/auth/session";
 import { getBlobEnv } from "@/lib/blob-config";
 import {
   PUBLIC_UPLOAD_FOLDERS,
@@ -15,6 +16,7 @@ const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 const ALLOWED_FOLDERS: BlobFolder[] = [
   "clients/logos",
   "clients/avatars",
+  "team/avatars",
   "case-studies/videos",
   "case-studies/thumbnails",
   "bookings/deposit-proofs",
@@ -40,9 +42,12 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-function isAdminUploadAuthorized(request: Request): boolean {
+async function isAdminUploadAuthorized(request: Request): Promise<boolean> {
+  const user = await getSessionUser();
+  if (user) return true;
+
   const secret = process.env.ADMIN_UPLOAD_SECRET?.trim().replace(/^["']|["']$/g, "");
-  if (!secret) return true;
+  if (!secret) return false;
   return request.headers.get("x-upload-token") === secret;
 }
 
@@ -77,7 +82,7 @@ export async function POST(request: Request) {
       if (!checkRateLimit(ip)) {
         return NextResponse.json({ error: "Too many uploads" }, { status: 429 });
       }
-    } else if (!isAdminUploadAuthorized(request)) {
+    } else if (!(await isAdminUploadAuthorized(request))) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

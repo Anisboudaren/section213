@@ -6,6 +6,11 @@ import { Check, ChevronDown, ChevronRight } from "lucide-react";
 
 import {
   formatPriceFrom,
+  getPackCta,
+  getPackFeatures,
+  getPackName,
+  getPackNote,
+  getPackTagline,
   type OfferPackView,
 } from "@/lib/offers/offer-types";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
@@ -68,17 +73,22 @@ function PackCard({
 }) {
   const { locale, translations: t } = useLanguage();
   const o = t.homeV2.offers;
-  const isFr = locale === "fr";
-  const name = isFr ? pack.nameFr : pack.nameEn;
-  const tagline = isFr ? pack.taglineFr : pack.taglineEn;
-  const features = isFr ? pack.featuresFr : pack.featuresEn;
-  const cta = isFr ? pack.ctaFr : pack.ctaEn;
-  const note = isFr ? pack.noteFr : pack.noteEn;
-  const valueBreakdown = isFr ? pack.valueBreakdownFr : pack.valueBreakdownEn;
-  const totalValue = isFr ? pack.totalValueFr : pack.totalValueEn;
+  const name = getPackName(pack, locale);
+  const tagline = getPackTagline(pack, locale);
+  const features = getPackFeatures(pack, locale);
+  const cta = getPackCta(pack, locale);
+  const note = getPackNote(pack, locale);
+  const valueBreakdown = locale === "fr" ? pack.valueBreakdownFr : pack.valueBreakdownEn;
+  const totalValue = locale === "fr" ? pack.totalValueFr : pack.totalValueEn;
 
   const priceLine = pack.studyOnly ? (
-    <span>{isFr ? pack.priceLabelFr : pack.priceLabelEn}</span>
+    <span>
+      {locale === "fr"
+        ? pack.priceLabelFr
+        : locale === "ar"
+          ? (pack.priceLabelEn ?? "حسب الدراسة")
+          : pack.priceLabelEn}
+    </span>
   ) : pack.priceFrom ? (
     isFirst ? (
       <span className="inline-flex flex-wrap items-baseline gap-x-2">
@@ -107,7 +117,7 @@ function PackCard({
       )}
     >
       {pack.recommended && (
-        <span className="absolute -top-3 right-4 rounded-full bg-brand-accent px-3 py-1 text-xs font-semibold text-ruby-foreground">
+        <span className="absolute -top-3 end-4 rounded-full bg-brand-accent px-3 py-1 text-xs font-semibold text-ruby-foreground">
           {t.booking.recommended}
         </span>
       )}
@@ -125,7 +135,7 @@ function PackCard({
             : "bg-white/10 hover:bg-white/20",
         )}
       >
-        {cta} <ChevronRight className="h-4 w-4" />
+        {cta} <ChevronRight className="h-4 w-4 rtl:rotate-180" />
       </Link>
 
       <button
@@ -200,7 +210,13 @@ export function Offers({ packs }: OffersProps) {
         <RevealInView>
           <SectionIndex index={o.index} />
           <h2 className="font-display text-3xl leading-tight sm:text-5xl md:text-6xl">
-            {o.title} <span className="text-ruby">{o.titleHighlight}</span>
+            {o.titleHighlight ? (
+              <>
+                {o.title} <span className="text-ruby">{o.titleHighlight}</span>
+              </>
+            ) : (
+              o.title
+            )}
           </h2>
           <p className="mt-3 max-w-lg text-sm text-white/60 sm:text-base">{o.intro}</p>
         </RevealInView>

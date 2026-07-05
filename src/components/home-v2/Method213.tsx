@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
+import type { Locale } from "@/lib/i18n/types";
 
 import {
   Carousel,
@@ -21,9 +23,11 @@ const AUTO_ADVANCE_INTERVAL_MS = 2200;
 function MethodStepCard({
   step,
   index,
+  locale,
 }: {
   step: { title: string; desc: string };
   index: number;
+  locale: Locale;
 }) {
   return (
     <article className="group flex h-[268px] flex-col border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/25 sm:h-[288px] sm:p-6 lg:h-full lg:min-h-[288px]">
@@ -31,14 +35,20 @@ function MethodStepCard({
         0{index + 1}
       </span>
       <h3 className="mt-3 min-h-[2.75rem] font-display text-lg leading-tight tracking-wider sm:min-h-[3rem] sm:text-xl">
-        {step.title.toUpperCase()}
+        {formatDisplayText(step.title, locale)}
       </h3>
       <p className="mt-2 flex-1 text-sm leading-relaxed text-white/60">{step.desc}</p>
     </article>
   );
 }
 
-function MethodMobileCarousel({ steps }: { steps: { title: string; desc: string }[] }) {
+function MethodMobileCarousel({
+  steps,
+  locale,
+}: {
+  steps: { title: string; desc: string }[];
+  locale: Locale;
+}) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [api, setApi] = useState<CarouselApi>();
   const autoPlayedRef = useRef(false);
@@ -94,11 +104,11 @@ function MethodMobileCarousel({ steps }: { steps: { title: string; desc: string 
         }}
         className="flex flex-col gap-4"
       >
-        <CarouselContent className="-ml-4">
+        <CarouselContent className="-ms-4">
           {steps.map((step, i) => (
-            <CarouselItem key={step.title} className="basis-[85%] pl-4">
+            <CarouselItem key={step.title} className="basis-[85%] ps-4">
               <div className="h-full">
-                <MethodStepCard step={step} index={i} />
+                <MethodStepCard step={step} index={i} locale={locale} />
               </div>
             </CarouselItem>
           ))}
@@ -113,7 +123,7 @@ function MethodMobileCarousel({ steps }: { steps: { title: string; desc: string 
 }
 
 export function Method213() {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
   const m = t.homeV2.method;
 
   return (
@@ -127,7 +137,7 @@ export function Method213() {
           <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/65 sm:text-base">{m.subtitle}</p>
         </RevealInView>
 
-        <MethodMobileCarousel steps={m.steps} />
+        <MethodMobileCarousel steps={m.steps} locale={locale} />
 
         <div className="mt-10 hidden sm:mt-14 sm:grid sm:grid-cols-2 sm:items-stretch sm:gap-4 lg:grid-cols-4">
           {m.steps.map((step, i) => (
@@ -135,7 +145,7 @@ export function Method213() {
               key={step.title}
               className="h-full sm:[&:nth-child(2)]:delay-75 sm:[&:nth-child(3)]:delay-150 sm:[&:nth-child(4)]:delay-200"
             >
-              <MethodStepCard step={step} index={i} />
+              <MethodStepCard step={step} index={i} locale={locale} />
             </RevealInView>
           ))}
         </div>

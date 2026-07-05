@@ -1,13 +1,13 @@
 "use client";
 
 import { addDays } from "date-fns";
-import { fr } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
 
 import { bookingChoiceClass } from "@/components/book/selection-styles";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { getDateFnsLocale } from "@/lib/i18n/date-locale";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import type { BookingFormData } from "@/lib/booking-types";
 
@@ -48,7 +48,7 @@ export function Step01Date({ data, onChange, errors }: StepProps) {
                 onChange({ preferredDate: date ? date.toISOString() : "" })
               }
               disabled={(date) => date < minDate}
-              locale={locale === "fr" ? fr : undefined}
+              locale={getDateFnsLocale(locale)}
               className="mx-auto rounded-lg border"
             />
           ) : (
@@ -67,7 +67,7 @@ export function Step01Date({ data, onChange, errors }: StepProps) {
       )}
 
       <div className="space-y-2">
-        <Label>Créneau préféré</Label>
+        <Label>{t.booking.preferredTimeSlot}</Label>
         <div className="flex flex-wrap gap-2">
           {(["matin", "apres_midi", "flexible"] as const).map((slot) => (
             <button

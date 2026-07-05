@@ -1,3 +1,5 @@
+import { pickLocaleField } from "@/lib/i18n/locale-field";
+import type { Locale } from "@/lib/i18n/types";
 import type { Offer } from "@/lib/types/admin";
 
 export type OfferValueRow = { label: string; value: string };
@@ -15,6 +17,7 @@ export type OfferPackView = {
   slug: string;
   nameFr: string;
   nameEn: string;
+  nameAr?: string;
   taglineFr: string;
   taglineEn: string;
   priceFrom?: number;
@@ -39,8 +42,10 @@ export type OfferAlaCarteView = {
   slug: string;
   nameFr: string;
   nameEn: string;
+  nameAr?: string;
   priceFr: string;
   priceEn: string;
+  priceAr: string;
   price?: number;
   studyOnly: boolean;
 };
@@ -50,17 +55,26 @@ function parseMetadata(raw: unknown): OfferMetadata | undefined {
   return raw as OfferMetadata;
 }
 
-function formatAlaCartePrice(offer: Offer, locale: "fr" | "en"): string {
+function formatAlaCartePrice(offer: Offer, locale: Locale): string {
   if (offer.studyOnly || offer.priceLabel || offer.priceLabelFr) {
-    return locale === "fr"
-      ? offer.priceLabelFr ?? offer.priceLabel ?? "Sur étude"
-      : offer.priceLabel ?? offer.priceLabelFr ?? "On request";
+    if (locale === "fr") {
+      return offer.priceLabelFr ?? offer.priceLabel ?? "Sur étude";
+    }
+    if (locale === "ar") {
+      return offer.priceLabel ?? offer.priceLabelFr ?? "حسب الدراسة";
+    }
+    return offer.priceLabel ?? offer.priceLabelFr ?? "On request";
   }
   if (offer.price) {
-    const formatted = offer.price.toLocaleString(locale === "fr" ? "fr-DZ" : "en-US");
-    return locale === "fr" ? `${formatted} DA` : `${formatted} DZD`;
+    const localeTag = locale === "fr" ? "fr-DZ" : locale === "ar" ? "ar-DZ" : "en-US";
+    const formatted = offer.price.toLocaleString(localeTag);
+    if (locale === "fr") return `${formatted} DA`;
+    if (locale === "ar") return `${formatted} د.ج`;
+    return `${formatted} DZD`;
   }
-  return locale === "fr" ? "Sur devis" : "On quote";
+  if (locale === "fr") return "Sur devis";
+  if (locale === "ar") return "حسب العرض";
+  return "On quote";
 }
 
 export function offerToPackView(offer: Offer): OfferPackView {
@@ -71,6 +85,7 @@ export function offerToPackView(offer: Offer): OfferPackView {
     slug: offer.slug,
     nameFr: offer.nameFr ?? offer.name,
     nameEn: offer.name,
+    nameAr: offer.nameAr ?? undefined,
     taglineFr: offer.descriptionFr ?? offer.description,
     taglineEn: offer.description,
     priceFrom: offer.studyOnly ? undefined : offer.price,
@@ -97,11 +112,65 @@ export function offerToAlaCarteView(offer: Offer): OfferAlaCarteView {
     slug: offer.slug,
     nameFr: offer.nameFr ?? offer.name,
     nameEn: offer.name,
+    nameAr: offer.nameAr ?? undefined,
     priceFr: formatAlaCartePrice(offer, "fr"),
     priceEn: formatAlaCartePrice(offer, "en"),
+    priceAr: formatAlaCartePrice(offer, "ar"),
     price: offer.studyOnly ? undefined : offer.price,
     studyOnly: offer.studyOnly ?? false,
   };
+}
+
+export function getPackName(pack: OfferPackView, locale: Locale): string {
+  return pickLocaleField(locale, {
+    en: pack.nameEn,
+    fr: pack.nameFr,
+    ar: pack.nameAr,
+  });
+}
+
+export function getPackTagline(pack: OfferPackView, locale: Locale): string {
+  return pickLocaleField(locale, {
+    en: pack.taglineEn,
+    fr: pack.taglineFr,
+  });
+}
+
+export function getPackFeatures(pack: OfferPackView, locale: Locale): string[] {
+  return pickLocaleField(locale, {
+    en: pack.featuresEn,
+    fr: pack.featuresFr,
+  });
+}
+
+export function getPackCta(pack: OfferPackView, locale: Locale): string {
+  return pickLocaleField(locale, {
+    en: pack.ctaEn,
+    fr: pack.ctaFr,
+  });
+}
+
+export function getPackNote(pack: OfferPackView, locale: Locale): string | undefined {
+  return pickLocaleField(locale, {
+    en: pack.noteEn ?? "",
+    fr: pack.noteFr ?? "",
+  }) || undefined;
+}
+
+export function getAlaCarteName(item: OfferAlaCarteView, locale: Locale): string {
+  return pickLocaleField(locale, {
+    en: item.nameEn,
+    fr: item.nameFr,
+    ar: item.nameAr,
+  });
+}
+
+export function getAlaCartePriceDisplay(item: OfferAlaCarteView, locale: Locale): string {
+  return pickLocaleField(locale, {
+    en: item.priceEn,
+    fr: item.priceFr,
+    ar: item.priceAr,
+  });
 }
 
 export function partitionOffers(offers: Offer[]) {
@@ -123,9 +192,12 @@ export function findPackView(packs: OfferPackView[], slugOrId?: string) {
   return packs.find((p) => p.slug === slugOrId || p.id === slugOrId);
 }
 
-export function formatPriceFrom(amount: number, locale: "fr" | "en"): string {
-  const formatted = amount.toLocaleString(locale === "fr" ? "fr-DZ" : "en-US");
-  return locale === "fr" ? `${formatted} DA` : `${formatted} DZD`;
+export function formatPriceFrom(amount: number, locale: Locale): string {
+  const localeTag = locale === "fr" ? "fr-DZ" : locale === "ar" ? "ar-DZ" : "en-US";
+  const formatted = amount.toLocaleString(localeTag);
+  if (locale === "fr") return `${formatted} DA`;
+  if (locale === "ar") return `${formatted} د.ج`;
+  return `${formatted} DZD`;
 }
 
 export type BookingPriceLine = {
@@ -138,22 +210,25 @@ export function computeBookingTotal(
   pack: OfferPackView | undefined,
   alaCarte: OfferAlaCarteView[],
   selectedAlaCarteSlugs: string[],
-  locale: "fr" | "en",
+  locale: Locale,
 ): { lines: BookingPriceLine[]; total: number | null; totalDisplay: string | null } {
   const lines: BookingPriceLine[] = [];
   let total = 0;
   let hasNumeric = false;
 
   if (pack) {
-    const name = locale === "fr" ? pack.nameFr : pack.nameEn;
+    const name = getPackName(pack, locale);
     if (pack.studyOnly || pack.priceFrom == null) {
+      const display =
+        locale === "fr"
+          ? (pack.priceLabelFr ?? "Sur étude")
+          : locale === "ar"
+            ? (pack.priceLabelEn ?? "حسب الدراسة")
+            : (pack.priceLabelEn ?? "On request");
       lines.push({
         label: name,
         amount: null,
-        display:
-          locale === "fr"
-            ? (pack.priceLabelFr ?? "Sur étude")
-            : (pack.priceLabelEn ?? "On request"),
+        display,
       });
     } else {
       hasNumeric = true;
@@ -169,12 +244,12 @@ export function computeBookingTotal(
   for (const slug of selectedAlaCarteSlugs) {
     const item = alaCarte.find((i) => i.slug === slug);
     if (!item) continue;
-    const name = locale === "fr" ? item.nameFr : item.nameEn;
+    const name = getAlaCarteName(item, locale);
     if (item.studyOnly || item.price == null) {
       lines.push({
         label: name,
         amount: null,
-        display: locale === "fr" ? item.priceFr : item.priceEn,
+        display: getAlaCartePriceDisplay(item, locale),
       });
     } else {
       hasNumeric = true;
@@ -182,7 +257,7 @@ export function computeBookingTotal(
       lines.push({
         label: name,
         amount: item.price,
-        display: locale === "fr" ? item.priceFr : item.priceEn,
+        display: getAlaCartePriceDisplay(item, locale),
       });
     }
   }

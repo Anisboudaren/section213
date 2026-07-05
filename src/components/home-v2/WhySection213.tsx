@@ -1,12 +1,13 @@
 "use client";
 
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
+import { formatDisplayText } from "@/lib/i18n/display-text";
 
 import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
 
 export function WhySection213() {
-  const { translations: t } = useLanguage();
+  const { translations: t, locale } = useLanguage();
   const w = t.homeV2.why;
 
   return (
@@ -25,7 +26,9 @@ export function WhySection213() {
             <RevealInView key={point.title} className={i % 2 === 1 ? "sm:delay-100" : undefined}>
               <article className="rounded-xl border border-ink/10 bg-paper p-5 shadow-sm sm:p-6">
                 <span className="font-display text-sm tracking-[0.3em] text-ruby/80">0{i + 1}</span>
-                <h3 className="mt-3 font-display text-xl tracking-wider text-ink">{point.title.toUpperCase()}</h3>
+                <h3 className="mt-3 font-display text-xl tracking-wider text-ink">
+                  {formatDisplayText(point.title, locale)}
+                </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{point.desc}</p>
               </article>
             </RevealInView>

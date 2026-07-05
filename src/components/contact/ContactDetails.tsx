@@ -65,7 +65,12 @@ function SocialIcon({ kind, className }: { kind: string; className?: string }) {
 export function ContactDetails({ info }: ContactDetailsProps) {
   const { translations: t, locale } = useLanguage();
   const c = t.contact;
-  const hours = locale === "fr" ? info.contactHoursFr : info.contactHoursEn;
+  const hours =
+    locale === "fr"
+      ? info.contactHoursFr
+      : locale === "ar"
+        ? (info.contactHoursEn ?? c.hoursDefault)
+        : info.contactHoursEn;
   const socials = buildSocialLinks(info);
   const hasDetails = hasContactDetails(info);
 
@@ -147,7 +152,7 @@ export function ContactDetails({ info }: ContactDetailsProps) {
         {info.whatsappNumber && (
           <Button asChild variant="outline" className="min-h-11 border-white/20 bg-transparent text-white hover:bg-white/10">
             <a href={whatsappHref(info.whatsappNumber)} target="_blank" rel="noopener noreferrer">
-              <MessageCircle className="mr-2 h-4 w-4" />
+              <MessageCircle className="me-2 h-4 w-4" />
               {c.whatsappCta}
             </a>
           </Button>
