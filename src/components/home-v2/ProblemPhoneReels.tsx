@@ -43,8 +43,10 @@ type ProblemPhoneReelsProps = {
 
 export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
   const { translations: t, locale } = useLanguage();
+  const reelCount = PROBLEM_PHONE_REELS.length;
+  const initialIndex = Math.floor(reelCount / 2);
   const caseItems = t.homeV2.caseStudies.items.slice(0, PROBLEM_PHONE_REELS.length);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [soundOn, setSoundOn] = useState(false);
   const [inView, setInView] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
@@ -62,12 +64,14 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
   activeIndexRef.current = activeIndex;
 
   const channel = channels[activeIndex % channels.length];
-  const lastIndex = PROBLEM_PHONE_REELS.length - 1;
+  const wrapIndex = useCallback((index: number) => {
+    return (index + reelCount) % reelCount;
+  }, [reelCount]);
 
   const goTo = useCallback((index: number) => {
-    setActiveIndex(Math.max(0, Math.min(lastIndex, index)));
+    setActiveIndex(wrapIndex(index));
     setDragOffset(0);
-  }, [lastIndex]);
+  }, [wrapIndex]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -94,23 +98,50 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    videoRefs.current.forEach((video, i) => {
-      if (!video) return;
-      video.muted = !soundOn || i !== activeIndex;
-      if (i === activeIndex && inView) {
-        safePlay(video);
-      } else {
-        video.pause();
-      }
-    });
-  }, [activeIndex, soundOn, inView]);
+  const syncVideoPlayback = useCallback(
+    (index: number, audible: boolean) => {
+      videoRefs.current.forEach((video, i) => {
+        if (!video) return;
 
-  const clampDragOffset = useCallback((offset: number, index: number) => {
-    if (index === 0 && offset > 0) return offset * 0.35;
-    if (index === lastIndex && offset < 0) return offset * 0.35;
-    return offset;
-  }, [lastIndex]);
+        const isActive = i === index;
+        video.muted = !audible || !isActive;
+
+        if (isActive && inView) {
+          if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+            video.load();
+          }
+          safePlay(video);
+        } else {
+          video.pause();
+        }
+      });
+    },
+    [inView],
+  );
+
+  useEffect(() => {
+    syncVideoPlayback(activeIndex, soundOn);
+  }, [activeIndex, soundOn, syncVideoPlayback]);
+
+  const handleVideoCanPlay = useCallback(
+    (index: number) => {
+      if (index !== activeIndexRef.current || !inView) return;
+      const video = videoRefs.current[index];
+      if (!video) return;
+      video.muted = !soundOn || index !== activeIndexRef.current;
+      safePlay(video);
+    },
+    [inView, soundOn],
+  );
+
+  const getLoopOffset = useCallback((index: number, current: number) => {
+    const direct = index - current;
+    const wrapRight = direct - reelCount;
+    const wrapLeft = direct + reelCount;
+    return [direct, wrapRight, wrapLeft].reduce((best, candidate) =>
+      Math.abs(candidate) < Math.abs(best) ? candidate : best
+    );
+  }, [reelCount]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
@@ -124,7 +155,7 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!isDraggingRef.current) return;
     const delta = e.clientX - dragStartX.current;
-    setDragOffset(clampDragOffset(dragStartOffset.current + delta, activeIndexRef.current));
+    setDragOffset(dragStartOffset.current + delta);
   };
 
   const finishDrag = (clientX: number) => {
@@ -182,7 +213,7 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
           >
             {PROBLEM_PHONE_REELS.map((item, i) => {
               const meta = caseItems[i];
-              const offset = i - activeIndex;
+              const offset = getLoopOffset(i, activeIndex);
               const slideStep = slideWidthRef.current;
               const translateX = offset * slideStep + dragOffset;
               const isActive = i === activeIndex;
@@ -213,7 +244,9 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
                     muted={!soundOn || i !== activeIndex}
                     loop
                     playsInline
-                    preload={Math.abs(i - activeIndex) <= 1 ? "metadata" : "none"}
+                    preload="auto"
+                    onCanPlay={() => handleVideoCanPlay(i)}
+                    onLoadedData={() => handleVideoCanPlay(i)}
                   />
 
                   <div className="absolute right-1.5 bottom-20 z-10 flex flex-col items-center gap-3">
