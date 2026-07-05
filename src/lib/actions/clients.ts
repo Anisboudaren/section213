@@ -288,7 +288,9 @@ export async function getAdminBadgeCounts(): Promise<{
   overdueProjectCount: number;
 }> {
   const [newLeadCount, overdueProjectCount] = await Promise.all([
-    prisma.lead.count({ where: { stage: "new" } }),
+    prisma.lead.count({
+      where: { stage: "new", submissionStatus: { not: "abandoned" } },
+    }),
     prisma.project.count({
       where: {
         deadline: { lt: new Date() },

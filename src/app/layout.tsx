@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Anton, Inter } from "next/font/google";
 
 import { Providers } from "@/components/providers";
+import { getPublicPixelSettings } from "@/lib/actions/pixel-settings";
 import { getSiteSettings } from "@/lib/actions/site-settings";
 import { getAccentPreset, getAccentPresetStyleProperties } from "@/lib/accent-presets";
 
@@ -56,7 +57,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await getSiteSettings();
+  const [settings, pixelSettings] = await Promise.all([
+    getSiteSettings(),
+    getPublicPixelSettings(),
+  ]);
   const accentPreset = getAccentPreset(settings.accentPresetId);
   const accentStyles = getAccentPresetStyleProperties(accentPreset);
 
@@ -72,7 +76,9 @@ export default async function RootLayout({
         <link rel="dns-prefetch" href="https://bbrpqquawbvqnrpw.public.blob.vercel-storage.com" />
       </head>
       <body>
-        <Providers siteSettings={settings}>{children}</Providers>
+        <Providers siteSettings={settings} pixelSettings={pixelSettings}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

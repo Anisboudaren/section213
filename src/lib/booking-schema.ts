@@ -57,8 +57,8 @@ export const step02Schema = z.object({
   wilaya: z.string().min(1, "required"),
   location: z.string().trim().min(2, "min2"),
   projectType: projectTypeEnum,
-  projectDescription: z.string().trim().min(10, "min10").max(500, "max500"),
-  uploadedFiles: z.array(uploadedFileSchema).default([]),
+  projectDescription: z.string().trim().max(500, "max500").default(""),
+  uploadedFiles: z.array(uploadedFileSchema).min(1, "fileRequired"),
 });
 
 export const step03Schema = z.object({
@@ -70,18 +70,34 @@ export const step04Schema = z.object({
   alaCarteOptions: z.array(z.string()).default([]),
 });
 
-export const step05Schema = z.object({
-  fullName: z.string().trim().min(2, "min2"),
-  phone: z.string().trim().min(8, "phone"),
-  email: z
-    .string()
-    .trim()
-    .optional()
-    .refine((v) => !v || z.string().email().safeParse(v).success, { message: "email" }),
-  company: z.string().trim().optional(),
-  depositChoice: z.enum(["no_deposit", "deposit_50"]),
-  depositMethod: z.enum(["manual_transfer", "chargilly"]).optional(),
-});
+export const step05Schema = z
+  .object({
+    fullName: z.string().trim().min(2, "min2"),
+    phone: z.string().trim().min(8, "phone"),
+    email: z
+      .string()
+      .trim()
+      .optional()
+      .refine((v) => !v || z.string().email().safeParse(v).success, { message: "email" }),
+    company: z.string().trim().optional(),
+    depositChoice: z.enum(["no_deposit", "deposit_50"]),
+    depositMethod: z.enum(["cash", "transfer_receipt"]).optional(),
+    transferProofUrl: z.string().url().optional().or(z.literal("")),
+  })
+  .superRefine((data, ctx) => {
+    if (data.depositChoice !== "deposit_50") return;
+    if (!data.depositMethod) {
+      ctx.addIssue({ code: "custom", message: "required", path: ["depositMethod"] });
+      return;
+    }
+    if (data.depositMethod === "transfer_receipt" && !data.transferProofUrl) {
+      ctx.addIssue({
+        code: "custom",
+        message: "proofRequired",
+        path: ["transferProofUrl"],
+      });
+    }
+  });
 
 export const fullBookingSchema = step01Schema
   .and(step02Schema)
@@ -134,6 +150,7 @@ export function getStepInput(
         company: data.company ?? "",
         depositChoice: data.depositChoice ?? "no_deposit",
         depositMethod: data.depositMethod,
+        transferProofUrl: data.transferProofUrl ?? "",
       };
     default:
       return {};

@@ -6,7 +6,6 @@ import { Check, ChevronDown, ChevronRight } from "lucide-react";
 
 import {
   formatPriceFrom,
-  type OfferAlaCarteView,
   type OfferPackView,
 } from "@/lib/offers/offer-types";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
@@ -15,12 +14,24 @@ import { cn } from "@/lib/utils";
 import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
 
-function maskDigitsWithHash(text: string): string {
-  return text.replace(/\d/g, "#");
+function maskDigits(text: string): string {
+  return text.replace(/\d/g, "*");
 }
 
-function FunMaskedPrice({ text, className }: { text: string; className?: string }) {
-  const masked = maskDigitsWithHash(text);
+function MaskedPrice({
+  text,
+  className,
+  revealed,
+}: {
+  text: string;
+  className?: string;
+  revealed?: boolean;
+}) {
+  if (revealed) {
+    return <span className={cn("font-display tracking-widest", className)}>{text}</span>;
+  }
+
+  const masked = maskDigits(text);
 
   return (
     <span
@@ -30,8 +41,8 @@ function FunMaskedPrice({ text, className }: { text: string; className?: string 
       {masked.split("").map((char, i) => (
         <span
           key={`${char}-${i}`}
-          className={char === "#" ? "fun-masked-price-hash" : undefined}
-          style={char === "#" ? ({ "--hash-i": i } as CSSProperties) : undefined}
+          className={char === "*" ? "fun-masked-price-hash" : undefined}
+          style={char === "*" ? ({ "--hash-i": i } as CSSProperties) : undefined}
         >
           {char}
         </span>
@@ -40,28 +51,20 @@ function FunMaskedPrice({ text, className }: { text: string; className?: string 
   );
 }
 
-function getLowestPackPrice(packs: OfferPackView[]): number | undefined {
-  const prices = packs
-    .map((pack) => pack.priceFrom)
-    .filter((price): price is number => price != null);
-
-  if (prices.length === 0) return undefined;
-  return Math.min(...prices);
-}
-
 type OffersProps = {
   packs: OfferPackView[];
-  alaCarte: OfferAlaCarteView[];
 };
 
 function PackCard({
   pack,
   expanded,
   onToggle,
+  isFirst,
 }: {
   pack: OfferPackView;
   expanded: boolean;
   onToggle: () => void;
+  isFirst?: boolean;
 }) {
   const { locale, translations: t } = useLanguage();
   const o = t.homeV2.offers;
@@ -77,13 +80,21 @@ function PackCard({
   const priceLine = pack.studyOnly ? (
     <span>{isFr ? pack.priceLabelFr : pack.priceLabelEn}</span>
   ) : pack.priceFrom ? (
-  <span className="inline-flex flex-wrap items-baseline gap-x-2">
-      <span className="text-lg font-semibold text-white/70">{o.priceFrom}</span>
-      <FunMaskedPrice
+    isFirst ? (
+      <span className="inline-flex flex-wrap items-baseline gap-x-2">
+        <MaskedPrice
+          revealed
+          text={formatPriceFrom(pack.priceFrom, locale)}
+          className="text-2xl font-bold text-ruby"
+        />
+        <span className="text-lg font-semibold text-white/70">{o.priceFrom}</span>
+      </span>
+    ) : (
+      <MaskedPrice
         text={formatPriceFrom(pack.priceFrom, locale)}
         className="text-2xl font-bold text-ruby"
       />
-    </span>
+    )
   ) : null;
 
   return (
@@ -149,19 +160,20 @@ function PackCard({
               {valueBreakdown.map((row) => (
                 <div key={row.label} className="flex justify-between gap-2">
                   <span>{row.label}</span>
-                  <FunMaskedPrice text={row.value} className="text-sm text-white/55" />
+                  <MaskedPrice text={row.value} className="text-sm text-white/55" />
                 </div>
               ))}
               {totalValue && (
                 <div className="flex justify-between gap-2 border-t border-white/10 pt-2 font-medium text-white/80">
                   <span>{o.totalValue}</span>
-                  <FunMaskedPrice text={totalValue} className="text-sm text-white/80" />
+                  <MaskedPrice text={totalValue} className="text-sm text-white/80" />
                 </div>
               )}
               {pack.priceFrom && (
                 <div className="flex justify-between gap-2 text-ruby">
                   <span>{o.packPrice}</span>
-                  <FunMaskedPrice
+                  <MaskedPrice
+                    revealed={isFirst}
                     text={formatPriceFrom(pack.priceFrom, locale)}
                     className="text-sm text-ruby"
                   />
@@ -177,12 +189,10 @@ function PackCard({
   );
 }
 
-export function Offers({ packs, alaCarte }: OffersProps) {
-  const { locale, translations: t } = useLanguage();
+export function Offers({ packs }: OffersProps) {
+  const { translations: t } = useLanguage();
   const o = t.homeV2.offers;
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [alaCarteOpen, setAlaCarteOpen] = useState(false);
-  const lowestPackPrice = getLowestPackPrice(packs);
 
   return (
     <section id="offers" className="bg-ink bg-ink-texture px-4 py-16 text-white sm:px-6 sm:py-24">
@@ -193,14 +203,6 @@ export function Offers({ packs, alaCarte }: OffersProps) {
             {o.title} <span className="text-ruby">{o.titleHighlight}</span>
           </h2>
           <p className="mt-3 max-w-lg text-sm text-white/60 sm:text-base">{o.intro}</p>
-          {lowestPackPrice != null ? (
-            <p className="mt-5 text-sm text-white/70 sm:text-base">
-              {o.pricesStartFrom}{" "}
-              <span className="font-display text-lg font-semibold text-white sm:text-xl">
-                {formatPriceFrom(lowestPackPrice, locale)}
-              </span>
-            </p>
-          ) : null}
         </RevealInView>
 
         <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -208,53 +210,13 @@ export function Offers({ packs, alaCarte }: OffersProps) {
             <RevealInView key={pack.id} className={i === 1 ? "md:delay-75" : undefined}>
               <PackCard
                 pack={pack}
+                isFirst={i === 0}
                 expanded={expandedId === pack.id}
                 onToggle={() => setExpandedId((cur) => (cur === pack.id ? null : pack.id))}
               />
             </RevealInView>
           ))}
         </div>
-
-        {alaCarte.length > 0 && (
-          <RevealInView className="mt-8">
-            <button
-              type="button"
-              onClick={() => setAlaCarteOpen((v) => !v)}
-              className="flex w-full items-center justify-between rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-left transition hover:border-white/25"
-              aria-expanded={alaCarteOpen}
-            >
-              <span className="font-display text-lg tracking-wider">{o.alaCarteTitle}</span>
-              <ChevronDown
-                className={cn("h-5 w-5 text-white/50 transition", alaCarteOpen && "rotate-180")}
-              />
-            </button>
-            <div
-              className={cn(
-                "grid transition-all duration-300",
-                alaCarteOpen ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
-              )}
-            >
-              <div className="overflow-hidden">
-                <ul className="divide-y divide-white/10 rounded-xl border border-white/10">
-                  {alaCarte.map((item) => (
-                    <li
-                      key={item.id}
-                      className="flex items-center justify-between gap-4 px-5 py-3 text-sm"
-                    >
-                      <span className="text-white/85">
-                        {locale === "fr" ? item.nameFr : item.nameEn}
-                      </span>
-                      <FunMaskedPrice
-                        text={locale === "fr" ? item.priceFr : item.priceEn}
-                        className="shrink-0 text-sm font-medium text-white/60"
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </RevealInView>
-        )}
 
         <p className="mt-6 text-xs leading-relaxed text-white/45">{o.travelNote}</p>
       </div>

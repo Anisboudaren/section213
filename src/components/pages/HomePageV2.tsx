@@ -6,7 +6,6 @@ import { Method213 } from "@/components/home-v2/Method213";
 import { Offers } from "@/components/home-v2/Offers";
 import { Problem } from "@/components/home-v2/Problem";
 import { TrustedClients } from "@/components/home-v2/TrustedClients";
-import { WhySection213 } from "@/components/home-v2/WhySection213";
 import { FAQ } from "@/components/sections/FAQ";
 import { Footer } from "@/components/sections/Footer";
 import { Testimonials } from "@/components/sections/Testimonials";
@@ -54,11 +53,11 @@ export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props)
         copy={trustedSection.copy}
       />
 
-      {/* 004 — Why us (light) */}
-      <WhySection213 />
+      {/* 004 — Why us (light) — hidden for now */}
+      {/* <WhySection213 /> */}
 
       {/* 005 — Offers (dark) */}
-      <Offers packs={packs} alaCarte={alaCarte} />
+      <Offers packs={packs} />
 
       {/* 006 — Checkout entry (dark) */}
       <BookCTA />

@@ -63,7 +63,7 @@ export function Step04Offre({
               ? pack.priceLabelFr
               : pack.priceLabelEn
             : pack.priceFrom
-              ? `${isFr ? "À partir de" : "From"} ${formatPriceFrom(pack.priceFrom, locale)}`
+              ? formatPriceFrom(pack.priceFrom, locale)
               : null;
 
           return (
@@ -73,13 +73,13 @@ export function Step04Offre({
               aria-pressed={isSelected}
               onClick={() => onChange({ selectedPackId: pack.slug })}
               className={cn(
-                bookingChoiceClass(isSelected, "w-full rounded-xl p-4 text-left"),
+                bookingChoiceClass(isSelected, "w-full min-w-0 rounded-xl p-4 text-left"),
                 pack.recommended && "ring-1 ring-ruby/30",
               )}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="flex items-center gap-2">
+              <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="font-display text-lg tracking-wider">{name}</span>
                     {pack.recommended && (
                       <span className="rounded-full bg-brand-accent px-2 py-0.5 text-[10px] font-semibold text-ruby-foreground">
@@ -89,7 +89,11 @@ export function Step04Offre({
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">{tagline}</p>
                 </div>
-                <span className="shrink-0 text-sm font-bold">{priceLine}</span>
+                {priceLine && (
+                  <span className="shrink-0 self-start text-sm font-bold tabular-nums sm:text-right">
+                    {priceLine}
+                  </span>
+                )}
               </div>
               {isSelected && (
                 <ul className="mt-3 space-y-1 border-t border-ink/10 pt-3">
@@ -106,17 +110,15 @@ export function Step04Offre({
         })}
       </div>
       {errors?.selectedPackId && (
-        <p className="text-sm text-destructive text-center">{t.booking.validation.required}</p>
+        <p className="text-center text-sm text-destructive">{t.booking.validation.required}</p>
       )}
 
       {alaCarte.length > 0 && (
         <div className="space-y-3 rounded-xl border border-ink/10 bg-ink/[0.02] p-4">
-          <p className="text-sm font-medium">
-            {isFr ? "Services à la carte" : "À la carte services"}
-          </p>
+          <p className="text-sm font-medium">{t.booking.alaCarteTitle}</p>
           <div className="space-y-2">
             {alaCarte.map((item) => (
-              <div key={item.id} className="flex items-center gap-2">
+              <div key={item.id} className="flex min-w-0 items-center gap-2">
                 <Checkbox
                   id={`ala-${item.slug}`}
                   checked={alaCarteSelected.includes(item.slug)}
@@ -124,10 +126,10 @@ export function Step04Offre({
                 />
                 <Label
                   htmlFor={`ala-${item.slug}`}
-                  className="flex flex-1 cursor-pointer justify-between text-sm font-normal"
+                  className="flex min-w-0 flex-1 cursor-pointer items-start justify-between gap-3 text-sm font-normal"
                 >
-                  <span>{isFr ? item.nameFr : item.nameEn}</span>
-                  <span className="text-muted-foreground">
+                  <span className="min-w-0">{isFr ? item.nameFr : item.nameEn}</span>
+                  <span className="shrink-0 text-muted-foreground tabular-nums">
                     {isFr ? item.priceFr : item.priceEn}
                   </span>
                 </Label>

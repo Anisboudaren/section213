@@ -21,11 +21,11 @@ export function BookingNav({
   const { translations: t } = useLanguage();
 
   return (
-    <div className="flex items-center justify-between gap-4 border-t border-border/60 pt-6">
+    <div className="flex min-w-0 shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border/60 pt-6">
       {currentStep === 1 ? (
         <Link
           href="/"
-          className="min-h-11 inline-flex items-center text-sm text-muted-foreground hover:text-brand-accent"
+          className="inline-flex min-h-11 shrink-0 items-center text-sm text-muted-foreground hover:text-brand-accent"
         >
           {t.booking.previous}
         </Link>
@@ -33,7 +33,7 @@ export function BookingNav({
         <button
           type="button"
           onClick={onPrevious}
-          className="min-h-11 text-sm text-muted-foreground hover:text-brand-accent"
+          className="min-h-11 shrink-0 text-sm text-muted-foreground hover:text-brand-accent"
         >
           {t.booking.previous}
         </button>
@@ -42,7 +42,7 @@ export function BookingNav({
         <Button
           type="button"
           variant="ruby"
-          className="min-h-11 px-8"
+          className="min-h-11 shrink-0 px-4 sm:px-8"
           onClick={onNext}
         >
           {t.booking.next}

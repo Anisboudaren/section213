@@ -58,18 +58,27 @@ model Lead {
 
   // Structured booking fields
   submissionType      String   @default("contact")
+  submissionStatus    String   @default("completed")
+  bookingSessionId    String?
   wilaya              String?
   preferredDate       DateTime?
   preferredTime       String?
   isFlexible          Boolean  @default(false)
+  projectName         String?
+  location            String?
   projectTypes        String[] @default([])
   projectDescription  String?
   objective           String?
   budgetRange         String?
+  selectedPackSlug    String?
   bookingOptions      String[] @default([])
+  uploadedFiles       Json?
+  estimatedTotalDzd   Int?
   depositChoice       String?
   depositMethod       String?
   transferProofUrl    String?
+  abandonedAt         DateTime?
+  completedAt         DateTime?
 
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
@@ -79,6 +88,8 @@ model Lead {
   @@index([source])
   @@index([createdAt])
   @@index([submissionType])
+  @@index([submissionStatus])
+  @@index([bookingSessionId])
 }
 
 model TrackedLink {
@@ -242,6 +253,22 @@ model Task {
 
   @@index([projectId])
   @@index([done])
+}
+
+model PixelSettings {
+  id                    String   @id @default("default")
+  metaPixelId           String?
+  metaAccessToken       String?
+  tiktokPixelId         String?
+  tiktokAccessToken     String?
+  ga4MeasurementId      String?
+  ga4ApiSecret          String?
+  googleAdsConversionId String?
+  snapchatPixelId       String?
+  snapchatAccessToken   String?
+  activePixels          String[] @default([])
+  testMode              Boolean  @default(true)
+  updatedAt             DateTime @updatedAt
 }
 
 model SiteSettings {

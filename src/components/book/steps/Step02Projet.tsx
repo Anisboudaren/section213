@@ -41,8 +41,6 @@ type StepProps = {
 export function Step02Projet({ data, onChange, errors }: StepProps) {
   const { translations: t } = useLanguage();
   const description = data.projectDescription ?? "";
-  const count = description.trim().length;
-  const charsRemaining = Math.max(0, 10 - count);
   const [uploading, setUploading] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadKind, setUploadKind] = useState<UploadedFile["kind"]>("plans");
@@ -152,13 +150,11 @@ export function Step02Projet({ data, onChange, errors }: StepProps) {
 
       <div className="space-y-2">
         <div className="flex justify-between">
-          <Label>{t.booking.descriptionLabel}</Label>
-          <span
-            className={cn(
-              "text-xs",
-              count < 10 ? "text-muted-foreground" : "text-ruby",
-            )}
-          >
+          <Label>
+            {t.booking.descriptionLabel}{" "}
+            <span className="font-normal text-muted-foreground">({t.booking.optional})</span>
+          </Label>
+          <span className="text-xs text-muted-foreground">
             {t.booking.charCount.replace("{count}", String(description.length))}
           </span>
         </div>
@@ -170,11 +166,6 @@ export function Step02Projet({ data, onChange, errors }: StepProps) {
           placeholder="Décrivez votre projet…"
           aria-invalid={Boolean(errors?.projectDescription)}
         />
-        {charsRemaining > 0 && !errors?.projectDescription && (
-          <p className="text-xs text-muted-foreground">
-            {t.booking.descriptionRemaining.replace("{count}", String(charsRemaining))}
-          </p>
-        )}
         {errors?.projectDescription && (
           <p className="text-sm text-destructive">
             {mapError(errors.projectDescription)}
@@ -233,6 +224,9 @@ export function Step02Projet({ data, onChange, errors }: StepProps) {
               </li>
             ))}
           </ul>
+        )}
+        {errors?.uploadedFiles && (
+          <p className="text-sm text-destructive">{mapError(errors.uploadedFiles)}</p>
         )}
       </div>
     </div>

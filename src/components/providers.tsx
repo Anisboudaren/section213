@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
+import { PixelProvider } from "@/components/pixels/PixelProvider";
 import { AccentColorTester } from "@/components/AccentColorTester";
 import { PageTransitionLoader } from "@/components/PageTransitionLoader";
 import { PublicLanguagePicker } from "@/components/PublicLanguagePicker";
@@ -11,14 +12,16 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AccentColorProvider } from "@/lib/accent-color/AccentColorProvider";
 import { AdminStoreProvider } from "@/lib/admin-store";
 import { LanguageProvider } from "@/lib/i18n/LanguageProvider";
+import type { PublicPixelConfig } from "@/lib/pixel-settings-defaults";
 import type { SiteSettingsDto } from "@/lib/site-settings-defaults";
 
 type ProvidersProps = {
   children: ReactNode;
   siteSettings: SiteSettingsDto;
+  pixelSettings: PublicPixelConfig;
 };
 
-export function Providers({ children, siteSettings }: ProvidersProps) {
+export function Providers({ children, siteSettings, pixelSettings }: ProvidersProps) {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -30,7 +33,9 @@ export function Providers({ children, siteSettings }: ProvidersProps) {
             enabledAccentPresetIds={siteSettings.enabledAccentPresetIds}
           >
             <TooltipProvider>
-              {children}
+              <PixelProvider config={pixelSettings}>
+                {children}
+              </PixelProvider>
               <PageTransitionLoader />
               <PublicLanguagePicker />
               <AccentColorTester />

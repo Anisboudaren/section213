@@ -101,6 +101,12 @@ export const adminEn = {
     filterType: "Filter by type",
     filterBookings: "Bookings only",
     bookingSummary: "Booking request",
+    projectName: "Project name",
+    location: "Location",
+    projectDescription: "Description",
+    selectedPack: "Selected pack",
+    estimatedTotal: "Estimated total",
+    uploadedFiles: "Uploaded files",
     wilaya: "Wilaya",
     preferredDate: "Preferred date",
     preferredTime: "Time slot",
@@ -111,6 +117,8 @@ export const adminEn = {
     deposit: "Deposit",
     deposit50: "50% deposit",
     depositNone: "No deposit",
+    depositCash: "Cash in hand",
+    depositTransferReceipt: "Baridi Mob / CCP receipt",
     transferProof: "Transfer proof",
     upgradeToClient: "Upgrade to Client",
     upgradeConfirmTitle: "Upgrade to Client?",
@@ -153,6 +161,21 @@ export const adminEn = {
       stageChanged: "Stage changed to {stage}",
       assigned: "Assigned to {name}",
     },
+  },
+  abandonedLeads: {
+    title: "Abandoned Leads",
+    description:
+      "Users who reached the booking recap, entered a phone number, and left without submitting the form.",
+    summaryTitle: "Abandoned booking",
+    badge: "Abandoned",
+    searchPlaceholder: "Search by name, phone, or project…",
+    emptyTitle: "No abandoned bookings",
+    emptyDescription:
+      "When someone leaves the booking form without submitting, their draft will appear here.",
+    abandonedAt: "Abandoned at",
+    loadError: "Could not load abandoned leads.",
+    deleteConfirm: "Delete abandoned lead for {name}?",
+    deleted: "Abandoned lead deleted.",
   },
   clients: {
     title: "Clients",
@@ -337,17 +360,44 @@ export const adminEn = {
       meta: "Find in Meta Events Manager → Data Sources → your pixel ID.",
       tiktok: "Find in TikTok Ads Manager → Assets → Events → Web Events.",
       ga4: "Find in Google Analytics → Admin → Data Streams → Measurement ID.",
-      google_ads: "Find in Google Ads → Tools → Conversions → Tag setup.",
+      google_ads:
+        "Enter the full conversion send_to value: AW-XXXXXXXXX/CONVERSION_LABEL (from Google Ads → Tools → Conversions).",
       snapchat: "Find in Snapchat Ads Manager → Events Manager → Pixel ID.",
     },
     accessToken: "Access Token (Conversions API)",
-    accessTokenPlaceholder: "Placeholder — connect via API when backend is ready",
+    accessTokenPlaceholder: "Meta system user or Conversions API access token",
+    accessTokenHint:
+      "Used server-side to send Lead events to Meta. Never exposed to the public site.",
+    capiConfigured: "API configured",
+    apiCredentials: {
+      title: "Server-side conversion APIs",
+      description:
+        "Credentials for server-side event delivery. Used alongside browser pixels for deduplicated ViewContent, InitiateCheckout, and Lead events.",
+      meta: {
+        label: "Meta Conversions API token",
+        hint: "Meta Events Manager → Settings → Conversions API → Generate access token.",
+        placeholder: "EAAxxxxxxxx...",
+      },
+      tiktok: {
+        label: "TikTok Events API token",
+        hint: "TikTok Ads Manager → Assets → Events → Web Events → Generate access token.",
+        placeholder: "Access token from TikTok Business Center",
+      },
+      ga4: {
+        label: "GA4 Measurement Protocol API secret",
+        hint: "Google Analytics → Admin → Data Streams → your stream → Measurement Protocol API secrets.",
+        placeholder: "API secret from GA4 stream settings",
+      },
+      snapchat: {
+        label: "Snapchat Conversions API token",
+        hint: "Snapchat Ads Manager → Events Manager → your pixel → Conversions API token.",
+        placeholder: "Bearer token from Snapchat Events Manager",
+      },
+    },
     statusActive: "Active",
     statusInactive: "Inactive",
     enable: "Enable",
     disable: "Disable",
-    layoutTodo:
-      "TODO: read activePixels from DB/API and inject in layout.tsx head",
   },
   team: {
     title: "Team",

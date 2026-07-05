@@ -23,7 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { incrementLinkClick, createLead } from "@/lib/actions/leads";
 import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import type { OfferPackView } from "@/lib/offers/offer-types";
-import { trackMetaLead, trackTikTokSubmit } from "@/lib/pixel-events";
+import { trackFormView, trackLeadConversion } from "@/lib/pixel-events";
 import {
   contactFormSchema,
   leadSourceOptions,
@@ -56,6 +56,10 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
     }
   }, [refParam]);
 
+  useEffect(() => {
+    trackFormView("contact");
+  }, []);
+
   const form = useForm<ContactFormInput>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -70,6 +74,7 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
 
   const onSubmit = async (values: ContactFormInput) => {
     setError(null);
+    const pixelEventId = crypto.randomUUID();
     const result = await createLead({
       name: `${values.prenom} ${values.nom}`.trim(),
       phone: values.phone,
@@ -79,6 +84,7 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
       interestedIn: values.interestedIn,
       notes: values.message ?? "",
       pixelEventFired: "Lead",
+      pixelEventId,
       stage: "new",
       submissionType: "contact",
     });
@@ -88,8 +94,12 @@ export function ContactForm({ embedded = false, packs }: ContactFormProps) {
       return;
     }
 
-    trackMetaLead();
-    trackTikTokSubmit();
+    trackLeadConversion({
+      contentName: "contact",
+      eventId: pixelEventId,
+      email: values.email || undefined,
+      phone: values.phone,
+    });
     setSubmitted(true);
   };
 

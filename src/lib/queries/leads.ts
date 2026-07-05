@@ -6,16 +6,23 @@ import {
   createLead,
   createTrackedLink,
   deleteLead,
+  getAbandonedLeads,
   getLead,
   getLeads,
   getTrackedLinks,
+  saveAbandonedBooking,
   type LeadFilters,
   updateLead,
   upgradeLead,
 } from "@/lib/actions/leads";
-import type { CreateLeadInput, UpdateLeadInput } from "@/lib/schemas/lead-schema";
+import type {
+  AbandonedBookingInput,
+  CreateLeadInput,
+  UpdateLeadInput,
+} from "@/lib/schemas/lead-schema";
 
 export const LEADS_KEY = ["leads"] as const;
+export const ABANDONED_LEADS_KEY = ["abandoned-leads"] as const;
 export const TRACKED_LINKS_KEY = ["tracked-links"] as const;
 
 export function useLeads(filters?: LeadFilters) {
@@ -53,6 +60,32 @@ export function useTrackedLinks() {
   });
 }
 
+export function useAbandonedLeads(search?: string) {
+  return useQuery({
+    queryKey: [...ABANDONED_LEADS_KEY, search],
+    queryFn: async () => {
+      const result = await getAbandonedLeads(search);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+  });
+}
+
+export function useSaveAbandonedBooking() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: AbandonedBookingInput) => {
+      const result = await saveAbandonedBooking(data);
+      if (!result.success) throw new Error(result.error);
+      return result.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ABANDONED_LEADS_KEY });
+      qc.invalidateQueries({ queryKey: LEADS_KEY });
+    },
+  });
+}
+
 export function useCreateLead() {
   const qc = useQueryClient();
   return useMutation({
@@ -63,6 +96,7 @@ export function useCreateLead() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: LEADS_KEY });
+      qc.invalidateQueries({ queryKey: ABANDONED_LEADS_KEY });
       qc.invalidateQueries({ queryKey: TRACKED_LINKS_KEY });
     },
   });
@@ -76,7 +110,10 @@ export function useUpdateLead() {
       if (!result.success) throw new Error(result.error);
       return result.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: LEADS_KEY }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: LEADS_KEY });
+      qc.invalidateQueries({ queryKey: ABANDONED_LEADS_KEY });
+    },
   });
 }
 
@@ -88,7 +125,10 @@ export function useUpgradeLead() {
       if (!result.success) throw new Error(result.error);
       return result.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: LEADS_KEY }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: LEADS_KEY });
+      qc.invalidateQueries({ queryKey: ABANDONED_LEADS_KEY });
+    },
   });
 }
 
@@ -100,7 +140,10 @@ export function useDeleteLead() {
       if (!result.success) throw new Error(result.error);
       return result.data;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: LEADS_KEY }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: LEADS_KEY });
+      qc.invalidateQueries({ queryKey: ABANDONED_LEADS_KEY });
+    },
   });
 }
 

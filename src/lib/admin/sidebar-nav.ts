@@ -11,6 +11,7 @@ import {
   Package,
   Settings,
   UserPlus,
+  UserX,
 } from "lucide-react";
 
 export type SidebarBadge = "newLeads" | "overdueProjects";
@@ -36,6 +37,7 @@ export const NAV_GROUPS: NavGroupConfig[] = [
   {
     label: "CRM",
     items: [
+      { label: "Abandoned Leads", href: "/admin/leads/abandoned", icon: UserX },
       { label: "Leads", href: "/admin/leads", icon: UserPlus, badge: "newLeads", badgeColor: "amber" },
       { label: "Clients", href: "/admin/clients", icon: Building2 },
       {

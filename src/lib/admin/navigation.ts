@@ -42,6 +42,7 @@ import {
   Plug,
   Settings,
   User,
+  UserX,
 } from "lucide-react";
 
 export type NavItem = {
@@ -78,6 +79,12 @@ export const adminNavSections: NavSection[] = [
         url: "/admin/clients",
         icon: Users,
         description: "Active business accounts and ongoing relationships.",
+      },
+      {
+        title: "Abandoned Leads",
+        url: "/admin/leads/abandoned",
+        icon: UserX,
+        description: "Booking forms that reached recap with a phone number but were not submitted.",
       },
       {
         title: "Leads",

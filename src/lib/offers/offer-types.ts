@@ -41,6 +41,7 @@ export type OfferAlaCarteView = {
   nameEn: string;
   priceFr: string;
   priceEn: string;
+  price?: number;
   studyOnly: boolean;
 };
 
@@ -98,6 +99,7 @@ export function offerToAlaCarteView(offer: Offer): OfferAlaCarteView {
     nameEn: offer.name,
     priceFr: formatAlaCartePrice(offer, "fr"),
     priceEn: formatAlaCartePrice(offer, "en"),
+    price: offer.studyOnly ? undefined : offer.price,
     studyOnly: offer.studyOnly ?? false,
   };
 }
@@ -124,4 +126,70 @@ export function findPackView(packs: OfferPackView[], slugOrId?: string) {
 export function formatPriceFrom(amount: number, locale: "fr" | "en"): string {
   const formatted = amount.toLocaleString(locale === "fr" ? "fr-DZ" : "en-US");
   return locale === "fr" ? `${formatted} DA` : `${formatted} DZD`;
+}
+
+export type BookingPriceLine = {
+  label: string;
+  display: string;
+  amount: number | null;
+};
+
+export function computeBookingTotal(
+  pack: OfferPackView | undefined,
+  alaCarte: OfferAlaCarteView[],
+  selectedAlaCarteSlugs: string[],
+  locale: "fr" | "en",
+): { lines: BookingPriceLine[]; total: number | null; totalDisplay: string | null } {
+  const lines: BookingPriceLine[] = [];
+  let total = 0;
+  let hasNumeric = false;
+
+  if (pack) {
+    const name = locale === "fr" ? pack.nameFr : pack.nameEn;
+    if (pack.studyOnly || pack.priceFrom == null) {
+      lines.push({
+        label: name,
+        amount: null,
+        display:
+          locale === "fr"
+            ? (pack.priceLabelFr ?? "Sur étude")
+            : (pack.priceLabelEn ?? "On request"),
+      });
+    } else {
+      hasNumeric = true;
+      total += pack.priceFrom;
+      lines.push({
+        label: name,
+        amount: pack.priceFrom,
+        display: formatPriceFrom(pack.priceFrom, locale),
+      });
+    }
+  }
+
+  for (const slug of selectedAlaCarteSlugs) {
+    const item = alaCarte.find((i) => i.slug === slug);
+    if (!item) continue;
+    const name = locale === "fr" ? item.nameFr : item.nameEn;
+    if (item.studyOnly || item.price == null) {
+      lines.push({
+        label: name,
+        amount: null,
+        display: locale === "fr" ? item.priceFr : item.priceEn,
+      });
+    } else {
+      hasNumeric = true;
+      total += item.price;
+      lines.push({
+        label: name,
+        amount: item.price,
+        display: locale === "fr" ? item.priceFr : item.priceEn,
+      });
+    }
+  }
+
+  if (!hasNumeric) {
+    return { lines, total: null, totalDisplay: null };
+  }
+
+  return { lines, total, totalDisplay: formatPriceFrom(total, locale) };
 }

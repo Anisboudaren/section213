@@ -15,18 +15,11 @@ import { MOCK_LEADS } from "@/lib/mock-data/leads";
 import type {
   Client,
   Lead,
-  PixelConfig,
 } from "@/lib/types/admin";
 
 // Replace context with TanStack Query + API routes when Neon is ready
 
 const LEADS_STORAGE_KEY = "s213_admin_leads";
-const PIXELS_STORAGE_KEY = "s213_admin_pixels";
-
-const DEFAULT_PIXEL_CONFIG: PixelConfig = {
-  activePixels: [],
-  testMode: true,
-};
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -55,7 +48,6 @@ function generateId(prefix: string): string {
 type AdminStoreContextValue = {
   leads: Lead[];
   clients: Client[];
-  pixelConfig: PixelConfig;
   addLead: (lead: Omit<Lead, "id">) => Lead;
   updateLead: (id: string, data: Partial<Lead>) => void;
   deleteLead: (id: string) => void;
@@ -63,7 +55,6 @@ type AdminStoreContextValue = {
   updateClient: (id: string, data: Partial<Client>) => void;
   deleteClient: (id: string) => void;
   upgradeLeadToClient: (leadId: string) => string;
-  setPixelConfig: (config: PixelConfig) => void;
   getLeadById: (id: string) => Lead | undefined;
   getClientById: (id: string) => Client | undefined;
 };
@@ -73,12 +64,10 @@ const AdminStoreContext = createContext<AdminStoreContextValue | null>(null);
 export function AdminStoreProvider({ children }: { children: ReactNode }) {
   const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
   const [clients, setClients] = useState<Client[]>(MOCK_CLIENTS);
-  const [pixelConfig, setPixelConfigState] = useState<PixelConfig>(DEFAULT_PIXEL_CONFIG);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     setLeads(loadFromStorage(LEADS_STORAGE_KEY, MOCK_LEADS));
-    setPixelConfigState(loadFromStorage(PIXELS_STORAGE_KEY, DEFAULT_PIXEL_CONFIG));
     setHydrated(true);
   }, []);
 
@@ -86,11 +75,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     saveToStorage(LEADS_STORAGE_KEY, leads);
   }, [leads, hydrated]);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    saveToStorage(PIXELS_STORAGE_KEY, pixelConfig);
-  }, [pixelConfig, hydrated]);
 
   const addLead = useCallback((lead: Omit<Lead, "id">): Lead => {
     const newLead: Lead = { ...lead, id: generateId("lead") };
@@ -145,10 +129,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     [leads, addClient, updateLead],
   );
 
-  const setPixelConfig = useCallback((config: PixelConfig) => {
-    setPixelConfigState(config);
-  }, []);
-
   const getLeadById = useCallback((id: string) => leads.find((l) => l.id === id), [leads]);
   const getClientById = useCallback((id: string) => clients.find((c) => c.id === id), [clients]);
 
@@ -156,7 +136,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
     () => ({
       leads,
       clients,
-      pixelConfig,
       addLead,
       updateLead,
       deleteLead,
@@ -164,14 +143,12 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
       updateClient,
       deleteClient,
       upgradeLeadToClient,
-      setPixelConfig,
       getLeadById,
       getClientById,
     }),
     [
       leads,
       clients,
-      pixelConfig,
       addLead,
       updateLead,
       deleteLead,
@@ -179,7 +156,6 @@ export function AdminStoreProvider({ children }: { children: ReactNode }) {
       updateClient,
       deleteClient,
       upgradeLeadToClient,
-      setPixelConfig,
       getLeadById,
       getClientById,
     ],

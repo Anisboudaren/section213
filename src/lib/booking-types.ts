@@ -18,7 +18,7 @@ export type PreferredTime = "matin" | "apres_midi" | "flexible";
 
 export type DepositChoice = "no_deposit" | "deposit_50";
 
-export type DepositMethod = "manual_transfer" | "chargilly";
+export type DepositMethod = "cash" | "transfer_receipt";
 
 export type UploadedFile = {
   name: string;
@@ -46,6 +46,8 @@ export type BookingFormData = {
   depositChoice: DepositChoice;
   depositMethod?: DepositMethod;
   transferProofUrl?: string;
+  bookingSessionId?: string;
+  abandonedLeadId?: string;
 };
 
 export const BOOKING_STEPS = [

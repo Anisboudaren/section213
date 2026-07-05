@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { BookingNav } from "@/components/book/BookingNav";
@@ -12,9 +12,13 @@ import { Step04Offre } from "@/components/book/steps/Step04Offre";
 import { Step05Recap } from "@/components/book/steps/Step05Recap";
 import { Step06Confirmation } from "@/components/book/steps/Step06Confirmation";
 import { Card, CardContent } from "@/components/ui/card";
+import { getOrCreateBookingSessionId } from "@/lib/booking/booking-session";
+import { useAbandonedBookingCapture } from "@/lib/booking/use-abandoned-booking-capture";
 import { validateBookingStep } from "@/lib/booking-schema";
 import type { BookingFormData } from "@/lib/booking-types";
+import { useLanguage } from "@/lib/i18n/LanguageProvider";
 import type { OfferAlaCarteView, OfferPackView } from "@/lib/offers/offer-types";
+import { trackInitiateCheckout, trackOfferView } from "@/lib/pixel-events";
 import { cn } from "@/lib/utils";
 
 const INITIAL_DATA: Partial<BookingFormData> = {
@@ -36,6 +40,7 @@ type BookingWizardProps = {
 };
 
 export function BookingWizard({ packs, alaCarte }: BookingWizardProps) {
+  const { locale } = useLanguage();
   const searchParams = useSearchParams();
   const initialPackId = searchParams.get("pack") ?? undefined;
 
@@ -44,6 +49,31 @@ export function BookingWizard({ packs, alaCarte }: BookingWizardProps) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [fade, setFade] = useState(true);
   const [confirmed, setConfirmed] = useState(false);
+  const submittedRef = useRef(false);
+
+  useEffect(() => {
+    const sessionId = getOrCreateBookingSessionId();
+    setData((prev) => (prev.bookingSessionId ? prev : { ...prev, bookingSessionId: sessionId }));
+    trackInitiateCheckout("booking");
+  }, []);
+
+  useEffect(() => {
+    if (step === 4) {
+      trackOfferView("booking_offers", data.selectedPackId || initialPackId);
+    }
+  }, [step, data.selectedPackId, initialPackId]);
+
+  useAbandonedBookingCapture({
+    step,
+    data,
+    packs,
+    alaCarte,
+    locale: locale === "fr" ? "fr" : "en",
+    submittedRef,
+    onAbandonedSaved: (id) => {
+      setData((prev) => ({ ...prev, abandonedLeadId: id }));
+    },
+  });
 
   const updateData = useCallback((patch: Partial<BookingFormData>) => {
     setData((prev) => ({ ...prev, ...patch }));
@@ -100,7 +130,7 @@ export function BookingWizard({ packs, alaCarte }: BookingWizardProps) {
       <Card className="mt-6 flex flex-1 flex-col border-border/60 shadow-sm md:mx-auto md:max-w-[560px] md:w-full">
         <CardContent
           className={cn(
-            "flex flex-1 flex-col p-6 transition-opacity duration-150 md:p-8",
+            "flex min-w-0 flex-1 flex-col p-6 transition-opacity duration-150 md:p-8",
             fade ? "opacity-100" : "opacity-0",
           )}
         >
@@ -130,6 +160,9 @@ export function BookingWizard({ packs, alaCarte }: BookingWizardProps) {
                 onChange={updateData}
                 errors={errors}
                 onSubmitSuccess={() => setConfirmed(true)}
+                onSubmitStart={() => {
+                  submittedRef.current = true;
+                }}
                 packs={packs}
                 alaCarte={alaCarte}
               />
