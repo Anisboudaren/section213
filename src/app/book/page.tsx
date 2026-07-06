@@ -7,8 +7,8 @@ import { getSiteSettings } from "@/lib/actions/site-settings";
 import { partitionOffers } from "@/lib/offers/offer-types";
 
 export const metadata: Metadata = {
-  title: "Réserver un projet — Section 213",
-  description: "Planifiez votre lancement — date, projet, objectif et accompagnement.",
+  title: "Réserver un appel — Section 213",
+  description: "Planifiez votre appel découverte — date, projet, objectif et accompagnement.",
 };
 
 export default async function Page() {
