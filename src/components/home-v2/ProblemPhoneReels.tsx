@@ -39,16 +39,23 @@ function ActionButton({
 
 type ProblemPhoneReelsProps = {
   channels: string[];
+  soundOn: boolean;
+  onToggleSound: () => void;
+  onInViewChange?: (inView: boolean) => void;
 };
 
-export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
+export function ProblemPhoneReels({
+  channels,
+  soundOn,
+  onToggleSound,
+  onInViewChange,
+}: ProblemPhoneReelsProps) {
   const { translations: t, locale } = useLanguage();
   const p = t.homeV2.problem;
   const reelCount = PROBLEM_PHONE_REELS.length;
   const initialIndex = Math.floor(reelCount / 2);
   const caseItems = t.homeV2.caseStudies.items.slice(0, PROBLEM_PHONE_REELS.length);
   const [activeIndex, setActiveIndex] = useState(initialIndex);
-  const [soundOn, setSoundOn] = useState(false);
   const [inView, setInView] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -78,12 +85,19 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
     const el = containerRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting && entry.intersectionRatio > 0.25),
+      ([entry]) => {
+        const visible = entry.isIntersecting && entry.intersectionRatio > 0.25;
+        setInView(visible);
+        onInViewChange?.(visible);
+      },
       { threshold: [0, 0.25, 0.5] },
     );
     observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      observer.disconnect();
+      onInViewChange?.(false);
+    };
+  }, [onInViewChange]);
 
   useEffect(() => {
     const screen = screenRef.current;
@@ -195,7 +209,7 @@ export function ProblemPhoneReels({ channels }: ProblemPhoneReelsProps) {
             </span>
             <button
               type="button"
-              onClick={() => setSoundOn((v) => !v)}
+              onClick={onToggleSound}
               className="flex items-center gap-1 rounded-full bg-black/50 px-2 py-1 text-[9px] font-semibold text-white"
               aria-label={soundOn ? t.nav.muteVideos : t.nav.unmuteVideos}
             >

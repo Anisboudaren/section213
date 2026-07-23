@@ -7,6 +7,7 @@ export type BlobFolder =
   | "clients/logos"
   | "clients/avatars"
   | "team/avatars"
+  | "testimonials/avatars"
   | "case-studies/videos"
   | "case-studies/thumbnails"
   | "bookings/deposit-proofs"
@@ -23,6 +24,7 @@ const MIME_LIMITS: Record<
       "clients/logos",
       "clients/avatars",
       "team/avatars",
+      "testimonials/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
       "bookings/project-files",
@@ -35,6 +37,7 @@ const MIME_LIMITS: Record<
       "clients/logos",
       "clients/avatars",
       "team/avatars",
+      "testimonials/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
       "bookings/project-files",
@@ -47,6 +50,7 @@ const MIME_LIMITS: Record<
       "clients/logos",
       "clients/avatars",
       "team/avatars",
+      "testimonials/avatars",
       "case-studies/thumbnails",
       "bookings/deposit-proofs",
       "bookings/project-files",
@@ -105,7 +109,9 @@ export async function uploadToBlob(
   folder: BlobFolder,
   filename: string,
 ): Promise<{ url: string; pathname: string }> {
-  const { token, storeId } = assertBlobConfigured();
+  // Prefer the read-write token alone — store ID is already embedded in it.
+  // Passing a mismatched BLOB_STORE_ID can cause "Access denied".
+  const { token } = assertBlobConfigured();
 
   const mimeType = file.type || "application/octet-stream";
   const validation = validateBlobUpload(mimeType, file.size, folder);
@@ -115,13 +121,22 @@ export async function uploadToBlob(
 
   const pathname = buildPathname(folder, filename);
 
-  const blob = await put(pathname, file, {
-    access: "public",
-    token,
-    ...(storeId ? { storeId } : {}),
-    contentType: mimeType,
-    addRandomSuffix: false,
-  });
+  try {
+    const blob = await put(pathname, file, {
+      access: "public",
+      token,
+      contentType: mimeType,
+      addRandomSuffix: false,
+    });
 
-  return { url: blob.url, pathname: blob.pathname };
+    return { url: blob.url, pathname: blob.pathname };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/access denied|valid token/i.test(message)) {
+      throw new Error(
+        "Vercel Blob rejected the upload token. Refresh BLOB_READ_WRITE_TOKEN from your Vercel Blob store settings, update .env, and restart the dev server. (The media library can still show old public URLs from the database.)",
+      );
+    }
+    throw error instanceof Error ? error : new Error(message);
+  }
 }

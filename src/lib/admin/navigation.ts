@@ -31,6 +31,7 @@ import {
   Download,
   Mail,
   MessageSquare,
+  MessageSquareQuote,
   Bell,
   Receipt,
   FileSignature,
@@ -109,6 +110,12 @@ export const adminNavSections: NavSection[] = [
         url: "/admin/trusted",
         icon: Handshake,
         description: "Homepage “They already trust us” logos, links, and copy.",
+      },
+      {
+        title: "Testimonials",
+        url: "/admin/testimonials",
+        icon: MessageSquareQuote,
+        description: "Homepage client testimonials — quotes, photos, and details.",
       },
       {
         title: "Contacts",

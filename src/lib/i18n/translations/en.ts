@@ -180,30 +180,8 @@ export const en = {
     ],
   },
   testimonials: {
-    title: "WHAT CUSTOMERS SAY AFTER",
-    titleHighlight: "THE SHOOT",
-    items: [
-      {
-        name: "Michelle Martinez",
-        quote:
-          "The team at Section 213 completely changed how I show up online. My listings sell faster and my brand looks consistent everywhere.",
-      },
-      {
-        name: "Jordan Lee",
-        quote:
-          "Hands down the best media team I've worked with. The cinematic walk-throughs put my listings on a different level.",
-      },
-      {
-        name: "Sarah K.",
-        quote:
-          "Booking was simple, the shoot day was fun, and the delivery was lightning fast. I'm a customer for life.",
-      },
-      {
-        name: "Carter Reilly",
-        quote:
-          "My Instagram presence finally matches the quality of my service. Reels that actually convert leads.",
-      },
-    ],
+    title: "WHAT OUR",
+    titleHighlight: "CLIENTS SAY",
   },
   faq: {
     title: "FREQUENTLY ASKED",

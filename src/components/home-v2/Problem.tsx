@@ -6,7 +6,13 @@ import { RevealInView } from "./RevealInView";
 import { SectionIndex } from "./SectionIndex";
 import { ProblemPhoneReels } from "./ProblemPhoneReels";
 
-export function Problem() {
+type ProblemProps = {
+  soundOn: boolean;
+  onToggleSound: () => void;
+  onReelsInViewChange?: (inView: boolean) => void;
+};
+
+export function Problem({ soundOn, onToggleSound, onReelsInViewChange }: ProblemProps) {
   const { translations: t } = useLanguage();
   const p = t.homeV2.problem;
 
@@ -43,7 +49,12 @@ export function Problem() {
           </RevealInView>
 
           <RevealInView className="min-w-0 lg:delay-100">
-            <ProblemPhoneReels channels={p.channels} />
+            <ProblemPhoneReels
+              channels={p.channels}
+              soundOn={soundOn}
+              onToggleSound={onToggleSound}
+              onInViewChange={onReelsInViewChange}
+            />
           </RevealInView>
         </div>
       </div>

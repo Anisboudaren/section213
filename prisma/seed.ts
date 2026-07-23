@@ -8,6 +8,7 @@ import { PrismaClient } from "../src/generated/prisma/client";
 import { CASE_STUDY_SEED, MEDIA_ASSET_SEED } from "../src/lib/case-studies-seed-data";
 import { hashPassword } from "../src/lib/auth/password";
 import { V1_OFFER_SEED } from "../src/lib/offers/v1-seed-data";
+import { DEFAULT_TESTIMONIALS } from "../src/lib/testimonials-defaults";
 
 const SUPER_ADMIN_EMAIL = "section213.agency@gmail.com";
 
@@ -93,6 +94,10 @@ async function main() {
     });
   }
   console.log(`Seeded ${MEDIA_ASSET_SEED.length} media assets.`);
+
+  await prisma.testimonial.deleteMany();
+  await prisma.testimonial.createMany({ data: DEFAULT_TESTIMONIALS });
+  console.log(`Seeded ${DEFAULT_TESTIMONIALS.length} testimonials.`);
 
   const superAdminPassword = process.env.SUPER_ADMIN_PASSWORD ?? "Section213!";
   await prisma.user.upsert({

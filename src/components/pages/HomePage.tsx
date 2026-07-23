@@ -12,8 +12,13 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { FAQ } from "@/components/sections/FAQ";
 import { InstagramCTA } from "@/components/sections/InstagramCTA";
 import { Footer } from "@/components/sections/Footer";
+import type { TestimonialDto } from "@/lib/actions/testimonials";
 
-export function HomePage() {
+type HomePageProps = {
+  testimonials?: TestimonialDto[];
+};
+
+export function HomePage({ testimonials = [] }: HomePageProps) {
   return (
     <main className="theme-marketing min-h-screen bg-background">
       <Hero />
@@ -25,7 +30,7 @@ export function HomePage() {
       <Trusted />
       <Stats />
       <div className="bg-mist-ruby-texture">
-        <Testimonials />
+        <Testimonials items={testimonials} />
         <FAQ />
       </div>
       <InstagramCTA />

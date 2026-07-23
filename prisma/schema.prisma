@@ -344,6 +344,25 @@ model TrustedPartner {
   @@index([active, sortOrder])
 }
 
+model Testimonial {
+  id              String   @id @default(cuid())
+  name            String
+  role            String
+  company         String
+  quoteEn         String
+  quoteFr         String
+  quoteAr         String?
+  photoUrl        String?
+  instagramHandle String?
+  email           String?
+  sortOrder       Int      @default(0)
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([active, sortOrder])
+}
+
 model CaseStudy {
   id            String   @id @default(cuid())
   slug          String   @unique

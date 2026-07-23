@@ -17,6 +17,7 @@ const ALLOWED_FOLDERS: BlobFolder[] = [
   "clients/logos",
   "clients/avatars",
   "team/avatars",
+  "testimonials/avatars",
   "case-studies/videos",
   "case-studies/thumbnails",
   "bookings/deposit-proofs",

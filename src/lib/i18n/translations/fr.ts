@@ -194,30 +194,8 @@ export const fr: Translations = {
     ],
   },
   testimonials: {
-    title: "CE QUE DISENT NOS CLIENTS",
-    titleHighlight: "APRÈS LE TOURNAGE",
-    items: [
-      {
-        name: "Michelle Martinez",
-        quote:
-          "L'équipe Section 213 a complètement changé ma présence en ligne. Mes annonces se vendent plus vite et ma marque est cohérente partout.",
-      },
-      {
-        name: "Jordan Lee",
-        quote:
-          "Sans conteste la meilleure équipe média avec laquelle j'ai travaillé. Les visites cinématographiques ont propulsé mes annonces.",
-      },
-      {
-        name: "Sarah K.",
-        quote:
-          "La réservation était simple, le tournage agréable et la livraison ultra rapide. Cliente à vie.",
-      },
-      {
-        name: "Carter Reilly",
-        quote:
-          "Ma présence Instagram correspond enfin à la qualité de mon service. Des reels qui convertissent vraiment.",
-      },
-    ],
+    title: "CE QUE DISENT",
+    titleHighlight: "NOS CLIENTS",
   },
   faq: {
     title: "QUESTIONS",

@@ -10,16 +10,18 @@ import { FAQ } from "@/components/sections/FAQ";
 import { Footer } from "@/components/sections/Footer";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { useHeroMedia } from "@/hooks/use-hero-media";
+import type { TestimonialDto } from "@/lib/actions/testimonials";
 import type { OfferAlaCarteView, OfferPackView } from "@/lib/offers/offer-types";
 import type { TrustedSectionData } from "@/lib/queries/trusted-section";
 
 type HomePageV2Props = {
   trustedSection: TrustedSectionData;
+  testimonials: TestimonialDto[];
   packs: OfferPackView[];
   alaCarte: OfferAlaCarteView[];
 };
 
-export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props) {
+export function HomePageV2({ trustedSection, testimonials, packs }: HomePageV2Props) {
   const {
     soundOn,
     reelsInView,
@@ -27,6 +29,7 @@ export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props)
     toggleSound,
     heroVideoRef,
     handleHeroInView,
+    handleReelsInView,
   } = useHeroMedia();
 
   return (
@@ -42,7 +45,11 @@ export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props)
       />
 
       {/* 001 — Problem (dark) */}
-      <Problem />
+      <Problem
+        soundOn={soundOn}
+        onToggleSound={toggleSound}
+        onReelsInViewChange={handleReelsInView}
+      />
 
       {/* 002 — Method (dark) */}
       <Method213 />
@@ -63,7 +70,7 @@ export function HomePageV2({ trustedSection, packs, alaCarte }: HomePageV2Props)
       <BookCTA />
 
       <div className="bg-mist-ruby-texture">
-        <Testimonials />
+        <Testimonials items={testimonials} />
         <FAQ />
       </div>
       <Footer />
