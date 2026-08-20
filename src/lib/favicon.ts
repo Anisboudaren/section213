@@ -8,6 +8,14 @@ const DEFAULT_FAVICON_FILE = path.join(
   "public/branding/default-favicon.ico",
 );
 
+/**
+ * Favicons are fetched by crawlers with short timeouts, so this response is
+ * cached aggressively. Previously it was re-fetched from blob storage on every
+ * single request (no-store + force-dynamic on the route), which made the icon
+ * slow and occasionally unavailable to Google's favicon fetcher.
+ */
+const ICON_CACHE_CONTROL = "public, max-age=604800, stale-while-revalidate=2592000";
+
 function guessContentType(url: string): string {
   const lower = url.toLowerCase();
   if (lower.endsWith(".svg")) return "image/svg+xml";
@@ -21,7 +29,7 @@ async function readDefaultFavicon(): Promise<Response> {
   return new Response(body, {
     headers: {
       "Content-Type": "image/x-icon",
-      "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
+      "Cache-Control": ICON_CACHE_CONTROL,
     },
   });
 }
@@ -34,14 +42,14 @@ export async function resolveFaviconResponse(): Promise<Response> {
 
     if (custom) {
       try {
-        const res = await fetch(custom, { cache: "no-store" });
+        const res = await fetch(custom, { next: { revalidate: 86400 } });
         if (res.ok) {
           const body = await res.arrayBuffer();
           const contentType = res.headers.get("content-type") || guessContentType(custom);
           return new Response(body, {
             headers: {
               "Content-Type": contentType,
-              "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+              "Cache-Control": ICON_CACHE_CONTROL,
             },
           });
         }
