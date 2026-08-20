@@ -18,32 +18,25 @@ import { cn } from "@/lib/utils";
 type LanguagePickerDialogProps = {
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  /** When true, user must pick a language before closing */
-  requireChoice?: boolean;
 };
 
+/**
+ * Language picker. Opened on demand only — from the footer LanguageSwitcher.
+ * It no longer auto-opens on first visit; the site starts in the locale from
+ * site settings (`defaultLocale`) and visitors change it from the footer.
+ */
 export function LanguagePickerDialog({
   open: controlledOpen,
   onOpenChange,
-  requireChoice = false,
 }: LanguagePickerDialogProps) {
-  const { locale, setLocale, translations, hasChosenLocale, ready } = useLanguage();
+  const { locale, setLocale, translations } = useLanguage();
   const [internalOpen, setInternalOpen] = useState(false);
   const [pendingLocale, setPendingLocale] = useState<Locale>(locale);
 
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
 
-  const closeDialog = () => {
-    if (isControlled) {
-      onOpenChange?.(false);
-    } else {
-      setInternalOpen(false);
-    }
-  };
-
   const setOpen = (value: boolean) => {
-    if (requireChoice && !value && !hasChosenLocale) return;
     if (isControlled) {
       onOpenChange?.(value);
     } else {
@@ -52,33 +45,19 @@ export function LanguagePickerDialog({
   };
 
   useEffect(() => {
-    if (!ready || isControlled) return;
-    if (!hasChosenLocale) {
-      setInternalOpen(true);
-    } else {
-      setInternalOpen(false);
-    }
-  }, [ready, hasChosenLocale, isControlled]);
-
-  useEffect(() => {
     setPendingLocale(locale);
   }, [locale, open]);
 
   const handleContinue = () => {
     setLocale(pendingLocale);
-    closeDialog();
+    setOpen(false);
   };
 
   const t = translations.language;
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent
-        className="max-h-[85dvh] w-[calc(100%-1.5rem)] max-w-sm gap-3 overflow-y-auto border-ruby/25 p-4 sm:max-w-md sm:gap-4 sm:p-6 sm:rounded-2xl"
-        onPointerDownOutside={(e) => requireChoice && !hasChosenLocale && e.preventDefault()}
-        onEscapeKeyDown={(e) => requireChoice && !hasChosenLocale && e.preventDefault()}
-        hideClose={requireChoice && !hasChosenLocale}
-      >
+      <DialogContent className="max-h-[85dvh] w-[calc(100%-1.5rem)] max-w-sm gap-3 overflow-y-auto border-ruby/25 p-4 sm:max-w-md sm:gap-4 sm:p-6 sm:rounded-2xl">
         <DialogHeader className="items-center space-y-1 text-center sm:text-center">
           <div className="mx-auto mb-1 flex h-9 w-9 items-center justify-center rounded-full bg-ruby/15 sm:mb-2 sm:h-11 sm:w-11">
             <Languages className="h-4 w-4 text-ruby sm:h-5 sm:w-5" />

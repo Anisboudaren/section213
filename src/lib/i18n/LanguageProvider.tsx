@@ -31,10 +31,10 @@ type LanguageContextValue = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
-function readStoredLocale(): Locale {
-  if (typeof window === "undefined") return DEFAULT_LOCALE;
+function readStoredLocale(fallback: Locale): Locale {
+  if (typeof window === "undefined") return fallback;
   const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-  return isValidLocale(stored) ? stored : DEFAULT_LOCALE;
+  return isValidLocale(stored) ? stored : fallback;
 }
 
 function readHasChosenLocale(): boolean {
@@ -47,18 +47,32 @@ function applyDocumentLocale(locale: Locale) {
   document.documentElement.dir = getDir(locale);
 }
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
+type LanguageProviderProps = {
+  children: ReactNode;
+  /**
+   * Locale used before the visitor's stored preference is read, and as the
+   * fallback when they have never picked one. Sourced from site settings
+   * (`defaultLocale`) so the admin-configured default is the single source of
+   * truth. Falls back to DEFAULT_LOCALE when not supplied.
+   */
+  initialLocale?: Locale;
+};
+
+export function LanguageProvider({
+  children,
+  initialLocale = DEFAULT_LOCALE,
+}: LanguageProviderProps) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [hasChosenLocale, setHasChosenLocale] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const stored = readStoredLocale();
+    const stored = readStoredLocale(initialLocale);
     setLocaleState(stored);
     setHasChosenLocale(readHasChosenLocale());
     applyDocumentLocale(stored);
     setReady(true);
-  }, []);
+  }, [initialLocale]);
 
   useEffect(() => {
     if (!ready) return;

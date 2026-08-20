@@ -6,7 +6,6 @@ import { useState, type ReactNode } from "react";
 import { PixelProvider } from "@/components/pixels/PixelProvider";
 import { AccentColorTester } from "@/components/AccentColorTester";
 import { PageTransitionLoader } from "@/components/PageTransitionLoader";
-import { PublicLanguagePicker } from "@/components/PublicLanguagePicker";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AccentColorProvider } from "@/lib/accent-color/AccentColorProvider";
@@ -28,7 +27,7 @@ export function Providers({ children, siteSettings, pixelSettings }: ProvidersPr
   return (
     <QueryClientProvider client={queryClient}>
       <AdminStoreProvider>
-        <LanguageProvider>
+        <LanguageProvider initialLocale={siteSettings.defaultLocale}>
           <ContactInfoProvider settings={siteSettings}>
             <AccentColorProvider
               initialAccentPresetId={siteSettings.accentPresetId}
@@ -39,7 +38,6 @@ export function Providers({ children, siteSettings, pixelSettings }: ProvidersPr
                   {children}
                 </PixelProvider>
               <PageTransitionLoader />
-              <PublicLanguagePicker />
               <AccentColorTester />
               <Toaster richColors position="top-center" />
               </TooltipProvider>

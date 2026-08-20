@@ -1,6 +1,6 @@
 export type Locale = "en" | "fr" | "ar";
 
-export const DEFAULT_LOCALE: Locale = "en";
+export const DEFAULT_LOCALE: Locale = "fr";
 
 export const LOCALE_STORAGE_KEY = "section213-locale";
 export const LOCALE_CHOSEN_KEY = "section213-locale-chosen";
